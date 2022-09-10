@@ -1,5 +1,4 @@
-MIT License
-
+/*
 Copyright (c) 2022 AABBWare
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,25 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#pragma once
+
+#include "Basic.h"
+
+struct Matrix4x4
+{
+    union {
+        struct {
+            float        _11, _12, _13, _14;
+            float        _21, _22, _23, _24;
+            float        _31, _32, _33, _34;
+            float        _41, _42, _43, _44;
+
+        };
+        float m[4][4];
+    };
+};
+
+void MatrixInvert(struct Matrix4x4*, const struct Matrix4x4*);
+void MatrixMultiply(struct Matrix4x4*, const struct Matrix4x4*, const struct Matrix4x4*);

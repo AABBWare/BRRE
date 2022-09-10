@@ -1,5 +1,4 @@
-MIT License
-
+/*
 Copyright (c) 2022 AABBWare
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#include "Module.h"
+#include "State.h"
+
+extern "C" u32 __cdecl BeginScene(void)
+{
+    if (State.DX.IsSceneActive) { return FALSE; }
+
+    if (State.DX.DirectXDevice->BeginScene()) { return FALSE; }
+
+    State.DX.IsSceneActive = TRUE;
+
+    return TRUE;
+}
+
+extern "C" u32 __cdecl EndScene(void)
+{
+    if (!State.DX.IsSceneActive) { return FALSE; }
+
+    State.DX.IsSceneActive = FALSE;
+
+    return State.DX.DirectXDevice->EndScene() == 0;
+}

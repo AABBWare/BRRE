@@ -1,5 +1,4 @@
-MIT License
-
+/*
 Copyright (c) 2022 AABBWare
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#include "GL.h"
+#include "Graphics/Graphics.h"
+#include "Module.h"
+
+extern "C" u32 __cdecl ClearZBuffer(void)
+{
+    GLSetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED);
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    return TRUE;
+}
+
+extern "C" u32 __cdecl AllocateVertexBuffer(const void*, const u32, const u32, void**)
+{
+    return FALSE;
+}
+
+extern "C" u32 __cdecl FreeVertexBuffer(const void*)
+{
+    return FALSE;
+}

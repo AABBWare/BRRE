@@ -1,5 +1,4 @@
-MIT License
-
+/*
 Copyright (c) 2022 AABBWare
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#pragma once
+
+#include "Basic.h"
+#include "Win.h"
+
+#include <dshow.h>
+
+s32 App(const HINSTANCE);
+s32 Execute(const LPCWSTR, const LPCWSTR);
+s32 InitializeClasses(void);
+s32 InitializePlayer(const LPCWSTR, const LPCWSTR);
+s32 InitializeVideoWindow(void);
+s32 InitializeWindow(const HINSTANCE);
+s32 Play(void);
+void HandleWindowMessages(void);
+void ReleaseClasses(void);

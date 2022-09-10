@@ -1,0 +1,12 @@
+SDK/*
+Bin/*
+Obj/*
+.vs
+*.user
+*.tlog
+*.recipe
+*.pdb
+*.obj
+*.log
+*.iobj
+*.filters

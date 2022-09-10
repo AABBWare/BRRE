@@ -1,0 +1,107 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{B541CCDC-55C2-41F8-8506-D480341D2717}"
+	ProjectSection(SolutionItems) = preProject
+		Source\Common\Include\Basic.h = Source\Common\Include\Basic.h
+		Source\Common\Include\Win.h = Source\Common\Include\Win.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{02C51776-B894-41E0-AC77-854E75AC1919}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{2C9A18C1-F706-4590-9221-5FFEA408A32B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CutScene", "Source\CutScene\CutScene.vcxproj", "{AA256AAC-E8B4-4313-80D7-C860642D83BC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "R.DirectX.8.1", "Source\R.DirectX.8.1\R.DirectX.8.1.vcxproj", "{2344000F-479E-4FDB-BBCC-2E449ED1A513}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "R.OpenGL.1.2", "Source\R.OpenGL.1.2\R.OpenGL.1.2.vcxproj", "{E8B11D14-D385-477B-ADE4-4463E2032F93}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{4DCE08B8-085D-42D0-BA6D-01FC597C6A83}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Renderer", "Renderer", "{0E18ABE8-C7FE-4648-BE85-11F389176690}"
+	ProjectSection(SolutionItems) = preProject
+		Source\Common\Include\Modules\Renderer\Common.h = Source\Common\Include\Modules\Renderer\Common.h
+		Source\Common\Include\Modules\Renderer\Export.h = Source\Common\Include\Modules\Renderer\Export.h
+		Source\Common\Include\Modules\Renderer\Import.h = Source\Common\Include\Modules\Renderer\Import.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{9A85A1CA-E5B7-4DF2-A5EA-D7D50ECB8E4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{4BAE81CB-ABB5-4258-821E-A94A29F4BD1A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Renderer", "Renderer", "{AF797D3A-7D3F-4D1A-8EFC-9F1E39A157E1}"
+	ProjectSection(SolutionItems) = preProject
+		Source\Common\Resources\Modules\Renderer\Module.def = Source\Common\Resources\Modules\Renderer\Module.def
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Graphics", "Graphics", "{1A226458-97A8-4072-84D7-49DEA0029C53}"
+	ProjectSection(SolutionItems) = preProject
+		Source\Common\Include\Graphics\Color.h = Source\Common\Include\Graphics\Color.h
+		Source\Common\Include\Graphics\Enum.h = Source\Common\Include\Graphics\Enum.h
+		Source\Common\Include\Graphics\Graphics.h = Source\Common\Include\Graphics\Graphics.h
+		Source\Common\Include\Graphics\Matrix.h = Source\Common\Include\Graphics\Matrix.h
+		Source\Common\Include\Graphics\Texture.h = Source\Common\Include\Graphics\Texture.h
+		Source\Common\Include\Graphics\Transform.h = Source\Common\Include\Graphics\Transform.h
+		Source\Common\Include\Graphics\Vector.h = Source\Common\Include\Graphics\Vector.h
+		Source\Common\Include\Graphics\Vertex.h = Source\Common\Include\Graphics\Vertex.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Graphics", "Graphics", "{5BE3DF48-0B2C-45D8-AA91-DF56F24D5C76}"
+	ProjectSection(SolutionItems) = preProject
+		Source\Common\Source\Graphics\Matrix.cpp = Source\Common\Source\Graphics\Matrix.cpp
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA256AAC-E8B4-4313-80D7-C860642D83BC}.Debug|x64.ActiveCfg = Debug|x64
+		{AA256AAC-E8B4-4313-80D7-C860642D83BC}.Debug|x64.Build.0 = Debug|x64
+		{AA256AAC-E8B4-4313-80D7-C860642D83BC}.Debug|x86.ActiveCfg = Debug|Win32
+		{AA256AAC-E8B4-4313-80D7-C860642D83BC}.Debug|x86.Build.0 = Debug|Win32
+		{AA256AAC-E8B4-4313-80D7-C860642D83BC}.Release|x64.ActiveCfg = Release|x64
+		{AA256AAC-E8B4-4313-80D7-C860642D83BC}.Release|x64.Build.0 = Release|x64
+		{AA256AAC-E8B4-4313-80D7-C860642D83BC}.Release|x86.ActiveCfg = Release|Win32
+		{AA256AAC-E8B4-4313-80D7-C860642D83BC}.Release|x86.Build.0 = Release|Win32
+		{2344000F-479E-4FDB-BBCC-2E449ED1A513}.Debug|x64.ActiveCfg = Debug|x64
+		{2344000F-479E-4FDB-BBCC-2E449ED1A513}.Debug|x64.Build.0 = Debug|x64
+		{2344000F-479E-4FDB-BBCC-2E449ED1A513}.Debug|x86.ActiveCfg = Debug|Win32
+		{2344000F-479E-4FDB-BBCC-2E449ED1A513}.Debug|x86.Build.0 = Debug|Win32
+		{2344000F-479E-4FDB-BBCC-2E449ED1A513}.Release|x64.ActiveCfg = Release|x64
+		{2344000F-479E-4FDB-BBCC-2E449ED1A513}.Release|x64.Build.0 = Release|x64
+		{2344000F-479E-4FDB-BBCC-2E449ED1A513}.Release|x86.ActiveCfg = Release|Win32
+		{2344000F-479E-4FDB-BBCC-2E449ED1A513}.Release|x86.Build.0 = Release|Win32
+		{E8B11D14-D385-477B-ADE4-4463E2032F93}.Debug|x64.ActiveCfg = Debug|x64
+		{E8B11D14-D385-477B-ADE4-4463E2032F93}.Debug|x64.Build.0 = Debug|x64
+		{E8B11D14-D385-477B-ADE4-4463E2032F93}.Debug|x86.ActiveCfg = Debug|Win32
+		{E8B11D14-D385-477B-ADE4-4463E2032F93}.Debug|x86.Build.0 = Debug|Win32
+		{E8B11D14-D385-477B-ADE4-4463E2032F93}.Release|x64.ActiveCfg = Release|x64
+		{E8B11D14-D385-477B-ADE4-4463E2032F93}.Release|x64.Build.0 = Release|x64
+		{E8B11D14-D385-477B-ADE4-4463E2032F93}.Release|x86.ActiveCfg = Release|Win32
+		{E8B11D14-D385-477B-ADE4-4463E2032F93}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B541CCDC-55C2-41F8-8506-D480341D2717} = {02C51776-B894-41E0-AC77-854E75AC1919}
+		{2C9A18C1-F706-4590-9221-5FFEA408A32B} = {02C51776-B894-41E0-AC77-854E75AC1919}
+		{4DCE08B8-085D-42D0-BA6D-01FC597C6A83} = {B541CCDC-55C2-41F8-8506-D480341D2717}
+		{0E18ABE8-C7FE-4648-BE85-11F389176690} = {4DCE08B8-085D-42D0-BA6D-01FC597C6A83}
+		{9A85A1CA-E5B7-4DF2-A5EA-D7D50ECB8E4F} = {02C51776-B894-41E0-AC77-854E75AC1919}
+		{4BAE81CB-ABB5-4258-821E-A94A29F4BD1A} = {9A85A1CA-E5B7-4DF2-A5EA-D7D50ECB8E4F}
+		{AF797D3A-7D3F-4D1A-8EFC-9F1E39A157E1} = {4BAE81CB-ABB5-4258-821E-A94A29F4BD1A}
+		{1A226458-97A8-4072-84D7-49DEA0029C53} = {B541CCDC-55C2-41F8-8506-D480341D2717}
+		{5BE3DF48-0B2C-45D8-AA91-DF56F24D5C76} = {2C9A18C1-F706-4590-9221-5FFEA408A32B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BADB40EA-4805-435B-A555-CE814A5EE6F3}
+	EndGlobalSection
+EndGlobal

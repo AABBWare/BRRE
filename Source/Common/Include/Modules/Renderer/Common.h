@@ -1,5 +1,4 @@
-MIT License
-
+/*
 Copyright (c) 2022 AABBWare
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,23 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#pragma once
+
+#include "Basic.h"
+
+struct InitializeModuleArguments
+{
+    s32* ColorBits;
+    s32* Unk1;
+    s32* Unk2;
+    s32* AlphaBits;
+    s32* Unk3;
+    s32* BPP1;
+    s32* Width;
+    s32* Height;
+    s32* BPP2;
+    s32* Unk4;
+    s32* Unk5;
+};

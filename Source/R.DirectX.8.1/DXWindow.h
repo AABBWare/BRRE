@@ -1,5 +1,4 @@
-MIT License
-
+/*
 Copyright (c) 2022 AABBWare
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#pragma once
+
+#include "Basic.h"
+
+#include <d3dx8.h>
+
+struct DXWindow
+{
+    s32 Width;
+    s32 Height;
+    s32 BitsPerPixel;
+
+    s32 Unknown4;
+
+    HWND HWND;
+    IDirect3DSurface8* DepthSurface;
+    IDirect3DSwapChain8* SwapChain;
+};
+
+void DXWindowConstructor(struct DXWindow*);
+void DXWindowInitialize(struct DXWindow*, D3DPRESENT_PARAMETERS*);
+s32 DXWindowInitialize(const s32, const s32, const s32);

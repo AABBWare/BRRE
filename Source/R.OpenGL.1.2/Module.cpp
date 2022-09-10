@@ -1,5 +1,4 @@
-MIT License
-
+/*
 Copyright (c) 2022 AABBWare
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,29 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#include "Module.h"
+#include "State.h"
+
+extern "C" u32 __cdecl Init(const HWND hwnd, const struct InitializeModuleArguments* args)
+{
+    State.Window.HWND = hwnd;
+
+    auto hdc = GetDC(NULL);
+
+    if (hdc == NULL) { return FALSE; }
+
+    State.Window.Width = GetDeviceCaps(hdc, HORZRES);
+    State.Window.Height = GetDeviceCaps(hdc, VERTRES);
+    State.Window.BitsPerPixel = GetDeviceCaps(hdc, BITSPIXEL);
+
+    return TRUE;
+}
+
+extern "C" u32 __cdecl Kill(void)
+{
+    GLRelease();
+
+    return TRUE;
+}

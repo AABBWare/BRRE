@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{2344000f-479e-4fdb-bbcc-2e449ed1a513}</ProjectGuid>
+    <RootNamespace>RDirectX81</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\Common\Include;..\..\SDK\DX81\Inc</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\..\SDK\DX81\Lib</LibraryPath>
+    <OutDir>$(SolutionDir)\Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Obj\R.DirectX.8.1\$(Platform)\$(Configuration)\</IntDir>
+    <ExternalIncludePath />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\Common\Include;..\..\SDK\DX81\Inc</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\..\SDK\DX81\Lib</LibraryPath>
+    <OutDir>$(SolutionDir)\Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Obj\R.DirectX.8.1\$(Platform)\$(Configuration)\</IntDir>
+    <ExternalIncludePath />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\Common\Include;..\..\SDK\DX81\Inc</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\..\SDK\DX81\Lib</LibraryPath>
+    <OutDir>$(SolutionDir)\Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Obj\R.DirectX.8.1\$(Platform)\$(Configuration)\</IntDir>
+    <ExternalIncludePath />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\Common\Include;..\..\SDK\DX81\Inc</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\..\SDK\DX81\Lib</LibraryPath>
+    <OutDir>$(SolutionDir)\Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Obj\R.DirectX.8.1\$(Platform)\$(Configuration)\</IntDir>
+    <ExternalIncludePath />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;RDIRECTX81_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CallingConvention>StdCall</CallingConvention>
+      <DisableSpecificWarnings>4018;4302;4311;6011;6230;26495</DisableSpecificWarnings>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>%(AdditionalDependencies);d3d8.lib;dxerr8.lib;legacy_stdio_definitions.lib</AdditionalDependencies>
+      <ModuleDefinitionFile>..\Common\Resources\Modules\Renderer\Module.def</ModuleDefinitionFile>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;RDIRECTX81_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CallingConvention>StdCall</CallingConvention>
+      <DisableSpecificWarnings>4018;4302;4311;6011;6230;26495</DisableSpecificWarnings>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>%(AdditionalDependencies);d3d8.lib;dxerr8.lib;legacy_stdio_definitions.lib</AdditionalDependencies>
+      <ModuleDefinitionFile>..\Common\Resources\Modules\Renderer\Module.def</ModuleDefinitionFile>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;RDIRECTX81_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CallingConvention>StdCall</CallingConvention>
+      <DisableSpecificWarnings>4018;4302;4311;6011;6230;26495</DisableSpecificWarnings>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>%(AdditionalDependencies);d3d8.lib;dxerr8.lib;legacy_stdio_definitions.lib</AdditionalDependencies>
+      <ModuleDefinitionFile>..\Common\Resources\Modules\Renderer\Module.def</ModuleDefinitionFile>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;RDIRECTX81_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CallingConvention>StdCall</CallingConvention>
+      <DisableSpecificWarnings>4018;4302;4311;6011;6230;26495</DisableSpecificWarnings>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>%(AdditionalDependencies);d3d8.lib;dxerr8.lib;legacy_stdio_definitions.lib</AdditionalDependencies>
+      <ModuleDefinitionFile>..\Common\Resources\Modules\Renderer\Module.def</ModuleDefinitionFile>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="DX.h" />
+    <ClInclude Include="DXPixelShaderConstants.h" />
+    <ClInclude Include="DXState.h" />
+    <ClInclude Include="DXTexture.h" />
+    <ClInclude Include="DXShader.h" />
+    <ClInclude Include="DXVertexShaderConstants.h" />
+    <ClInclude Include="DXWindow.h" />
+    <ClInclude Include="Exit.h" />
+    <ClInclude Include="Module.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="WindowState.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Common\Source\Graphics\Matrix.cpp" />
+    <ClCompile Include="Blend.cpp" />
+    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="DX.cpp" />
+    <ClCompile Include="DXC.cpp" />
+    <ClCompile Include="DXPixelShaderBump.cpp" />
+    <ClCompile Include="DXPixelShaderBumpSpec.cpp" />
+    <ClCompile Include="DXPixelShaderDecal.cpp" />
+    <ClCompile Include="DXPixelShaderDecalKil.cpp" />
+    <ClCompile Include="DXPixelShaderPBmpCube.cpp" />
+    <ClCompile Include="DXPixelShaderPBmpSplm.cpp" />
+    <ClCompile Include="DXPixelShaderPGloss.cpp" />
+    <ClCompile Include="DXPixelShaderPLMap.cpp" />
+    <ClCompile Include="DXPixelShaderPLMbs.cpp" />
+    <ClCompile Include="DXVertexShaderCubic.cpp" />
+    <ClCompile Include="DXVertexShaderDeclarations.cpp" />
+    <ClCompile Include="DXVertexShaderDirLight.cpp" />
+    <ClCompile Include="DXVertexShaderPreLit.cpp" />
+    <ClCompile Include="DXVertexShaderPreTex.cpp" />
+    <ClCompile Include="DXVertexShaderShdwbkfc.cpp" />
+    <ClCompile Include="DXVertexShaderTexGen.cpp" />
+    <ClCompile Include="DXVertexShaderTlVertex.cpp" />
+    <ClCompile Include="DXVertexShaderVBmpCube.cpp" />
+    <ClCompile Include="DXVertexShaderVBmpSpec.cpp" />
+    <ClCompile Include="DXVertexShaderVBmpSpgn.cpp" />
+    <ClCompile Include="DXVertexShaderVBmpSpom.cpp" />
+    <ClCompile Include="DXVertexShaderVBmpSppl.cpp" />
+    <ClCompile Include="DXVertexShaderVBump.cpp" />
+    <ClCompile Include="DXVertexShaderVBumpGen.cpp" />
+    <ClCompile Include="DXVertexShaderVGloss.cpp" />
+    <ClCompile Include="DXVertexShaderVLMap.cpp" />
+    <ClCompile Include="DXVertexShaderVLMap2.cpp" />
+    <ClCompile Include="DXVertexShaderVLmbs.cpp" />
+    <ClCompile Include="DXVertexShaderVOmni.cpp" />
+    <ClCompile Include="DXVertexShaderVOmniBmp.cpp" />
+    <ClCompile Include="DXVertexShaderVOmniN.cpp" />
+    <ClCompile Include="DXVertexShaderVSkel.cpp" />
+    <ClCompile Include="DXVertexShaderVSkelBmp.cpp" />
+    <ClCompile Include="DXVertexShaderVSkelSpc.cpp" />
+    <ClCompile Include="DXVertexShaderVSkelSpc2.cpp" />
+    <ClCompile Include="DXVertexShaderVSkelSpc3.cpp" />
+    <ClCompile Include="DXVertexShaderVSkelTex.cpp" />
+    <ClCompile Include="DXVertexShaderVSpecMap.cpp" />
+    <ClCompile Include="DXWindow.cpp" />
+    <ClCompile Include="Exit.cpp" />
+    <ClCompile Include="Frame.cpp" />
+    <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Miscellaneous.cpp" />
+    <ClCompile Include="Module.cpp" />
+    <ClCompile Include="Render.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="Stencil.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
