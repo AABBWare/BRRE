@@ -24,17 +24,23 @@ SOFTWARE.
 
 #include "Basic.h"
 
-struct InitializeModuleArguments
+namespace Renderer
 {
-    s32* ColorBits;
-    s32* Unk1;
-    s32* Unk2;
-    s32* AlphaBits;
-    s32* Unk3;
-    s32* BPP1;
-    s32* Width;
-    s32* Height;
-    s32* BPP2;
-    s32* Unk4;
-    s32* Unk5;
-};
+    namespace External
+    {
+        struct InitializeModuleArguments
+        {
+            u32* ColorBits;
+            s32* Unk1;
+            s32* Unk2;
+            u32* AlphaBits;
+            s32* Unk3;
+            u32* BPP1;
+            u32* Width;
+            u32* Height;
+            u32* BPP2;
+            s32* Unk4;
+            s32* Unk5;
+        };
+    }
+}

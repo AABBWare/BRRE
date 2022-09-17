@@ -30,95 +30,106 @@ SOFTWARE.
 #include "Graphics/Vertex.h"
 #include "Win.h"
 
-extern "C" u32 __cdecl AllocateOptimizedMesh(void);
-extern "C" u32 __cdecl AllocateTexture(const struct Texture*);
-extern "C" u32 __cdecl AllocateVertexBuffer(const void*, const u32, const u32, void**);
-extern "C" u32 __cdecl BeginCubeMapRender(const u32, const u32);
-extern "C" u32 __cdecl BeginRenderToTexture(const u32);
-extern "C" u32 __cdecl BeginScene(void);
-extern "C" u32 __cdecl Clear(const u32, const u32);
-extern "C" u32 __cdecl ClearZBuffer(void);
-extern "C" u32 __cdecl CopyBackBufferToRenderTexture(void);
-extern "C" u32 __cdecl CreateGameWindow(const s32, const s32, const s32, const s32, const HWND);
-extern "C" u32 __cdecl CreateGraphicsCardList(s32*, char**, char**, u32*, u32*);
-extern "C" u32 __cdecl DestroyGameWindow(const s32);
-extern "C" u32 __cdecl DotListD3DTL(const struct D3DTLVertex*, const u32, const u32);
-extern "C" u32 __cdecl DrawPixels(void);
-extern "C" u32 __cdecl EnableClipping(const u32);
-extern "C" u32 __cdecl EnableCulling(const CullMode);
-extern "C" u32 __cdecl EnableLighting(const u32);
-extern "C" u32 __cdecl EndCubeMapRender(void);
-extern "C" u32 __cdecl EndRenderToTexture(void);
-extern "C" u32 __cdecl EndScene(void);
-extern "C" u32 __cdecl FreeOptimizedMesh(void);
-extern "C" u32 __cdecl FreeTexture(const u32);
-extern "C" u32 __cdecl FreeVertexBuffer(const void*);
-extern "C" u32 __cdecl GetTextureInfo(const u32);
-extern "C" u32 __cdecl HasShaderSupport(void);
-extern "C" u32 __cdecl Init(const HWND, const struct InitializeModuleArguments*);
-extern "C" u32 __cdecl Kill(void);
-extern "C" u32 __cdecl LineListD3DTL(const struct D3DTLVertex*, const u32, const u32);
-extern "C" u32 __cdecl LockFrame(void);
+namespace Renderer
+{
+    namespace External
+    {
+        extern "C" BOOL __cdecl AllocateOptimizedMesh(void);
+        extern "C" u32 __cdecl AllocateTexture(const struct Renderer::Graphics::Texture*);
+        extern "C" BOOL __cdecl AllocateVertexBuffer(const void*, const u32, const u32, void**);
+        extern "C" BOOL __cdecl BeginCubeMapRender(const u32, const u32);
+        extern "C" BOOL __cdecl BeginRenderToTexture(const u32);
+        extern "C" BOOL __cdecl BeginScene(void);
+        extern "C" BOOL __cdecl Clear(const u32, const u32);
+        extern "C" BOOL __cdecl ClearZBuffer(void);
+        extern "C" BOOL __cdecl CopyBackBufferToRenderTexture(void);
+        extern "C" u32 __cdecl CreateGameWindow(const u32, const u32, const u32, u32*, const HWND);
+        extern "C" BOOL __cdecl CreateGraphicsCardList(s32*, char**, char**, u32*, u32*);
+        extern "C" BOOL __cdecl DestroyGameWindow(const u32);
+        extern "C" BOOL __cdecl DotListD3DL(const struct Renderer::Graphics::D3DLVertex*, const u32, const u32);
+        extern "C" BOOL __cdecl DotListD3DTL(const struct Renderer::Graphics::D3DTLVertex*, const u32, const u32);
+        extern "C" BOOL __cdecl DrawPixels(void);
+        extern "C" BOOL __cdecl EnableClipping(const Renderer::Graphics::ClippingMode);
+        extern "C" BOOL __cdecl EnableCulling(const Renderer::Graphics::CullMode);
+        extern "C" BOOL __cdecl EnableLighting(const BOOL);
+        extern "C" BOOL __cdecl EndCubeMapRender(void);
+        extern "C" BOOL __cdecl EndRenderToTexture(void);
+        extern "C" BOOL __cdecl EndScene(void);
+        extern "C" BOOL __cdecl FreeOptimizedMesh(void);
+        extern "C" BOOL __cdecl FreeTexture(const u32);
+        extern "C" BOOL __cdecl FreeVertexBuffer(const void*);
+        extern "C" BOOL __cdecl GetTextureInfo(const u32);
+        extern "C" BOOL __cdecl HasShaderSupport(void);
+        extern "C" BOOL __cdecl Init(const HWND, const struct InitializeModuleArguments*);
+        extern "C" BOOL __cdecl Kill(void);
+        extern "C" BOOL __cdecl LineListD3DL(const struct Renderer::Graphics::D3DLVertex*, const u32, const u32);
+        extern "C" BOOL __cdecl LineListD3DTL(const struct Renderer::Graphics::D3DTLVertex*, const u32, const u32);
+        extern "C" BOOL __cdecl LockFrame(void);
 
-/// <summary>
-/// Draws level geometry, characters, and water.
-/// </summary>
-extern "C" u32 __cdecl PolyList(const struct SVertex*, const u32, const u16*, const u32, const u32);
-extern "C" u32 __cdecl PolyListBasis(const struct SVertexBasis*, const u32, const u16*, const u32, const u32);
-extern "C" u32 __cdecl PolyListBone(const void*, const u32, const u16*, const u32, const u32, const u32);
+        /// <summary>
+        /// Draws level geometry, characters, and water.
+        /// </summary>
+        extern "C" BOOL __cdecl PolyList(const struct Renderer::Graphics::SVertex*, const u32, const u16*, const u32, const u32);
+        extern "C" BOOL __cdecl PolyListBasis(const struct Renderer::Graphics::SVertexBasis*, const u32, const u16*, const u32, const u32);
+        extern "C" BOOL __cdecl PolyListBone(const void*, const u32, const u16*, const u32, const u32, const u32);
 
-/// <summary>
-/// Draws sky, lights, active moving fog.
-/// </summary>
-extern "C" u32 __cdecl PolyListD3DL(const struct D3DTLVertex*, const u32, const u16*, const u32, const u32);
+        /// <summary>
+        /// Draws sky, lights, active moving fog.
+        /// </summary>
+        extern "C" BOOL __cdecl PolyListD3DL(const struct Renderer::Graphics::D3DTLVertex*, const u32, const u16*, const u32, const u32);
 
-/// <summary>
-/// Draws UI elements such as main menu, loading screen, and HUD during the gameplay.
-/// </summary>
-extern "C" u32 __cdecl PolyListD3DTL(const struct D3DTLVertex*, const u32, const u16*, const u32, const u32);
+        /// <summary>
+        /// Draws UI elements such as main menu, loading screen, and HUD during the play.
+        /// </summary>
+        extern "C" BOOL __cdecl PolyListD3DTL(const struct Renderer::Graphics::D3DTLVertex*, const u32, const u16*, const u32, const u32);
 
-/// <summary>
-/// Draws sky box and special effects, both environment effects and character effects.
-/// The method is also used as a fallback in case PolyList is not exported.
-/// </summary>
-extern "C" u32 __cdecl PolyListTL(const struct TLVertex*, const u32, const u16*, const u32, const u32);
-extern "C" u32 __cdecl RenderOptimizedMesh(void);
-extern "C" u32 __cdecl RenderVertexBuffer(const void*, const u32, const u16*, const u32, const u32);
-extern "C" u32 __cdecl RenderVertexBufferBasis(const void*, const u32, const u16*, const u32, const u32);
-extern "C" u32 __cdecl RenderVertexBufferBone(const void*, const u32, const u16*, const u32, const struct Vector4*, const u32, const u32);
-extern "C" u32 __cdecl RenderVertexBufferPrelit(const void*, const u32, const u16*, const u32, const u32);
-extern "C" u32 __cdecl ResetTextureCache(void);
-extern "C" u32 __cdecl RestoreVideoMode(void);
-extern "C" u32 __cdecl SelectCubeTexture(const u32, const u32);
-extern "C" u32 __cdecl SelectGameWindow(const s32, const s32);
-extern "C" u32 __cdecl SelectGraphicsCard(const s32);
-extern "C" u32 __cdecl SelectRenderTexture(const u32);
-extern "C" u32 __cdecl SelectTexture(const u32, const u32);
-extern "C" u32 __cdecl SetAlpha(const u32);
-extern "C" u32 __cdecl SetAmbientLight(const f32);
-extern "C" u32 __cdecl SetAmbientLightColor(const f32, const f32, const f32);
-extern "C" u32 __cdecl SetColorTable(const u8*, u16*);
-extern "C" u32 __cdecl SetDestBlend(const TextureDestinationBlend);
-extern "C" u32 __cdecl SetFog(const f32, const f32, const f32, const f32, const f32);
-extern "C" u32 __cdecl SetGloss(const f32);
-extern "C" u32 __cdecl SetLightColor(const f32, const f32, const f32, const s32);
-extern "C" u32 __cdecl SetLightConstants(const f32, const f32, const f32, const f32);
-extern "C" u32 __cdecl SetLightVector(void);
-extern "C" u32 __cdecl SetMultiTextureBlend(const TextureBlendOperation);
-extern "C" u32 __cdecl SetOmniLight(const f32*, const f32, const u32);
-extern "C" u32 __cdecl SetSrcBlend(const TextureSourceBlend);
-extern "C" u32 __cdecl SetStencilEnable(const u32);
-extern "C" u32 __cdecl SetStencilFunc(const StencilFunction);
-extern "C" u32 __cdecl SetStencilPass(const StencilPass);
-extern "C" u32 __cdecl SetTextureClamp(const TextureClamp, const TextureClamp, const u32);
-extern "C" u32 __cdecl SetTransform(const struct Transform*, const f32, const f32);
-extern "C" u32 __cdecl SetTransformO2W(const struct Matrix4x4*);
-extern "C" u32 __cdecl SetTransformW2L(const struct Matrix4x4*, const f32, const f32);
-extern "C" u32 __cdecl SetVideoMode(const s32, const s32, const s32, const s32, const s32);
-extern "C" u32 __cdecl SetViewport(const f32, const f32, const f32, const f32, const f32, const f32);
-extern "C" u32 __cdecl SetGameWindowMode(const s32);
-extern "C" u32 __cdecl Toggle(void);
-extern "C" u32 __cdecl UnlockFrame(void);
-extern "C" u32 __cdecl UploadTexture(const u32, const struct Texture*);
-extern "C" u32 __cdecl VideoRestore(void);
-extern "C" u32 __cdecl VideoSave(void);
+        /// <summary>
+        /// Draws sky box and special effects, both environment effects and character effects.
+        /// The method is also used as a fallback in case PolyList is not exported.
+        /// </summary>
+        extern "C" BOOL __cdecl PolyListTL(const struct Renderer::Graphics::TLVertex*, const u32, const u16*, const u32, const u32);
+        extern "C" BOOL __cdecl RenderOptimizedMesh(void);
+        extern "C" BOOL __cdecl RenderVertexBuffer(const void*, const u32, const u16*, const u32, const u32);
+        extern "C" BOOL __cdecl RenderVertexBufferBasis(const void*, const u32, const u16*, const u32, const u32);
+        extern "C" BOOL __cdecl RenderVertexBufferBone(const void*, const u32, const u16*, const u32, const struct Renderer::Graphics::Vector4*, const u32, const u32);
+        extern "C" BOOL __cdecl RenderVertexBufferPrelit(const void*, const u32, const u16*, const u32, const u32);
+        extern "C" BOOL __cdecl ResetTextureCache(void);
+        extern "C" BOOL __cdecl RestoreVideoMode(void);
+        extern "C" BOOL __cdecl SelectCubeTexture(const u32, const u32);
+        extern "C" BOOL __cdecl SelectGameWindow(const s32, const s32);
+        extern "C" BOOL __cdecl SelectGraphicsCard(const u32);
+        extern "C" BOOL __cdecl SelectRenderTexture(const u32);
+        extern "C" BOOL __cdecl SelectTexture(const u32, const u32);
+        extern "C" BOOL __cdecl SetAlpha(const u32);
+        extern "C" BOOL __cdecl SetAmbientLight(const f32);
+        extern "C" BOOL __cdecl SetAmbientLightColor(const f32, const f32, const f32);
+        extern "C" BOOL __cdecl SetColorTable(const u8*, u16*);
+        extern "C" BOOL __cdecl SetDestinationBlend(const Renderer::Graphics::TextureDestinationBlend);
+        extern "C" BOOL __cdecl SetFog(const f32, const f32, const f32, const f32, const f32);
+        extern "C" BOOL __cdecl SetGloss(const f32);
+        extern "C" BOOL __cdecl SetLightColor(const f32, const f32, const f32, const s32);
+        extern "C" BOOL __cdecl SetLightConstants(const f32, const f32, const f32, const f32);
+        extern "C" BOOL __cdecl SetLightVector(void);
+        extern "C" BOOL __cdecl SetMultiTextureBlend(const Renderer::Graphics::TextureBlendOperation);
+        extern "C" BOOL __cdecl SetOmniLight(const f32*, const f32, const u32);
+        extern "C" BOOL __cdecl SetSourceBlend(const Renderer::Graphics::TextureSourceBlend);
+        extern "C" BOOL __cdecl SetStencilEnable(const BOOL);
+        extern "C" BOOL __cdecl SetStencilFunc(const Renderer::Graphics::StencilFunction);
+        extern "C" BOOL __cdecl SetStencilPass(const Renderer::Graphics::StencilPass);
+        extern "C" BOOL __cdecl SetTextureClamp(const Renderer::Graphics::TextureClamp, const Renderer::Graphics::TextureClamp, const u32);
+        extern "C" BOOL __cdecl SetTransform(const struct Renderer::Graphics::Transform*, const f32, const f32);
+        extern "C" BOOL __cdecl SetTransformO2W(const struct Mathematics::Matrix4x4*);
+        extern "C" BOOL __cdecl SetTransformW2L(const struct Mathematics::Matrix4x4*, const f32, const f32);
+        extern "C" BOOL __cdecl SetVideoMode(const u32, const u32, const u32, u32*, const u32);
+        extern "C" BOOL __cdecl SetViewPort(const f32, const f32, const f32, const f32, const f32, const f32);
+        extern "C" BOOL __cdecl SetGameWindowMode(const BOOL);
+        extern "C" BOOL __cdecl Toggle(void);
+        extern "C" BOOL __cdecl UnlockFrame(void);
+        extern "C" BOOL __cdecl UploadTexture(const u32, const struct Renderer::Graphics::Texture*);
+        extern "C" BOOL __cdecl VideoRestore(void);
+        extern "C" BOOL __cdecl VideoSave(void);
+        extern "C" BOOL __cdecl IsGameWindowMode(void);
+        extern "C" BOOL __cdecl LockFrameForScreenshot(void);
+        extern "C" BOOL __cdecl SetDirtyRect(const u32, const u32, const u32, const u32);
+    }
+}

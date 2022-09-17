@@ -24,12 +24,20 @@ SOFTWARE.
 
 #include "Basic.h"
 
-struct BGRA
-{
-    f32 B, G, R, A;
-};
+#define COLOR_BLACK 0
 
-struct RGBA
+namespace Renderer
 {
-    f32 R, G, B, A;
-};
+    namespace Graphics
+    {
+        struct BGRA
+        {
+            f32 B, G, R, A;
+        };
+
+        struct RGBA
+        {
+            f32 R, G, B, A;
+        };
+    }
+}

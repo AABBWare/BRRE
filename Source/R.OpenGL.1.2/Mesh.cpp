@@ -22,17 +22,23 @@ SOFTWARE.
 
 #include "Module.h"
 
-extern "C" u32 __cdecl AllocateOptimizedMesh(void)
+namespace Renderer
 {
-    return FALSE;
-}
+    namespace External
+    {
+        extern "C" BOOL __cdecl AllocateOptimizedMesh(void)
+        {
+            return FALSE;
+        }
 
-extern "C" u32 __cdecl RenderOptimizedMesh(void)
-{
-    return FALSE;
-}
+        extern "C" BOOL __cdecl RenderOptimizedMesh(void)
+        {
+            return FALSE;
+        }
 
-extern "C" u32 __cdecl FreeOptimizedMesh(void)
-{
-    return FALSE;
+        extern "C" BOOL __cdecl FreeOptimizedMesh(void)
+        {
+            return FALSE;
+        }
+    }
 }

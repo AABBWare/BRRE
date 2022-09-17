@@ -23,44 +23,49 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-extern "C" u32 __cdecl LockFrame(void)
+namespace Renderer
 {
-    if (State.DX.IsSceneActive)
+    namespace External
     {
-        EndScene();
-    }
-
-    if (!State.DX.IsFrameLocked)
-    {
-        State.DX.DirectXDevice->GetRenderTarget(&State.DX.Surfaces.DrawSurface);
-
-        D3DLOCKED_RECT lr;
-
-        if (State.DX.Surfaces.DrawSurface->LockRect(&lr, NULL, D3DLOCK_NOSYSLOCK) == 0)
+        extern "C" BOOL __cdecl LockFrame(void)
         {
-            // todo unknown 4
+            if (State.DX.IsSceneActive)
+            {
+                EndScene();
+            }
 
-            State.DX.IsFrameLocked = TRUE;
+            if (!State.DX.IsFrameLocked)
+            {
+                State.DX.DirectXDevice->GetRenderTarget(&State.DX.Surfaces.DrawSurface);
+
+                D3DLOCKED_RECT lr;
+                if (State.DX.Surfaces.DrawSurface->LockRect(&lr, NULL, D3DLOCK_NOSYSLOCK) == 0)
+                {
+                    // todo unknown 4
+
+                    State.DX.IsFrameLocked = TRUE;
+                    return TRUE;
+                }
+
+                return FALSE;
+            }
+
             return TRUE;
         }
 
-        return FALSE;
+        extern "C" BOOL __cdecl UnlockFrame(void)
+        {
+            if (!State.DX.IsFrameLocked) { return FALSE; }
+
+            State.DX.IsFrameLocked = FALSE;
+
+            // todo: unk4
+
+            DX::DXC(State.DX.Surfaces.DrawSurface->UnlockRect(), "Unable to unlock back buffer.");
+
+            State.DX.Surfaces.DrawSurface->Release();
+
+            return TRUE;
+        }
     }
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl UnlockFrame(void)
-{
-    if (!State.DX.IsFrameLocked) { return FALSE; }
-
-    State.DX.IsFrameLocked = FALSE;
-
-    // todo: unk4
-
-    DXC(State.DX.Surfaces.DrawSurface->UnlockRect(), "Unable to unlock back buffer.");
-
-    State.DX.Surfaces.DrawSurface->Release();
-
-    return TRUE;
 }

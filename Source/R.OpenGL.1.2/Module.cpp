@@ -23,24 +23,30 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-extern "C" u32 __cdecl Init(const HWND hwnd, const struct InitializeModuleArguments* args)
+namespace Renderer
 {
-    State.Window.HWND = hwnd;
+    namespace External
+    {
+        extern "C" BOOL __cdecl Init(const HWND hwnd, const struct InitializeModuleArguments* args)
+        {
+            State.Window.HWND = hwnd;
 
-    auto hdc = GetDC(NULL);
+            auto hdc = GetDC(NULL);
 
-    if (hdc == NULL) { return FALSE; }
+            if (hdc == NULL) { return FALSE; }
 
-    State.Window.Width = GetDeviceCaps(hdc, HORZRES);
-    State.Window.Height = GetDeviceCaps(hdc, VERTRES);
-    State.Window.BitsPerPixel = GetDeviceCaps(hdc, BITSPIXEL);
+            State.Window.Width = GetDeviceCaps(hdc, HORZRES);
+            State.Window.Height = GetDeviceCaps(hdc, VERTRES);
+            State.Window.BitsPerPixel = GetDeviceCaps(hdc, BITSPIXEL);
 
-    return TRUE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl Kill(void)
-{
-    GLRelease();
+        extern "C" BOOL __cdecl Kill(void)
+        {
+            GL::Release();
 
-    return TRUE;
+            return TRUE;
+        }
+    }
 }

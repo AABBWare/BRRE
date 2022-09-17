@@ -22,16 +22,31 @@ SOFTWARE.
 
 #include "DXPixelShaderConstants.h"
 
-const char DX_PIXEL_SHADER_NAME_DECAL[] = "Decal";
-const DWORD DX_PIXEL_SHADER_FUNC_DECAL[34]
+namespace Renderer
 {
-    0xFFFF0101, 0x4FFFE, 0x454C4946, 0x61636564,
-    0x73702E6C, 0x65640068, 0x2FFFE, 0x454E494C,
-    0x1, 0x2FFFE, 0x454E494C, 0x2,
-    0x2FFFE, 0x454E494C, 0x3, 0x2FFFE,
-    0x454E494C, 0x4, 0x2FFFE, 0x454E494C,
-    0x4, 0x42, 0xB00F0000, 0x2FFFE,
-    0x454E494C, 0x5, 0x2FFFE, 0x454E494C,
-    0x5, 0x5, 0x800F0000, 0xB0E40000,
-    0x90E40000, 0xFFFF
-};
+    namespace External
+    {
+        namespace DX
+        {
+            namespace Shader
+            {
+                namespace Pixel
+                {
+                    const char NAME_DECAL[] = "Decal";
+                    const DWORD FUNC_DECAL[34]
+                    {
+                        0xFFFF0101, 0x4FFFE, 0x454C4946, 0x61636564,
+                        0x73702E6C, 0x65640068, 0x2FFFE, 0x454E494C,
+                        0x1, 0x2FFFE, 0x454E494C, 0x2,
+                        0x2FFFE, 0x454E494C, 0x3, 0x2FFFE,
+                        0x454E494C, 0x4, 0x2FFFE, 0x454E494C,
+                        0x4, 0x42, 0xB00F0000, 0x2FFFE,
+                        0x454E494C, 0x5, 0x2FFFE, 0x454E494C,
+                        0x5, 0x5, 0x800F0000, 0xB0E40000,
+                        0x90E40000, 0xFFFF
+                    };
+                }
+            }
+        }
+    }
+}

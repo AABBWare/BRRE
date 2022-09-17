@@ -20,19 +20,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "Module.h"
+#pragma once
 
-extern "C" u32 __cdecl AllocateOptimizedMesh(void)
-{
-    return FALSE;
-}
+#include "Basic.h"
+#include "Win.h"
 
-extern "C" u32 __cdecl RenderOptimizedMesh(void)
+namespace Renderer
 {
-    return FALSE;
-}
+    namespace External
+    {
+        namespace DX
+        {
+            namespace Window
+            {
+                struct DXWindowState
+                {
+                    HWND HWND;
 
-extern "C" u32 __cdecl FreeOptimizedMesh(void)
-{
-    return FALSE;
+                    BOOL IsWindowMode;
+                };
+            }
+        }
+    }
 }

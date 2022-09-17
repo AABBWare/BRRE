@@ -111,7 +111,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <CallingConvention>StdCall</CallingConvention>
+      <CallingConvention>Cdecl</CallingConvention>
       <DisableSpecificWarnings>4018;4302;4311;6011;6230;26495</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
@@ -120,7 +120,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>%(AdditionalDependencies);d3d8.lib;dxerr8.lib;legacy_stdio_definitions.lib</AdditionalDependencies>
-      <ModuleDefinitionFile>..\Common\Resources\Modules\Renderer\Module.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>Module.def</ModuleDefinitionFile>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -139,7 +139,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <CallingConvention>StdCall</CallingConvention>
+      <CallingConvention>Cdecl</CallingConvention>
       <DisableSpecificWarnings>4018;4302;4311;6011;6230;26495</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <Optimization>Disabled</Optimization>
@@ -151,7 +151,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>%(AdditionalDependencies);d3d8.lib;dxerr8.lib;legacy_stdio_definitions.lib</AdditionalDependencies>
-      <ModuleDefinitionFile>..\Common\Resources\Modules\Renderer\Module.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>Module.def</ModuleDefinitionFile>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -168,7 +168,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <CallingConvention>StdCall</CallingConvention>
+      <CallingConvention>Cdecl</CallingConvention>
       <DisableSpecificWarnings>4018;4302;4311;6011;6230;26495</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
@@ -177,7 +177,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>%(AdditionalDependencies);d3d8.lib;dxerr8.lib;legacy_stdio_definitions.lib</AdditionalDependencies>
-      <ModuleDefinitionFile>..\Common\Resources\Modules\Renderer\Module.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>Module.def</ModuleDefinitionFile>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -196,7 +196,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <CallingConvention>StdCall</CallingConvention>
+      <CallingConvention>Cdecl</CallingConvention>
       <DisableSpecificWarnings>4018;4302;4311;6011;6230;26495</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <Optimization>Disabled</Optimization>
@@ -208,7 +208,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>%(AdditionalDependencies);d3d8.lib;dxerr8.lib;legacy_stdio_definitions.lib</AdditionalDependencies>
-      <ModuleDefinitionFile>..\Common\Resources\Modules\Renderer\Module.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>Module.def</ModuleDefinitionFile>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -224,10 +224,11 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="State.h" />
-    <ClInclude Include="WindowState.h" />
+    <ClInclude Include="DXWindowState.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\Source\Graphics\Matrix.cpp" />
+    <ClCompile Include="..\Common\Source\Mathematics\Mathematics.cpp" />
+    <ClCompile Include="..\Common\Source\Mathematics\Matrix.cpp" />
     <ClCompile Include="Blend.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="DX.cpp" />
@@ -276,7 +277,6 @@
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Miscellaneous.cpp" />
     <ClCompile Include="Module.cpp" />
     <ClCompile Include="Render.cpp" />
@@ -287,6 +287,9 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Module.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

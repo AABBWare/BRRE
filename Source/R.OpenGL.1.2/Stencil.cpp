@@ -22,17 +22,25 @@ SOFTWARE.
 
 #include "Module.h"
 
-extern "C" u32 __cdecl SetStencilEnable(const u32)
-{
-    return FALSE;
-}
+using namespace Renderer::Graphics;
 
-extern "C" u32 __cdecl SetStencilFunc(const StencilFunction)
+namespace Renderer
 {
-    return FALSE;
-}
+    namespace External
+    {
+        extern "C" BOOL __cdecl SetStencilEnable(const BOOL)
+        {
+            return FALSE;
+        }
 
-extern "C" u32 __cdecl SetStencilPass(const StencilPass)
-{
-    return FALSE;
+        extern "C" BOOL __cdecl SetStencilFunc(const StencilFunction)
+        {
+            return FALSE;
+        }
+
+        extern "C" BOOL __cdecl SetStencilPass(const StencilPass)
+        {
+            return FALSE;
+        }
+    }
 }

@@ -25,11 +25,18 @@ SOFTWARE.
 
 #include <dxerr8.h>
 
-void DXC(const HRESULT result, const char* message)
+namespace Renderer
 {
-    if (result == 0) { return; }
+    namespace External
+    {
+        namespace DX
+        {
+            void DXC(const HRESULT result, const char* message)
+            {
+                if (result == 0) { return; }
 
-    auto error = DXGetErrorString8A(result);
-
-    Exit("%s (0x%x)\n%s", error, result, message);
+                Exit("%s (0x%x)\n%s", DXGetErrorString8A(result), result, message);
+            }
+        }
+    }
 }

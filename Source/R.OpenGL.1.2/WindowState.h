@@ -25,18 +25,24 @@ SOFTWARE.
 #include "Basic.h"
 #include "Win.h"
 
-struct WindowState
+namespace Renderer
 {
-    HWND HWND;
+    namespace External
+    {
+        struct WindowState
+        {
+            HWND HWND;
 
-    s32 PixelFormat;
+            s32 PixelFormat;
 
-    HDC DeviceContext;
-    HGLRC RenderContext;
+            HDC DeviceContext;
+            HGLRC RenderContext;
 
-    u32 Width;
-    u32 Height;
-    u32 BitsPerPixel;
+            u32 Width;
+            u32 Height;
+            u32 BitsPerPixel;
 
-    BOOL IsWindowMode;
-};
+            BOOL IsWindowMode;
+        };
+    }
+}

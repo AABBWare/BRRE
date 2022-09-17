@@ -22,4 +22,10 @@ SOFTWARE.
 
 #pragma once
 
-void Exit(const char* format, ...);
+namespace Renderer
+{
+    namespace External
+    {
+        void Exit(const char*, ...);
+    }
+}

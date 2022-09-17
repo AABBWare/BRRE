@@ -23,45 +23,51 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-extern "C" u32 __cdecl SetOmniLight(const f32*, const f32, const u32)
+namespace Renderer
 {
-    return FALSE;
-}
+    namespace External
+    {
+        extern "C" BOOL __cdecl SetOmniLight(const f32*, const f32, const u32)
+        {
+            return FALSE;
+        }
 
-extern "C" u32 __cdecl EnableLighting(const u32 mode)
-{
-    State.GL.Light.IsEnabled = (mode != 0);
+        extern "C" BOOL __cdecl EnableLighting(const BOOL mode)
+        {
+            State.GL.Light.IsEnabled = mode;
 
-    return TRUE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl SetAmbientLight(const f32 value)
-{
-    return TRUE;
-}
+        extern "C" BOOL __cdecl SetAmbientLight(const f32)
+        {
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl SetAmbientLightColor(const f32 r, const f32 g, const f32 b)
-{
-    return TRUE;
-}
+        extern "C" BOOL __cdecl SetAmbientLightColor(const f32, const f32, const f32)
+        {
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl SetLightColor(const f32 r, const f32 g, const f32 b, const s32 index)
-{
-    State.GL.Light.Colors.R[index] = r;
-    State.GL.Light.Colors.G[index] = g;
-    State.GL.Light.Colors.B[index] = b;
+        extern "C" BOOL __cdecl SetLightColor(const f32 r, const f32 g, const f32 b, const s32 index)
+        {
+            State.GL.Light.Colors.R[index] = r;
+            State.GL.Light.Colors.G[index] = g;
+            State.GL.Light.Colors.B[index] = b;
 
-    return TRUE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl SetLightConstants(const f32, const f32, const f32, const f32 alpha)
-{
-    State.GL.Light.Colors.Alpha = alpha;
+        extern "C" BOOL __cdecl SetLightConstants(const f32, const f32, const f32, const f32 alpha)
+        {
+            State.GL.Light.Colors.Alpha = alpha;
 
-    return TRUE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl SetLightVector(void)
-{
-    return TRUE;
+        extern "C" BOOL __cdecl SetLightVector(void)
+        {
+            return TRUE;
+        }
+    }
 }

@@ -23,83 +23,95 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-extern "C" u32 __cdecl SetDestBlend(const TextureDestinationBlend mode)
-{
-    State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
+using namespace Renderer::Graphics;
 
-    switch (mode)
+namespace Renderer
+{
+    namespace External
     {
-        case TextureDestinationBlend::InverseAlpha:
+        extern "C" BOOL __cdecl SetDestinationBlend(const TextureDestinationBlend mode)
         {
-            State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_INVSRCALPHA;
             State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
-            break;
+
+            switch (mode)
+            {
+            case TextureDestinationBlend::InverseAlpha:
+            {
+                State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_INVSRCALPHA;
+                State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
+                break;
+            }
+            case TextureDestinationBlend::One:
+            {
+                State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_ONE;
+                State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
+                break;
+            }
+            case TextureDestinationBlend::Color:
+            {
+                State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_SRCCOLOR;
+                State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
+                break;
+            }
+            case TextureDestinationBlend::InverseColor:
+            {
+                State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_INVSRCCOLOR;
+                State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
+                break;
+            }
+            case TextureDestinationBlend::Zero:
+            {
+                State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_ZERO;
+                State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
+                break;
+            }
+            case TextureDestinationBlend::NegativeOne:
+            {
+                State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_ONE;
+                State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_REVSUBTRACT;
+                break;
+            }
+            }
+
+            return TRUE;
         }
-        case TextureDestinationBlend::One:
+
+        extern "C" BOOL __cdecl SetMultiTextureBlend(const TextureBlendOperation operation)
         {
-            State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_ONE;
-            State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
-            break;
+            State.DX.Textures.BlendOperation = operation;
+
+            if (operation == TextureBlendOperation::None
+                || operation == TextureBlendOperation::SelectArgument2)
+            {
+                return TRUE;
+            }
+
+            // D3DTEXOPCAPS_MODULATEINVCOLOR_ADDALPHA  0x00100000L
+            return (State.DX.CurrentDevice.Capabilities.DisplayCapabilities.TextureOpCaps >> 23) & 1;
         }
-        case TextureDestinationBlend::Color:
+
+        extern "C" BOOL __cdecl SetSourceBlend(const TextureSourceBlend mode)
         {
-            State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_SRCCOLOR;
-            State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
-            break;
-        }
-        case TextureDestinationBlend::InverseColor:
-        {
-            State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_INVSRCCOLOR;
-            State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
-            break;
-        }
-        case TextureDestinationBlend::Zero:
-        {
-            State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_ZERO;
-            State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
-            break;
-        }
-        case TextureDestinationBlend::NegativeOne:
-        {
-            State.DX.Mode.Blend.DestinationBlend = D3DBLEND::D3DBLEND_ONE;
-            State.DX.Mode.Blend.DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_REVSUBTRACT;
-            break;
+            switch (mode)
+            {
+            case TextureSourceBlend::Alpha:
+            {
+                State.DX.Mode.Blend.SourceBlend = D3DBLEND::D3DBLEND_SRCALPHA;
+                break;
+            }
+            case TextureSourceBlend::One:
+            {
+                State.DX.Mode.Blend.SourceBlend = D3DBLEND::D3DBLEND_ONE;
+                break;
+            }
+            case TextureSourceBlend::Zero:
+            {
+                State.DX.Mode.Blend.SourceBlend = D3DBLEND::D3DBLEND_ZERO;
+                break;
+            }
+            }
+
+            return TRUE;
         }
     }
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl SetMultiTextureBlend(const TextureBlendOperation operation)
-{
-    State.DX.Textures.BlendOperation = operation;
-
-    if (operation == TextureBlendOperation::None || operation == TextureBlendOperation::SelectArgument2) { return TRUE; }
-
-    // D3DTEXOPCAPS_MODULATEINVCOLOR_ADDALPHA  0x00100000L
-    return (State.DX.CurrentDevice.Capabilities.DisplayCapabilities.TextureOpCaps >> 23) & 1;
-}
-
-extern "C" u32 __cdecl SetSrcBlend(const TextureSourceBlend mode)
-{
-    switch (mode)
-    {
-        case TextureSourceBlend::Alpha:
-        {
-            State.DX.Mode.Blend.SourceBlend = D3DBLEND::D3DBLEND_SRCALPHA;
-            break;
-        }
-        case TextureSourceBlend::One:
-        {
-            State.DX.Mode.Blend.SourceBlend = D3DBLEND::D3DBLEND_ONE;
-            break;
-        }
-        case TextureSourceBlend::Zero:
-        {
-            State.DX.Mode.Blend.SourceBlend = D3DBLEND::D3DBLEND_ZERO;
-            break;
-        }
-    }
-
-    return TRUE;
 }

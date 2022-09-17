@@ -22,12 +22,18 @@ SOFTWARE.
 
 #include "Module.h"
 
-extern "C" u32 __cdecl LockFrame(void)
+namespace Renderer
 {
-    return FALSE;
-}
+    namespace External
+    {
+        extern "C" BOOL __cdecl LockFrame(void)
+        {
+            return FALSE;
+        }
 
-extern "C" u32 __cdecl UnlockFrame(void)
-{
-    return FALSE;
+        extern "C" BOOL __cdecl UnlockFrame(void)
+        {
+            return FALSE;
+        }
+    }
 }

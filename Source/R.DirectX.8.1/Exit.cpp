@@ -28,20 +28,26 @@ SOFTWARE.
 #include <stdarg.h>
 #include <stdio.h>
 
-void Exit(const char* format, ...)
+namespace Renderer
 {
-    if (format == NULL) { return; }
+    namespace External
+    {
+        void Exit(const char* format, ...)
+        {
+            if (format == NULL) { return; }
 
-    char buffer[256];
+            char buffer[256];
 
-    va_list args;
-    va_start(args, format);
-    vsprintf_s(buffer, ARRAYSIZE(buffer), format, args);
-    va_end(args);
+            va_list args;
+            va_start(args, format);
+            vsprintf_s(buffer, ARRAYSIZE(buffer), format, args);
+            va_end(args);
 
-    MessageBoxA(State.Window.HWND, buffer, "DirectX", MB_ICONERROR | MB_OK);
+            MessageBoxA(State.Window.HWND, buffer, "DirectX", MB_ICONERROR | MB_OK);
 
-    Kill();
+            Renderer::External::Kill();
 
-    ExitProcess(1);
+            ExitProcess(1);
+        }
+    }
 }

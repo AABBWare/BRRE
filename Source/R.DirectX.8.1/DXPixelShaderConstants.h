@@ -24,22 +24,37 @@ SOFTWARE.
 
 #include "Win.h"
 
-extern const char DX_PIXEL_SHADER_NAME_BUMP[];
-extern const char DX_PIXEL_SHADER_NAME_BUMPSPEC[];
-extern const char DX_PIXEL_SHADER_NAME_DECAL[];
-extern const char DX_PIXEL_SHADER_NAME_DECALKIL[];
-extern const char DX_PIXEL_SHADER_NAME_PBMPCUBE[];
-extern const char DX_PIXEL_SHADER_NAME_PBMPSPLM[];
-extern const char DX_PIXEL_SHADER_NAME_PGLOSS[];
-extern const char DX_PIXEL_SHADER_NAME_PLMAP[];
-extern const char DX_PIXEL_SHADER_NAME_PLMBS[];
+namespace Renderer
+{
+    namespace External
+    {
+        namespace DX
+        {
+            namespace Shader
+            {
+                namespace Pixel
+                {
+                    extern const char NAME_BUMP[];
+                    extern const char NAME_BUMPSPEC[];
+                    extern const char NAME_DECAL[];
+                    extern const char NAME_DECALKIL[];
+                    extern const char NAME_PBMPCUBE[];
+                    extern const char NAME_PBMPSPLM[];
+                    extern const char NAME_PGLOSS[];
+                    extern const char NAME_PLMAP[];
+                    extern const char NAME_PLMBS[];
 
-extern const DWORD DX_PIXEL_SHADER_FUNC_BUMP[];
-extern const DWORD DX_PIXEL_SHADER_FUNC_BUMPSPEC[];
-extern const DWORD DX_PIXEL_SHADER_FUNC_DECAL[];
-extern const DWORD DX_PIXEL_SHADER_FUNC_DECALKIL[];
-extern const DWORD DX_PIXEL_SHADER_FUNC_PBMPCUBE[];
-extern const DWORD DX_PIXEL_SHADER_FUNC_PBMPSPLM[];
-extern const DWORD DX_PIXEL_SHADER_FUNC_PGLOSS[];
-extern const DWORD DX_PIXEL_SHADER_FUNC_PLMAP[];
-extern const DWORD DX_PIXEL_SHADER_FUNC_PLMBS[];
+                    extern const DWORD FUNC_BUMP[];
+                    extern const DWORD FUNC_BUMPSPEC[];
+                    extern const DWORD FUNC_DECAL[];
+                    extern const DWORD FUNC_DECALKIL[];
+                    extern const DWORD FUNC_PBMPCUBE[];
+                    extern const DWORD FUNC_PBMPSPLM[];
+                    extern const DWORD FUNC_PGLOSS[];
+                    extern const DWORD FUNC_PLMAP[];
+                    extern const DWORD FUNC_PLMBS[];
+                }
+            }
+        }
+    }
+}

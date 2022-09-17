@@ -26,7 +26,7 @@ SOFTWARE.
 #include "GLTexture.h"
 #include "Graphics/Color.h"
 #include "Graphics/Graphics.h"
-#include "Graphics/Matrix.h"
+#include "Mathematics/Matrix.h"
 #include "Graphics/Texture.h"
 #include "Graphics/Vector.h"
 
@@ -38,100 +38,109 @@ SOFTWARE.
 #define MAX_TEXTURE_COUNT 5000
 #define MAX_VERTEX_COUNT 5000
 
-struct GLLight
+namespace Renderer
 {
-    struct Vector4 Position;
-    struct RGBA Color;
-};
-
-struct GLState
-{
-    struct
+    namespace External
     {
-        CullMode Cull;
-
-        struct
+        namespace GL
         {
-            f32 Near;
-            f32 Far;
-        } Clipping;
+            struct GLLight
+            {
+                struct Renderer::Graphics::Vector4 Position;
+                struct Renderer::Graphics::RGBA Color;
+            };
 
-        s32 SourceBlend = GL_SRC_ALPHA;
-        s32 DestinationBlend = GL_ONE_MINUS_SRC_ALPHA;
-    } Mode;
+            struct GLState
+            {
+                struct
+                {
+                    Renderer::Graphics::CullMode Cull;
 
-    struct
-    {
-        TextureBlendOperation MultiBlendOperation;
+                    struct
+                    {
+                        f32 Near;
+                        f32 Far;
+                    } Clipping;
 
-        struct
-        {
-            u32 Textures[MAX_BIND_TEXTURE_COUUNT];
-        } Bind;
+                    s32 SourceBlend = GL_SRC_ALPHA;
+                    s32 DestinationBlend = GL_ONE_MINUS_SRC_ALPHA;
+                } Mode;
 
-        struct
-        {
-            TextureClamp S = TextureClamp::Wrap;
-            TextureClamp T = TextureClamp::Wrap;
-        } Clamp;
+                struct
+                {
+                    Renderer::Graphics::TextureBlendOperation MultiBlendOperation;
 
-        struct
-        {
-            u32 Textures[MAX_SELECTED_TEXTURE_COUNT];
-        } Selected;
+                    struct
+                    {
+                        u32 Textures[MAX_BIND_TEXTURE_COUUNT];
+                    } Bind;
 
-        struct
-        {
-            BOOL IsEnabled = FALSE;
-            u32 Index;
-            f32 Direction;
+                    struct
+                    {
+                        Renderer::Graphics::TextureClamp S = Renderer::Graphics::TextureClamp::Wrap;
+                        Renderer::Graphics::TextureClamp T = Renderer::Graphics::TextureClamp::Wrap;
+                    } Clamp;
 
-            struct GLTexture Textures[MAX_RENDER_TEXTURE_COUNT];
-        } Render;
+                    struct
+                    {
+                        u32 Textures[MAX_SELECTED_TEXTURE_COUNT];
+                    } Selected;
 
-        struct
-        {
-            /// <summary>
-            /// Texture 32-bit ARGB pixel colors palette.
-            /// Used during the texture uploading, and is being overwritten each time new texture is uploaded.
-            /// </summary>
-            u32 Colors[MAX_PALETTE_BUFFER_SIZE];
+                    struct
+                    {
+                        BOOL IsEnabled = FALSE;
+                        u32 Index;
+                        f32 Direction;
 
-            /// <summary>
-            /// Texture 32-bit ARGB pixel colors for all mip levels.
-            /// Used during the texture uploading, and is being overwritten each time new texture is uploaded.
-            /// </summary>
-            u32 Pixels[MAX_PIXEL_BUFFER_SIZE];
-        } Buffers;
+                        struct GLTexture Textures[MAX_RENDER_TEXTURE_COUNT];
+                    } Render;
 
-        u32 TextureCount;
-        u32 Textures[MAX_TEXTURE_COUNT];
-    } Textures;
+                    struct
+                    {
+                        /// <summary>
+                        /// Texture 32-bit ARGB pixel colors palette.
+                        /// Used during the texture uploading, and is being overwritten each time new texture is uploaded.
+                        /// </summary>
+                        u32 Colors[MAX_PALETTE_BUFFER_SIZE];
 
-    struct
-    {
-        BOOL IsEnabled = FALSE;
+                        /// <summary>
+                        /// Texture 32-bit ARGB pixel colors for all mip levels.
+                        /// Used during the texture uploading, and is being overwritten each time new texture is uploaded.
+                        /// </summary>
+                        u32 Pixels[MAX_PIXEL_BUFFER_SIZE];
+                    } Buffers;
 
-        struct
-        {
-            f32 Alpha = 1.0f;
+                    u32 TextureCount;
+                    u32 Textures[MAX_TEXTURE_COUNT];
+                } Textures;
 
-            f32 R[8];
-            f32 G[8];
-            f32 B[8];
-        } Colors;
+                struct
+                {
+                    BOOL IsEnabled = FALSE;
 
-        struct GLLight Lights[MAX_LIGHT_COUNT];
-    } Light;
+                    struct
+                    {
+                        f32 Alpha = 1.0f;
 
-    struct
-    {
-        struct Matrix4x4 ModelView;
-        struct Matrix4x4 Projection;
-    } Transform;
+                        f32 R[8];
+                        f32 G[8];
+                        f32 B[8];
+                    } Colors;
 
-    struct
-    {
-        struct BGRA Colors[MAX_VERTEX_COUNT];
-    } Vertexes;
-};
+                    struct GLLight Lights[MAX_LIGHT_COUNT];
+                } Light;
+
+                struct
+                {
+                    struct Mathematics::Matrix4x4 ModelView;
+                    struct Mathematics::Matrix4x4 Projection;
+                } Transform;
+
+                struct
+                {
+                    struct Renderer::Graphics::BGRA Colors[MAX_VERTEX_COUNT];
+                } Vertexes;
+            };
+        }
+    }
+}

@@ -20,12 +20,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "State.h"
+#include "Mathematics/Mathematics.h"
 
-namespace Renderer
+namespace Mathematics
 {
-    namespace External
+    s32 Clamp(const s32 value, const s32 min, const s32 max)
     {
-        struct State State;
+        if (max < value) { return max; }
+
+        if (value < min) { return min; }
+
+        return value;
+    }
+
+    f32 Clamp(const f32 value, const f32 min, const f32 max)
+    {
+        if (max < value) { return max; }
+
+        if (value < min) { return min; }
+
+        return value;
     }
 }

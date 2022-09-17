@@ -29,7 +29,7 @@ SOFTWARE.
 #include "DXTexture.h"
 #include "DXVertexShaderConstants.h"
 #include "Graphics/Graphics.h"
-#include "Graphics/Matrix.h"
+#include "Mathematics/Matrix.h"
 #include "Graphics/Texture.h"
 #include "Graphics/Vector.h"
 #include "Graphics/Vertex.h"
@@ -46,524 +46,533 @@ SOFTWARE.
 #define MAX_VERTEX_SHADER_COUNT 33
 #define MAX_WINDOW_COUNT 6
 
-struct DXDevice
+namespace Renderer
 {
-    s32 Index;
-
-    u32 DeviceID;
-    u32 SubSystemID;
-
-    char Driver[MAX_DEVICE_IDENTIFIER_STRING];
-    char Description[MAX_DEVICE_IDENTIFIER_STRING];
-};
-
-struct DXDeviceCapabilities
-{
-    D3DCAPS8 DisplayCapabilities;
-    D3DPRESENT_PARAMETERS DevicePresentParameters;
-    D3DPRESENT_PARAMETERS SwapChainPresentParameters;
-};
-
-struct DXCurrentDevice
-{
-    s32 Index;
-    struct DXDeviceCapabilities Capabilities;
-};
-
-struct DXState
-{
-    IDirect3D8* DirectX;
-    IDirect3DDevice8* DirectXDevice;
-
-    struct DXCurrentDevice CurrentDevice;
-    struct
+    namespace External
     {
-        s32 Count;
-        struct DXDevice Details[MAX_DEVICE_COUNT];
-    } AvailableDevices;
-    
-    struct
-    {
-        struct DXWindow* Current;
-        struct DXWindow* Windows[MAX_WINDOW_COUNT];
-    } Windows;
-
-    struct
-    {
-        // todo: name, type (enum) + flags
-        u32 Mode;
-
-        D3DCULL Cull = D3DCULL::D3DCULL_CCW;
-
-        struct
+        namespace DX
         {
-            f32 Near = 1.0f;
-            f32 Far = 6400.0f;
-        } Clipping;
+            struct DXDevice
+            {
+                s32 Index;
 
-        struct
-        {
-            D3DBLEND SourceBlend = D3DBLEND::D3DBLEND_SRCALPHA;
-            D3DBLEND DestinationBlend = D3DBLEND::D3DBLEND_INVSRCALPHA;
-            D3DBLENDOP DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
-        } Blend;
-    } Mode;
+                u32 DeviceID;
+                u32 SubSystemID;
 
-    BOOL IsStencilSet;
-    BOOL IsFrameLocked;
-    BOOL IsSceneActive;
-    BOOL IsViewportSet = TRUE;
+                char Driver[MAX_DEVICE_IDENTIFIER_STRING];
+                char Description[MAX_DEVICE_IDENTIFIER_STRING];
+            };
 
-    struct
-    {
-        BOOL IsEnabled = TRUE;
-        BOOL IsChanged = TRUE;
+            struct DXDeviceCapabilities
+            {
+                D3DCAPS8 DisplayCapabilities;
+                D3DPRESENT_PARAMETERS DevicePresentParameters;
+                D3DPRESENT_PARAMETERS SwapChainPresentParameters;
+            };
 
-        f32 Alpha;
+            struct DXCurrentDevice
+            {
+                u32 Index;
+                struct DXDeviceCapabilities Capabilities;
+            };
 
-        struct
-        {
-            f32 R[MAX_LIGHT_COUNT] = { 1.0f, 0.0f, 0.0f };
-            f32 G[MAX_LIGHT_COUNT] = { 1.0f, 0.0f, 0.0f };
-            f32 B[MAX_LIGHT_COUNT] = { 1.0f, 0.0f, 0.0f };
-        } Colors;
+            struct DXState
+            {
+                IDirect3D8* DirectX;
+                IDirect3DDevice8* DirectXDevice;
 
-        D3DLIGHT8 Lights[MAX_LIGHT_COUNT];
-        struct Vector3 XYZ[MAX_LIGHT_COUNT];
-    } Light;
+                struct DXCurrentDevice CurrentDevice;
+                struct
+                {
+                    s32 Count;
+                    struct DXDevice Details[MAX_DEVICE_COUNT];
+                } AvailableDevices;
 
-    // todo: Fog structure
-    f32 FogR;
-    f32 FogG;
-    f32 FogB;
-    f32 FogStart;
-    f32 FogEnd;
+                struct
+                {
+                    struct DX::Window::DXWindow* Current;
+                    struct DX::Window::DXWindow* Windows[MAX_WINDOW_COUNT];
+                } Windows;
 
-    struct
-    {
-        D3DFORMAT AlphaSourceSurfaceFormat;
-        TextureFormat DrawSurfaceFormat;
+                struct
+                {
+                    // todo: name, type (enum) + flags
+                    u32 Mode;
 
-        IDirect3DSurface8* DrawSurface;
-        IDirect3DSurface8* DepthSurface;
+                    D3DCULL Cull = D3DCULL::D3DCULL_CCW;
 
-        IDirect3DSurface8* AlphaSourceSurface;
-        IDirect3DSurface8* Source565Surface;
+                    struct
+                    {
+                        f32 Near = 1.0f;
+                        f32 Far = 6400.0f;
+                    } Clipping;
 
-        IDirect3DSurface8* CubeTextureDepthSurface;
-        IDirect3DSurface8* RenderTextureDepthSurface;
-    } Surfaces;
+                    struct
+                    {
+                        D3DBLEND SourceBlend = D3DBLEND::D3DBLEND_SRCALPHA;
+                        D3DBLEND DestinationBlend = D3DBLEND::D3DBLEND_INVSRCALPHA;
+                        D3DBLENDOP DestinationBlendOperation = D3DBLENDOP::D3DBLENDOP_ADD;
+                    } Blend;
+                } Mode;
 
-    struct
-    {
-        IDirect3DIndexBuffer8* IndexBuffer;
+                BOOL IsStencilSet;
+                BOOL IsFrameLocked;
+                BOOL IsSceneActive;
+                BOOL IsViewportSet = TRUE;
 
-        // todo: names
-        IDirect3DVertexBuffer8* SVertexBuffer;
-        IDirect3DVertexBuffer8* D3DLVertexBuffer;
-        IDirect3DVertexBuffer8* D3DTLVertexBuffer;
-        IDirect3DVertexBuffer8* SVertexBasisBuffer;
-    } Buffers;
+                struct
+                {
+                    BOOL IsEnabled = TRUE;
+                    BOOL IsChanged = TRUE;
 
-    struct
-    {
-        f32 Near;
-        f32 Far;
+                    f32 Alpha;
 
-        //todo rename: ModelView
-        struct Matrix4x4 Matrix1;
+                    struct
+                    {
+                        f32 R[MAX_LIGHT_COUNT] = { 1.0f, 0.0f, 0.0f };
+                        f32 G[MAX_LIGHT_COUNT] = { 1.0f, 0.0f, 0.0f };
+                        f32 B[MAX_LIGHT_COUNT] = { 1.0f, 0.0f, 0.0f };
+                    } Colors;
 
-        /// <summary>
-        /// Proection matrix.
-        /// </summary>
-        struct Matrix4x4 Projection;
+                    D3DLIGHT8 Lights[MAX_LIGHT_COUNT];
+                    struct Renderer::Graphics::Vector3 XYZ[MAX_LIGHT_COUNT];
+                } Light;
 
-        /// <summary>
-        /// Object to World matrix.
-        /// </summary>
-        struct Matrix4x4 O2W;
+                // todo: Fog structure
+                f32 FogR;
+                f32 FogG;
+                f32 FogB;
+                f32 FogStart;
+                f32 FogEnd;
 
-        /// <summary>
-        /// World to Line Segment matrix.
-        /// </summary>
-        struct Matrix4x4 W2L;
+                struct
+                {
+                    D3DFORMAT AlphaSourceSurfaceFormat;
+                    Renderer::Graphics::TextureFormat DrawSurfaceFormat;
 
-        // todo: proper types
-        f32 UnknownFloats4[3];
+                    IDirect3DSurface8* DrawSurface;
+                    IDirect3DSurface8* DepthSurface;
 
-        /// <summary>
-        /// Identity matrix.
-        /// </summary>
-        const struct Matrix4x4 Identity
-        {
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        };
-    } Transform;
+                    IDirect3DSurface8* AlphaSourceSurface;
+                    IDirect3DSurface8* Source565Surface;
 
-    // todo: better name?
-    struct D3DTLVertex Vertexes[10000];
-    struct D3DTLVertex VertexesDL[1000];
-    u16 IndexesDL[1000];
+                    IDirect3DSurface8* CubeTextureDepthSurface;
+                    IDirect3DSurface8* RenderTextureDepthSurface;
+                } Surfaces;
 
-    // todo: better name? RenderState?
-    s32 State[256];
+                struct
+                {
+                    IDirect3DIndexBuffer8* IndexBuffer;
 
-    struct
-    {
-        struct
-        {
-            /// <summary>
-            /// Texture 32-bit ARGB pixel colors palette.
-            /// Note: used during the texture uploading, and is being overwritten each time new texture is uploaded.
-            /// </summary>
-            u32 Colors[MAX_PALETTE_BUFFER_SIZE];
+                    // todo: names
+                    IDirect3DVertexBuffer8* SVertexBuffer;
+                    IDirect3DVertexBuffer8* D3DLVertexBuffer;
+                    IDirect3DVertexBuffer8* D3DTLVertexBuffer;
+                    IDirect3DVertexBuffer8* SVertexBasisBuffer;
+                } Buffers;
 
-            /// <summary>
-            /// Texture 32-bit ARGB pixel colors for all mip levels.
-            /// Note: used during the texture uploading, and is being overwritten each time new texture is uploaded.
-            /// </summary>
-            u32 Pixels[MAX_PIXEL_BUFFER_SIZE];
-        } Buffers;
+                struct
+                {
+                    f32 Near;
+                    f32 Far;
 
-        struct DXTexture Textures[MAX_TEXTURE_COUNT];
+                    //todo rename: ModelView
+                    struct Mathematics::Matrix4x4 Matrix1;
 
-        // todo: name
-        IDirect3DBaseTexture8* UnknownArray[MAX_SELECTED_TEXTURE_COUNT];
+                    /// <summary>
+                    /// Proection matrix.
+                    /// </summary>
+                    struct Mathematics::Matrix4x4 Projection;
 
-        TextureBlendOperation ClampOperation = TextureBlendOperation::Negative;
-        TextureBlendOperation BlendOperation;
+                    /// <summary>
+                    /// Object to World matrix.
+                    /// </summary>
+                    struct Mathematics::Matrix4x4 O2W;
 
-        struct
-        {
-            TextureClamp ClampU[MAX_SELECTED_TEXTURE_COUNT];
-            TextureClamp ClampV[MAX_SELECTED_TEXTURE_COUNT];
+                    /// <summary>
+                    /// World to Line Segment matrix.
+                    /// </summary>
+                    struct Mathematics::Matrix4x4 W2L;
 
-            IDirect3DBaseTexture8* Textures[MAX_SELECTED_TEXTURE_COUNT];
+                    // todo: proper types
+                    f32 UnknownFloats4[3];
 
-            u32 Stages[MAX_SELECTED_TEXTURE_COUNT][MAX_TEXTURE_STAGE_COUNT];
-        } Selected;
+                    /// <summary>
+                    /// Identity matrix.
+                    /// </summary>
+                    const struct Mathematics::Matrix4x4 Identity
+                    {
+                        1.0f, 0.0f, 0.0f, 0.0f,
+                            0.0f, 1.0f, 0.0f, 0.0f,
+                            0.0f, 0.0f, 1.0f, 0.0f,
+                            0.0f, 0.0f, 0.0f, 1.0f
+                    };
+                } Transform;
 
-        struct
-        {
-            IDirect3DTexture8* Textures[MAX_RENDER_TEXTURE_COUNT];
-        } Render;
+                // todo: better name?
+                struct Renderer::Graphics::D3DTLVertex Vertexes[10000];
+                struct Renderer::Graphics::D3DTLVertex VertexesDL[1000];
+                u16 IndexesDL[1000];
 
-        struct
-        {
-            D3DCUBEMAP_FACES CurrentSide;
-            IDirect3DCubeTexture8* Textures[MAX_CUBE_TEXTURE_COUNT];
-        } Cube;
-    } Textures;
+                // todo: better name? RenderState?
+                s32 State[256];
 
-    struct
-    {
-        struct
-        {
-            struct Vector4 Actual[25]; // todo: proper size
-            struct Vector4 Staging[25]; // todo: proper size
-        } Constants;
+                struct
+                {
+                    struct
+                    {
+                        /// <summary>
+                        /// Texture 32-bit ARGB pixel colors palette.
+                        /// Note: used during the texture uploading, and is being overwritten each time new texture is uploaded.
+                        /// </summary>
+                        u32 Colors[MAX_PALETTE_BUFFER_SIZE];
 
-        struct DXVertexShader VertexShaders[MAX_VERTEX_SHADER_COUNT]
-        {
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_NORMAL_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_DIRLIGHT,
-                .Name = DX_VERTEX_SHADER_NAME_DIRLIGHT,
-                .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_NORMAL_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_TEXGEN,
-                .Name = DX_VERTEX_SHADER_NAME_TEXGEN,
-                .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_NORMAL_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_CUBIC,
-                .Name = DX_VERTEX_SHADER_NAME_CUBIC,
-                .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_UNKNOWN,
-                .Function = DX_VERTEX_SHADER_FUNC_PRELIT,
-                .Name = DX_VERTEX_SHADER_NAME_PRELIT,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_DIFFUSE_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_PRELIT,
-                .Name = DX_VERTEX_SHADER_NAME_PRELIT,
-                .FVF = D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_UNKNOWN,
-                .Function = DX_VERTEX_SHADER_FUNC_PRETEX,
-                .Name = DX_VERTEX_SHADER_NAME_PRETEX,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VBUMP,
-                .Name = DX_VERTEX_SHADER_NAME_VBUMP,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VBMPSPEC,
-                .Name = DX_VERTEX_SHADER_NAME_VBMPSPEC,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VBMPCUBE,
-                .Name = DX_VERTEX_SHADER_NAME_VBMPCUBE,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VBUMPGEN,
-                .Name = DX_VERTEX_SHADER_NAME_VBUMPGEN,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VBMPSPGN,
-                .Name = DX_VERTEX_SHADER_NAME_VBMPSPGN,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VBMPSPPL,
-                .Name = DX_VERTEX_SHADER_NAME_VBMPSPPL,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VBMPSPOM,
-                .Name = DX_VERTEX_SHADER_NAME_VBMPSPOM,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_NORMAL_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_VGLOSS,
-                .Name = DX_VERTEX_SHADER_NAME_VGLOSS,
-                .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VLMAP,
-                .Name = DX_VERTEX_SHADER_NAME_VLMAP,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_NORMAL_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_VLMAP2,
-                .Name = DX_VERTEX_SHADER_NAME_VLMAP2,
-                .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_SKELETON,
-                .Function = DX_VERTEX_SHADER_FUNC_VSKEL,
-                .Name = DX_VERTEX_SHADER_NAME_VSKEL,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_SKELETON,
-                .Function = DX_VERTEX_SHADER_FUNC_VSKELTEX,
-                .Name = DX_VERTEX_SHADER_NAME_VSKELTEX,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_UNKNOWN,
-                .Function = DX_VERTEX_SHADER_FUNC_VOMNI,
-                .Name = DX_VERTEX_SHADER_NAME_VOMNI,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_DIFFUSE_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_VOMNI,
-                .Name = DX_VERTEX_SHADER_NAME_VOMNI,
-                .FVF = D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_NORMAL_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_VOMNIN,
-                .Name = DX_VERTEX_SHADER_NAME_VOMNIN,
-                .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VOMNIBMP,
-                .Name = DX_VERTEX_SHADER_NAME_VOMNIBMP,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZRHW_DIFFUSE_SPECULAR_UV,
-                .Function = NULL,
-                .Name = DX_VERTEX_SHADER_NAME_TLVERTEX,
-                .FVF = D3DFVF_TEX1 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_NORMAL_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_SHDWBKFC,
-                .Name = DX_VERTEX_SHADER_NAME_SHDWBKFC,
-                .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_XYZ_NORMAL_UV,
-                .Function = DX_VERTEX_SHADER_FUNC_VSPECMAP,
-                .Name = DX_VERTEX_SHADER_NAME_VSPECMAP,
-                .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_SKELETON,
-                .Function = DX_VERTEX_SHADER_FUNC_VSKELSPC,
-                .Name = DX_VERTEX_SHADER_NAME_VSKELSPC,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_SKELETON,
-                .Function = DX_VERTEX_SHADER_FUNC_VSKELSPC2,
-                .Name = DX_VERTEX_SHADER_NAME_VSKELSPC2,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_SKELETON,
-                .Function = DX_VERTEX_SHADER_FUNC_VSKELSPC3,
-                .Name = DX_VERTEX_SHADER_NAME_VSKELSPC3,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_SKELETON,
-                .Function = DX_VERTEX_SHADER_FUNC_VSKELBMP,
-                .Name = DX_VERTEX_SHADER_NAME_VSKELBMP,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VOMNI,
-                .Name = DX_VERTEX_SHADER_NAME_VOMNI,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_DIRLIGHT,
-                .Name = DX_VERTEX_SHADER_NAME_DIRLIGHT,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_SHDWBKFC,
-                .Name = DX_VERTEX_SHADER_NAME_SHDWBKFC,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            },
-            {
-                .Declaration = DX_VERTEX_SHADER_DECLARATION_BASIS,
-                .Function = DX_VERTEX_SHADER_FUNC_VLMBS,
-                .Name = DX_VERTEX_SHADER_NAME_VLMBS,
-                .FVF = D3DFVF_TEX0,
-                .Handle = 0
-            }
-        };
+                        /// <summary>
+                        /// Texture 32-bit ARGB pixel colors for all mip levels.
+                        /// Note: used during the texture uploading, and is being overwritten each time new texture is uploaded.
+                        /// </summary>
+                        u32 Pixels[MAX_PIXEL_BUFFER_SIZE];
+                    } Buffers;
 
-        struct DXPixelShader PixelShaders[MAX_PIXEL_SHADER_COUNT]
-        {
-            {
-                .Function = DX_PIXEL_SHADER_FUNC_DECAL,
-                .Name = DX_PIXEL_SHADER_NAME_DECAL,
-                .Handle = 0
-            },
-            {
-                .Function = DX_PIXEL_SHADER_FUNC_DECALKIL,
-                .Name = DX_PIXEL_SHADER_NAME_DECALKIL,
-                .Handle = 0
-            },
-            {
-                .Function = DX_PIXEL_SHADER_FUNC_BUMP,
-                .Name = DX_PIXEL_SHADER_NAME_BUMP,
-                .Handle = 0
-            },
-            {
-                .Function = DX_PIXEL_SHADER_FUNC_BUMPSPEC,
-                .Name = DX_PIXEL_SHADER_NAME_BUMPSPEC,
-                .Handle = 0
-            },
-            {
-                .Function = DX_PIXEL_SHADER_FUNC_PBMPSPLM,
-                .Name = DX_PIXEL_SHADER_NAME_PBMPSPLM,
-                .Handle = 0
-            },
-            {
-                .Function = DX_PIXEL_SHADER_FUNC_PBMPCUBE,
-                .Name = DX_PIXEL_SHADER_NAME_PBMPCUBE,
-                .Handle = 0
-            },
-            {
-                .Function = DX_PIXEL_SHADER_FUNC_PGLOSS,
-                .Name = DX_PIXEL_SHADER_NAME_PGLOSS,
-                .Handle = 0
-            },
-            {
-                .Function = DX_PIXEL_SHADER_FUNC_PLMAP,
-                .Name = DX_PIXEL_SHADER_NAME_PLMAP,
-                .Handle = 0
-            },
-            {
-                .Function = DX_PIXEL_SHADER_FUNC_PLMBS,
-                .Name = DX_PIXEL_SHADER_NAME_PLMBS,
-                .Handle = 0
-            }
-        };
-    } Shaders;
+                    struct DXTexture Textures[MAX_TEXTURE_COUNT];
 
-    //todo: rename: DepthBufferType
-    D3DZBUFFERTYPE ZBufferType = D3DZBUFFERTYPE::D3DZB_TRUE;
+                    // todo: name
+                    IDirect3DBaseTexture8* UnknownArray[MAX_SELECTED_TEXTURE_COUNT];
 
-    // todo: proper structure to hold counters? "Counters"?
-    // todo : rename
-    s32 VertexCount;
-    s32 BasisVertexCount;
-    s32 BVertexCount;
-    // todo: rename
-    s32 BasisVertexCount2;
-    s32 D3DLVertexCount;
+                    Renderer::Graphics::TextureBlendOperation ClampOperation = Renderer::Graphics::TextureBlendOperation::Negative;
+                    Renderer::Graphics::TextureBlendOperation BlendOperation;
 
-    // todo: rename
-    // todo: proper structure to hold counters?
-    s32 TriangleCount;
-};
+                    struct
+                    {
+                        Renderer::Graphics::TextureClamp ClampU[MAX_SELECTED_TEXTURE_COUNT];
+                        Renderer::Graphics::TextureClamp ClampV[MAX_SELECTED_TEXTURE_COUNT];
+
+                        IDirect3DBaseTexture8* Textures[MAX_SELECTED_TEXTURE_COUNT];
+
+                        u32 Stages[MAX_SELECTED_TEXTURE_COUNT][MAX_TEXTURE_STAGE_COUNT];
+                    } Selected;
+
+                    struct
+                    {
+                        IDirect3DTexture8* Textures[MAX_RENDER_TEXTURE_COUNT];
+                    } Render;
+
+                    struct
+                    {
+                        D3DCUBEMAP_FACES CurrentSide;
+                        IDirect3DCubeTexture8* Textures[MAX_CUBE_TEXTURE_COUNT];
+                    } Cube;
+                } Textures;
+
+                struct
+                {
+                    struct
+                    {
+                        struct Renderer::Graphics::Vector4 Actual[25]; // todo: proper size
+                        struct Renderer::Graphics::Vector4 Staging[25]; // todo: proper size
+                    } Constants;
+
+                    struct DX::Shader::DXVertexShader VertexShaders[MAX_VERTEX_SHADER_COUNT]
+                    {
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_NORMAL_UV,
+                            .Function = DX::Shader::Vertex::FUNC_DIRLIGHT,
+                            .Name = DX::Shader::Vertex::NAME_DIRLIGHT,
+                            .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_NORMAL_UV,
+                            .Function = DX::Shader::Vertex::FUNC_TEXGEN,
+                            .Name = DX::Shader::Vertex::NAME_TEXGEN,
+                            .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_NORMAL_UV,
+                            .Function = DX::Shader::Vertex::FUNC_CUBIC,
+                            .Name = DX::Shader::Vertex::NAME_CUBIC,
+                            .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_UNKNOWN,
+                            .Function = DX::Shader::Vertex::FUNC_PRELIT,
+                            .Name = DX::Shader::Vertex::NAME_PRELIT,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_DIFFUSE_UV,
+                            .Function = DX::Shader::Vertex::FUNC_PRELIT,
+                            .Name = DX::Shader::Vertex::NAME_PRELIT,
+                            .FVF = D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_UNKNOWN,
+                            .Function = DX::Shader::Vertex::FUNC_PRETEX,
+                            .Name = DX::Shader::Vertex::NAME_PRETEX,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VBUMP,
+                            .Name = DX::Shader::Vertex::NAME_VBUMP,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VBMPSPEC,
+                            .Name = DX::Shader::Vertex::NAME_VBMPSPEC,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VBMPCUBE,
+                            .Name = DX::Shader::Vertex::NAME_VBMPCUBE,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VBUMPGEN,
+                            .Name = DX::Shader::Vertex::NAME_VBUMPGEN,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VBMPSPGN,
+                            .Name = DX::Shader::Vertex::NAME_VBMPSPGN,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VBMPSPPL,
+                            .Name = DX::Shader::Vertex::NAME_VBMPSPPL,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VBMPSPOM,
+                            .Name = DX::Shader::Vertex::NAME_VBMPSPOM,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_NORMAL_UV,
+                            .Function = DX::Shader::Vertex::FUNC_VGLOSS,
+                            .Name = DX::Shader::Vertex::NAME_VGLOSS,
+                            .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VLMAP,
+                            .Name = DX::Shader::Vertex::NAME_VLMAP,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_NORMAL_UV,
+                            .Function = DX::Shader::Vertex::FUNC_VLMAP2,
+                            .Name = DX::Shader::Vertex::NAME_VLMAP2,
+                            .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_SKELETON,
+                            .Function = DX::Shader::Vertex::FUNC_VSKEL,
+                            .Name = DX::Shader::Vertex::NAME_VSKEL,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_SKELETON,
+                            .Function = DX::Shader::Vertex::FUNC_VSKELTEX,
+                            .Name = DX::Shader::Vertex::NAME_VSKELTEX,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_UNKNOWN,
+                            .Function = DX::Shader::Vertex::FUNC_VOMNI,
+                            .Name = DX::Shader::Vertex::NAME_VOMNI,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_DIFFUSE_UV,
+                            .Function = DX::Shader::Vertex::FUNC_VOMNI,
+                            .Name = DX::Shader::Vertex::NAME_VOMNI,
+                            .FVF = D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_NORMAL_UV,
+                            .Function = DX::Shader::Vertex::FUNC_VOMNIN,
+                            .Name = DX::Shader::Vertex::NAME_VOMNIN,
+                            .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VOMNIBMP,
+                            .Name = DX::Shader::Vertex::NAME_VOMNIBMP,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZRHW_DIFFUSE_SPECULAR_UV,
+                            .Function = NULL,
+                            .Name = DX::Shader::Vertex::NAME_TLVERTEX,
+                            .FVF = D3DFVF_TEX1 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_NORMAL_UV,
+                            .Function = DX::Shader::Vertex::FUNC_SHDWBKFC,
+                            .Name = DX::Shader::Vertex::NAME_SHDWBKFC,
+                            .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_XYZ_NORMAL_UV,
+                            .Function = DX::Shader::Vertex::FUNC_VSPECMAP,
+                            .Name = DX::Shader::Vertex::NAME_VSPECMAP,
+                            .FVF = D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_SKELETON,
+                            .Function = DX::Shader::Vertex::FUNC_VSKELSPC,
+                            .Name = DX::Shader::Vertex::NAME_VSKELSPC,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_SKELETON,
+                            .Function = DX::Shader::Vertex::FUNC_VSKELSPC2,
+                            .Name = DX::Shader::Vertex::NAME_VSKELSPC2,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_SKELETON,
+                            .Function = DX::Shader::Vertex::FUNC_VSKELSPC3,
+                            .Name = DX::Shader::Vertex::NAME_VSKELSPC3,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_SKELETON,
+                            .Function = DX::Shader::Vertex::FUNC_VSKELBMP,
+                            .Name = DX::Shader::Vertex::NAME_VSKELBMP,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VOMNI,
+                            .Name = DX::Shader::Vertex::NAME_VOMNI,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_DIRLIGHT,
+                            .Name = DX::Shader::Vertex::NAME_DIRLIGHT,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_SHDWBKFC,
+                            .Name = DX::Shader::Vertex::NAME_SHDWBKFC,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        },
+                        {
+                            .Declaration = DX::Shader::Vertex::DECLARATION_BASIS,
+                            .Function = DX::Shader::Vertex::FUNC_VLMBS,
+                            .Name = DX::Shader::Vertex::NAME_VLMBS,
+                            .FVF = D3DFVF_TEX0,
+                            .Handle = 0
+                        }
+                    };
+
+                    struct DX::Shader::DXPixelShader PixelShaders[MAX_PIXEL_SHADER_COUNT]
+                    {
+                        {
+                            .Function = DX::Shader::Pixel::FUNC_DECAL,
+                            .Name = DX::Shader::Pixel::NAME_DECAL,
+                            .Handle = 0
+                        },
+                        {
+                            .Function = DX::Shader::Pixel::FUNC_DECALKIL,
+                            .Name = DX::Shader::Pixel::NAME_DECALKIL,
+                            .Handle = 0
+                        },
+                        {
+                            .Function = DX::Shader::Pixel::FUNC_BUMP,
+                            .Name = DX::Shader::Pixel::NAME_BUMP,
+                            .Handle = 0
+                        },
+                        {
+                            .Function = DX::Shader::Pixel::FUNC_BUMPSPEC,
+                            .Name = DX::Shader::Pixel::NAME_BUMPSPEC,
+                            .Handle = 0
+                        },
+                        {
+                            .Function = DX::Shader::Pixel::FUNC_PBMPSPLM,
+                            .Name = DX::Shader::Pixel::NAME_PBMPSPLM,
+                            .Handle = 0
+                        },
+                        {
+                            .Function = DX::Shader::Pixel::FUNC_PBMPCUBE,
+                            .Name = DX::Shader::Pixel::NAME_PBMPCUBE,
+                            .Handle = 0
+                        },
+                        {
+                            .Function = DX::Shader::Pixel::FUNC_PGLOSS,
+                            .Name = DX::Shader::Pixel::NAME_PGLOSS,
+                            .Handle = 0
+                        },
+                        {
+                            .Function = DX::Shader::Pixel::FUNC_PLMAP,
+                            .Name = DX::Shader::Pixel::NAME_PLMAP,
+                            .Handle = 0
+                        },
+                        {
+                            .Function = DX::Shader::Pixel::FUNC_PLMBS,
+                            .Name = DX::Shader::Pixel::NAME_PLMBS,
+                            .Handle = 0
+                        }
+                    };
+                } Shaders;
+
+                //todo: rename: DepthBufferType
+                D3DZBUFFERTYPE ZBufferType = D3DZBUFFERTYPE::D3DZB_TRUE;
+
+                // todo: proper structure to hold counters? "Counters"?
+                // todo : rename
+                s32 VertexCount;
+                s32 BasisVertexCount;
+                s32 BVertexCount;
+                // todo: rename
+                s32 BasisVertexCount2;
+                s32 D3DLVertexCount;
+
+                // todo: rename
+                // todo: proper structure to hold counters?
+                s32 TriangleCount;
+            };
+        }
+    }
+}

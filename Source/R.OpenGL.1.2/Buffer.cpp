@@ -24,21 +24,27 @@ SOFTWARE.
 #include "Graphics/Graphics.h"
 #include "Module.h"
 
-extern "C" u32 __cdecl ClearZBuffer(void)
+namespace Renderer
 {
-    GLSetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED);
+    namespace External
+    {
+        extern "C" BOOL __cdecl ClearZBuffer(void)
+        {
+            GL::SetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED);
 
-    glClear(GL_DEPTH_BUFFER_BIT);
+            glClear(GL_DEPTH_BUFFER_BIT);
 
-    return TRUE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl AllocateVertexBuffer(const void*, const u32, const u32, void**)
-{
-    return FALSE;
-}
+        extern "C" BOOL __cdecl AllocateVertexBuffer(const void*, const u32, const u32, void**)
+        {
+            return FALSE;
+        }
 
-extern "C" u32 __cdecl FreeVertexBuffer(const void*)
-{
-    return FALSE;
+        extern "C" BOOL __cdecl FreeVertexBuffer(const void*)
+        {
+            return FALSE;
+        }
+    }
 }

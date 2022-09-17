@@ -22,5 +22,4 @@ SOFTWARE.
 
 #pragma once
 
-#include "Modules/Renderer/Common.h"
 #include "Modules/Renderer/Export.h"

@@ -24,17 +24,23 @@ SOFTWARE.
 
 #include "Basic.h"
 #include "Graphics.h"
-#include "Matrix.h"
+#include "Mathematics/Matrix.h"
 #include "Vector.h"
 #include "Vertex.h"
 
-struct Transform
+namespace Renderer
 {
-    struct Matrix4x4 UnknownMatrix;//todo
-    struct Vector4 V1;//todo
-    struct
+    namespace Graphics
     {
-        struct Vector4 XYZ[MAX_LIGHT_COUNT];
-    } Light;
-    struct Matrix4x4 ModelView;
-};
+        struct Transform
+        {
+            struct Mathematics::Matrix4x4 UnknownMatrix;//todo
+            struct Vector4 V1;//todo
+            struct
+            {
+                struct Vector4 XYZ[MAX_LIGHT_COUNT];
+            } Light;
+            struct Mathematics::Matrix4x4 ModelView;
+        };
+    }
+}

@@ -23,201 +23,209 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-extern "C" u32 __cdecl SetViewport(const f32 x, const f32 y, const f32 width, const f32 height, const f32 zNear, const f32 zFar)
+using namespace Renderer::Graphics;
+
+namespace Renderer
 {
-    D3DVIEWPORT8 vp =
+    namespace External
     {
-        .X = (u32)x,
-        .Y = (u32)y,
-        .Width = (u32)(width - x),
-        .Height = (u32)(height - y),
-        .MinZ = 0.0f,
-        .MaxZ = 1.0f
-    };
+        extern "C" BOOL __cdecl SetViewPort(const f32 x, const f32 y, const f32 width, const f32 height, const f32 zNear, const f32 zFar)
+        {
+            D3DVIEWPORT8 vp =
+            {
+                .X = (u32)x,
+                .Y = (u32)y,
+                .Width = (u32)(width - x),
+                .Height = (u32)(height - y),
+                .MinZ = 0.0f,
+                .MaxZ = 1.0f
+            };
 
-    State.DX.DirectXDevice->SetViewport(&vp);
+            State.DX.DirectXDevice->SetViewport(&vp);
 
-    State.DX.Mode.Clipping.Near = zNear;
-    State.DX.Mode.Clipping.Far = zFar;
+            State.DX.Mode.Clipping.Near = zNear;
+            State.DX.Mode.Clipping.Far = zFar;
 
-    State.DX.IsViewportSet = TRUE;
+            State.DX.IsViewportSet = TRUE;
 
-    return TRUE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl BeginCubeMapRender(const u32 indx, const u32 side)
-{
-    if (State.Settings.CubeTextureCount <= indx) { return FALSE; }
+        extern "C" BOOL __cdecl BeginCubeMapRender(const u32 indx, const u32 side)
+        {
+            if (State.Settings.CubeTextureCount <= indx) { return FALSE; }
 
-    auto face = (D3DCUBEMAP_FACES)side;
+            auto face = (D3DCUBEMAP_FACES)side;
 
-    if (face == D3DCUBEMAP_FACES::D3DCUBEMAP_FACE_POSITIVE_X)
-    {
-        State.DX.DirectXDevice->GetRenderTarget(&State.DX.Surfaces.DrawSurface);
-        State.DX.DirectXDevice->GetDepthStencilSurface(&State.DX.Surfaces.DepthSurface);
+            if (face == D3DCUBEMAP_FACES::D3DCUBEMAP_FACE_POSITIVE_X)
+            {
+                State.DX.DirectXDevice->GetRenderTarget(&State.DX.Surfaces.DrawSurface);
+                State.DX.DirectXDevice->GetDepthStencilSurface(&State.DX.Surfaces.DepthSurface);
+            }
+
+            auto texture = State.DX.Textures.Cube.Textures[indx];
+
+            IDirect3DSurface8* surface;
+            texture->GetCubeMapSurface(face, 0, &surface);
+
+            State.DX.DirectXDevice->SetRenderTarget(surface, State.DX.Surfaces.CubeTextureDepthSurface);
+
+            surface->Release();
+
+            State.DX.Textures.Cube.CurrentSide = face;
+
+            return TRUE;
+        }
+
+        extern "C" BOOL __cdecl RenderVertexBuffer(const void* buffer, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+        {
+            DX::SetMode(mode);
+
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_CULLMODE, State.DX.Mode.Cull);
+
+            DX::SetIndexes(indexes, indexCount);
+
+            DX::DXC(State.DX.DirectXDevice->SetStreamSource(0, (IDirect3DVertexBuffer8*)buffer, sizeof(struct SVertex)),
+                "Unable to set stream source.");
+
+            DX::SetIndexSource(0, State.DX.Buffers.IndexBuffer);
+
+            DX::SetBlendShaders(mode);
+
+            State.DX.DirectXDevice->DrawIndexedPrimitive(D3DPRIMITIVETYPE::D3DPT_TRIANGLELIST, 0, vertexCount,
+                State.DX.TriangleCount * 3, indexCount);
+
+            State.DX.TriangleCount += indexCount;
+
+            return TRUE;
+        }
+
+        extern "C" BOOL __cdecl RenderVertexBufferBasis(const void* buffer, const u32 vertexCount, const u16* indexes, const u32 indexCount, const u32 mode)
+        {
+            DX::SetMode(mode);
+
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_CULLMODE, State.DX.Mode.Cull);
+
+            DX::SetIndexes(indexes, indexCount);
+
+            DX::DXC(State.DX.DirectXDevice->SetStreamSource(0, (IDirect3DVertexBuffer8*)buffer, sizeof(struct SVertexBasis)),
+                "Unable to set stream source.");
+
+            DX::SetIndexSource(0, State.DX.Buffers.IndexBuffer);
+
+            DX::SetShadersMode(mode);
+
+            State.DX.DirectXDevice->DrawIndexedPrimitive(D3DPRIMITIVETYPE::D3DPT_TRIANGLELIST, 0, vertexCount,
+                State.DX.TriangleCount * 3, indexCount);
+
+            State.DX.TriangleCount += indexCount;
+
+            return TRUE;
+        }
+
+        extern "C" BOOL __cdecl RenderVertexBufferBone(const void* buffer, const u32 vertexCount, const u16* indexes, const u32 indexCount, const struct Vector4* constants, const u32 constantCount, const u32 mode)
+        {
+            // todo: 24?
+            if (24 <= constantCount) { return FALSE; }
+
+            DX::SetMode(mode);
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_CULLMODE, State.DX.Mode.Cull);
+
+            DX::SetIndexes(indexes, indexCount);
+
+            DX::DXC(State.DX.DirectXDevice->SetStreamSource(0, (IDirect3DVertexBuffer8*)buffer, sizeof(struct BoneVertex)),
+                "Unable to set stream source.");
+
+            DX::SetIndexSource(0, State.DX.Buffers.IndexBuffer);
+
+            DX::SetSkeletonShaders(mode);
+
+            for (auto x = 0; x < constantCount; x++)
+            {
+                // todo: 25?
+                auto indx = 25 + x;// todo, is this correct? 25 + x * 3
+                auto shaderConstants = &constants[x * 3];
+
+                DX::DXC(State.DX.DirectXDevice->SetVertexShaderConstant(indx, shaderConstants, 3),
+                    "Unable to set vertex shader constants.");
+            }
+
+            State.DX.DirectXDevice->DrawIndexedPrimitive(D3DPRIMITIVETYPE::D3DPT_TRIANGLELIST, 0, vertexCount,
+                State.DX.TriangleCount * 3, indexCount);
+
+            State.DX.TriangleCount += indexCount;
+
+            return TRUE;
+        }
+
+        extern "C" BOOL __cdecl RenderVertexBufferPrelit(const void* buffer, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+        {
+            DX::SetMode(mode);
+
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_CULLMODE, State.DX.Mode.Cull);
+
+            DX::SetIndexes(indexes, indexCount);
+
+            DX::DXC(State.DX.DirectXDevice->SetStreamSource(0, (IDirect3DVertexBuffer8*)buffer, sizeof(struct SVertex)),
+                "Unable to set stream source.");
+
+            DX::SetIndexSource(0, State.DX.Buffers.IndexBuffer);
+
+            DX::SetLightShaders(mode);
+
+            State.DX.DirectXDevice->DrawIndexedPrimitive(D3DPRIMITIVETYPE::D3DPT_TRIANGLELIST, 0, vertexCount,
+                State.DX.TriangleCount * 3, indexCount);
+
+            State.DX.TriangleCount += indexCount;
+
+            return TRUE;
+        }
+
+        extern "C" BOOL __cdecl EndCubeMapRender(void)
+        {
+            if (State.DX.Textures.Cube.CurrentSide == D3DCUBEMAP_FACES::D3DCUBEMAP_FACE_NEGATIVE_Z)
+            {
+                State.DX.DirectXDevice->SetRenderTarget(State.DX.Surfaces.DrawSurface, State.DX.Surfaces.DepthSurface);
+
+                State.DX.Surfaces.DrawSurface->Release();
+                State.DX.Surfaces.DepthSurface->Release();
+            }
+
+            return TRUE;
+        }
+
+        extern "C" BOOL __cdecl BeginRenderToTexture(u32 indx)
+        {
+            if (State.Settings.RenderTextureCount <= indx) { return FALSE; }
+
+            State.DX.DirectXDevice->GetRenderTarget(&State.DX.Surfaces.DrawSurface);
+            State.DX.DirectXDevice->GetDepthStencilSurface(&State.DX.Surfaces.DepthSurface);
+
+            IDirect3DSurface8* surface;
+            State.DX.Textures.Render.Textures[indx]->GetSurfaceLevel(0, &surface);
+
+            State.DX.DirectXDevice->SetRenderTarget(surface, State.DX.Surfaces.RenderTextureDepthSurface);
+
+            surface->Release();
+
+            return TRUE;
+        }
+
+        extern "C" BOOL __cdecl EndRenderToTexture(void)
+        {
+            State.DX.DirectXDevice->SetRenderTarget(State.DX.Surfaces.DrawSurface, State.DX.Surfaces.DepthSurface);
+
+            State.DX.Surfaces.DrawSurface->Release();
+            State.DX.Surfaces.DepthSurface->Release();
+
+            return TRUE;
+        }
+
+        extern "C" BOOL __cdecl SelectRenderTexture(const u32 indx)
+        {
+            State.DX.Textures.Selected.Textures[0] = State.DX.Textures.Render.Textures[indx];
+
+            return TRUE;
+        }
     }
-
-    auto texture = State.DX.Textures.Cube.Textures[indx];
-
-    IDirect3DSurface8* surface;
-    texture->GetCubeMapSurface(face, 0, &surface);
-
-    State.DX.DirectXDevice->SetRenderTarget(surface, State.DX.Surfaces.CubeTextureDepthSurface);
-
-    surface->Release();
-
-    State.DX.Textures.Cube.CurrentSide = face;
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl RenderVertexBuffer(const void* buffer, const u32 vertexCount, const u16* indexes, const u32 indexCount, const u32 mode)
-{
-    DXSetMode(mode);
-
-    DXSetRenderState(D3DRENDERSTATETYPE::D3DRS_CULLMODE, State.DX.Mode.Cull);
-
-    DXSetIndexes(indexes, indexCount);
-
-    DXC(State.DX.DirectXDevice->SetStreamSource(0, (IDirect3DVertexBuffer8*)buffer, sizeof(struct SVertex)),
-        "Unable to set stream source.");
-
-    DXSetIndexSource(0, State.DX.Buffers.IndexBuffer);
-
-    DXSetBlendShaders(mode);
-
-    State.DX.DirectXDevice->DrawIndexedPrimitive(D3DPRIMITIVETYPE::D3DPT_TRIANGLELIST, 0, vertexCount,
-        State.DX.TriangleCount * 3, indexCount);
-
-    State.DX.TriangleCount += indexCount;
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl RenderVertexBufferBasis(const void* buffer, const u32 vertexCount, const u16* indexes, const u32 indexCount, const u32 mode)
-{
-    DXSetMode(mode);
-
-    DXSetRenderState(D3DRENDERSTATETYPE::D3DRS_CULLMODE, State.DX.Mode.Cull);
-
-    DXSetIndexes(indexes, indexCount);
-
-    DXC(State.DX.DirectXDevice->SetStreamSource(0, (IDirect3DVertexBuffer8*)buffer, sizeof(struct SVertexBasis)),
-        "Unable to set stream source.");
-
-    DXSetIndexSource(0, State.DX.Buffers.IndexBuffer);
-
-    DXSetShadersMode(mode);
-
-    State.DX.DirectXDevice->DrawIndexedPrimitive(D3DPRIMITIVETYPE::D3DPT_TRIANGLELIST, 0, vertexCount,
-        State.DX.TriangleCount * 3, indexCount);
-
-    State.DX.TriangleCount += indexCount;
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl RenderVertexBufferBone(const void* buffer, const u32 vertexCount, const u16* indexes, const u32 indexCount, const struct Vector4* constants, const u32 constantCount, const u32 mode)
-{
-    // todo: 24?
-    if (24 <= constantCount) { return FALSE; }
-
-    DXSetMode(mode);
-    DXSetRenderState(D3DRENDERSTATETYPE::D3DRS_CULLMODE, State.DX.Mode.Cull);
-
-    DXSetIndexes(indexes, indexCount);
-
-    DXC(State.DX.DirectXDevice->SetStreamSource(0, (IDirect3DVertexBuffer8*)buffer, sizeof(struct BoneVertex)),
-        "Unable to set stream source.");
-
-    DXSetIndexSource(0, State.DX.Buffers.IndexBuffer);
-
-    DXSetSkeletonShaders(mode);
-
-    for (auto x = 0; x < constantCount; x++)
-    {
-        // todo: 25?
-        auto indx = 25 + x;// todo, is this correct? 25 + x * 3
-        auto shaderConstants = &constants[x * 3];
-
-        DXC(State.DX.DirectXDevice->SetVertexShaderConstant(indx, shaderConstants, 3),
-            "Unable to set vertex shader constants.");
-    }
-
-    State.DX.DirectXDevice->DrawIndexedPrimitive(D3DPRIMITIVETYPE::D3DPT_TRIANGLELIST, 0, vertexCount,
-        State.DX.TriangleCount * 3, indexCount);
-
-    State.DX.TriangleCount += indexCount;
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl RenderVertexBufferPrelit(const void* buffer, const u32 vertexCount, const u16* indexes, const u32 indexCount, const u32 mode)
-{
-    DXSetMode(mode);
-
-    DXSetRenderState(D3DRENDERSTATETYPE::D3DRS_CULLMODE, State.DX.Mode.Cull);
-
-    DXSetIndexes(indexes, indexCount);
-
-    DXC(State.DX.DirectXDevice->SetStreamSource(0, (IDirect3DVertexBuffer8*)buffer, sizeof(struct SVertex)),
-        "Unable to set stream source.");
-
-    DXSetIndexSource(0, State.DX.Buffers.IndexBuffer);
-
-    DXSetLightShaders(mode);
-
-    State.DX.DirectXDevice->DrawIndexedPrimitive(D3DPRIMITIVETYPE::D3DPT_TRIANGLELIST, 0, vertexCount,
-        State.DX.TriangleCount * 3, indexCount);
-
-    State.DX.TriangleCount += indexCount;
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl EndCubeMapRender(void)
-{
-    if (State.DX.Textures.Cube.CurrentSide == D3DCUBEMAP_FACES::D3DCUBEMAP_FACE_NEGATIVE_Z)
-    {
-        State.DX.DirectXDevice->SetRenderTarget(State.DX.Surfaces.DrawSurface, State.DX.Surfaces.DepthSurface);
-
-        State.DX.Surfaces.DrawSurface->Release();
-        State.DX.Surfaces.DepthSurface->Release();
-    }
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl BeginRenderToTexture(u32 indx)
-{
-    if (State.Settings.RenderTextureCount <= indx) { return FALSE; }
-
-    State.DX.DirectXDevice->GetRenderTarget(&State.DX.Surfaces.DrawSurface);
-    State.DX.DirectXDevice->GetDepthStencilSurface(&State.DX.Surfaces.DepthSurface);
-
-    IDirect3DSurface8* surface;
-    State.DX.Textures.Render.Textures[indx]->GetSurfaceLevel(0, &surface);
-
-    State.DX.DirectXDevice->SetRenderTarget(surface, State.DX.Surfaces.RenderTextureDepthSurface);
-
-    surface->Release();
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl EndRenderToTexture(void)
-{
-    State.DX.DirectXDevice->SetRenderTarget(State.DX.Surfaces.DrawSurface, State.DX.Surfaces.DepthSurface);
-
-    State.DX.Surfaces.DrawSurface->Release();
-    State.DX.Surfaces.DepthSurface->Release();
-
-    return TRUE;
-}
-
-extern "C" u32 __cdecl SelectRenderTexture(const u32 indx)
-{
-    State.DX.Textures.Selected.Textures[0] = State.DX.Textures.Render.Textures[indx];
-
-    return TRUE;
 }

@@ -22,12 +22,18 @@ SOFTWARE.
 
 #include "Module.h"
 
-extern "C" u32 __cdecl BeginScene(void)
+namespace Renderer
 {
-    return TRUE;
-}
+    namespace External
+    {
+        extern "C" BOOL __cdecl BeginScene(void)
+        {
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl EndScene(void)
-{
-    return TRUE;
+        extern "C" BOOL __cdecl EndScene(void)
+        {
+            return TRUE;
+        }
+    }
 }

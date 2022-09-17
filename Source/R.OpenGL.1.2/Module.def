@@ -12,7 +12,6 @@ EXPORTS
     APIDLLcopyBackBufferToRenderTexture = CopyBackBufferToRenderTexture
     APIDLLcreateWindow = CreateGameWindow
     APIDLLdestroyWindow = DestroyGameWindow
-    APIDLLdotListD3DL = DotListD3DL
     APIDLLdotListD3DTL = DotListD3DTL
     APIDLLdrawPixels = DrawPixels
     APIDLLenableClipping = EnableClipping
@@ -27,12 +26,9 @@ EXPORTS
     APIDLLgetTextureInfo = GetTextureInfo
     APIDLLhasShaderSupport = HasShaderSupport
     APIDLLinit = Init
-    APIDLLisInWindowMode = IsGameWindowMode
     APIDLLkill = Kill
-    APIDLLlineListD3DL = LineListD3DL
     APIDLLlineListD3DTL = LineListD3DTL
     APIDLLlockFrame = LockFrame
-    APIDLLlockFrameForScreenshot = LockFrameForScreenshot
     APIDLLpolyList = PolyList
     APIDLLpolyListBasis = PolyListBasis
     APIDLLpolyListBone = PolyListBone
@@ -56,7 +52,6 @@ EXPORTS
     APIDLLsetAmbientLightColor = SetAmbientLightColor
     APIDLLsetColorTable16 = SetColorTable
     APIDLLsetDestBlend = SetDestinationBlend
-    APIDLLsetDirtyRect = SetDirtyRect
     APIDLLsetFog = SetFog
     APIDLLsetGloss = SetGloss
     APIDLLsetLightColor = SetLightColor
@@ -79,4 +74,3 @@ EXPORTS
     APIDLLunlockFrame = UnlockFrame
     APIDLLuploadTexture = UploadTexture
     APIDLLvideoRestore = VideoRestore
-    APIDLLvideoSave = VideoSave

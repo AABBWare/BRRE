@@ -1,19 +1,25 @@
 #pragma once
 
 #include "DXState.h"
+#include "DXWindowState.h"
 #include "Module.h"
 #include "Settings.h"
-#include "WindowState.h"
 
-struct State
+namespace Renderer
 {
-    struct InitializeModuleArguments InitializeArguments;
+    namespace External
+    {
+        struct State
+        {
+            struct Renderer::External::InitializeModuleArguments InitializeArguments;
 
-    struct DXState DX;
+            struct DX::DXState DX;
 
-    struct Settings Settings;
+            struct Settings::SettingsState Settings;
 
-    struct WindowState Window;
-};
+            struct DX::Window::DXWindowState Window;
+        };
 
-extern struct State State;
+        extern struct State State;
+    }
+}

@@ -26,19 +26,31 @@ SOFTWARE.
 
 #include <d3dx8.h>
 
-struct DXWindow
+namespace Renderer
 {
-    s32 Width;
-    s32 Height;
-    s32 BitsPerPixel;
+    namespace External
+    {
+        namespace DX
+        {
+            namespace Window
+            {
+                struct DXWindow
+                {
+                    u32 Width;
+                    u32 Height;
+                    u32 BitsPerPixel;
 
-    s32 Unknown4;
+                    u32* Unknown4;
 
-    HWND HWND;
-    IDirect3DSurface8* DepthSurface;
-    IDirect3DSwapChain8* SwapChain;
-};
+                    HWND HWND;
+                    IDirect3DSurface8* DepthSurface;
+                    IDirect3DSwapChain8* SwapChain;
+                };
 
-void DXWindowConstructor(struct DXWindow*);
-void DXWindowInitialize(struct DXWindow*, D3DPRESENT_PARAMETERS*);
-s32 DXWindowInitialize(const s32, const s32, const s32);
+                void Initialize(struct DXWindow*);
+                void Initialize(struct DXWindow*, D3DPRESENT_PARAMETERS*);
+                BOOL Initialize(const u32, const u32, const u32);
+            }
+        }
+    }
+}

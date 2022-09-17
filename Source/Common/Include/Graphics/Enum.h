@@ -24,97 +24,109 @@ SOFTWARE.
 
 #include "Basic.h"
 
-enum class TextureFormat : s32
+namespace Renderer
 {
-    Palette24Bit = 1,
-    OpacityMap8Bit = 2,
-    Color32Bit = 3,
-    Color16Bit565 = 4,
-    Color16Bit4444 = 5,
-    PS22Palette24Bit = 6,
-    PS2Color32Bit = 7,
-    Palette32Bit = 8,
-    PS2Palette32Bit = 9,
-    PS2Palette4Bit = 10,
-    GameCubeCompressed = 11,
-    XBoxDXT1 = 12,
-    XBoxColor8Bit256Colors = 13,
-    XBoxColor8BitPalette32Bit = 14,
-    XBoxTrueColor = 15
-};
+    namespace Graphics
+    {
+        enum class TextureFormat : s32
+        {
+            Palette24Bit = 1,
+            OpacityMap8Bit = 2,
+            Color32Bit = 3,
+            Color16Bit565 = 4,
+            Color16Bit4444 = 5,
+            PS22Palette24Bit = 6,
+            PS2Color32Bit = 7,
+            Palette32Bit = 8,
+            PS2Palette32Bit = 9,
+            PS2Palette4Bit = 10,
+            GameCubeCompressed = 11,
+            XBoxDXT1 = 12,
+            XBoxColor8Bit256Colors = 13,
+            XBoxColor8BitPalette32Bit = 14,
+            XBoxTrueColor = 15
+        };
 
-enum class TextureBlendOperation : s32
-{
-    Negative = -1,
-    None = 0,
-    Disable = 1,
-    SelectArgument1 = 2,
-    SelectArgument2 = 3,
-    Modulate = 4,
-    Modulate2X = 5,
-    Modulate4X = 6,
-    Add = 7,
-    AddSigned = 8,
-    AddSigned2X = 9,
-    Subtract = 10,
-    AddSmooth = 11,
-    BlendDiffuseAlpha = 12,
-    BlendTextureAlpha = 13,
-    BlendFactorAlpha = 14,
-    BlendTextureAlphaPreMultiplied = 15,
-    BlendCurrentAlpha = 16,
-    PreModulate = 17,
-    ModulateAlphaAddColor = 18,
-    ModulateColorAddAlpha = 19,
-    ModulateInverseAlphaAddColor = 20,
-    ModulateInverseColorAddAlpha = 21,
-    BumpEnvMap = 22,
-    BumpEnvMapLuminance = 23,
-    DotProduct3 = 24,
-    MultiplyAdd = 25,
-    Lerp = 26
-};
+        enum class TextureBlendOperation : s32
+        {
+            Negative = -1,
+            None = 0,
+            Disable = 1,
+            SelectArgument1 = 2,
+            SelectArgument2 = 3,
+            Modulate = 4,
+            Modulate2X = 5,
+            Modulate4X = 6,
+            Add = 7,
+            AddSigned = 8,
+            AddSigned2X = 9,
+            Subtract = 10,
+            AddSmooth = 11,
+            BlendDiffuseAlpha = 12,
+            BlendTextureAlpha = 13,
+            BlendFactorAlpha = 14,
+            BlendTextureAlphaPreMultiplied = 15,
+            BlendCurrentAlpha = 16,
+            PreModulate = 17,
+            ModulateAlphaAddColor = 18,
+            ModulateColorAddAlpha = 19,
+            ModulateInverseAlphaAddColor = 20,
+            ModulateInverseColorAddAlpha = 21,
+            BumpEnvMap = 22,
+            BumpEnvMapLuminance = 23,
+            DotProduct3 = 24,
+            MultiplyAdd = 25,
+            Lerp = 26
+        };
 
-enum class TextureSourceBlend : s32
-{
-    Alpha = 0,
-    One = 1,
-    Zero = 2
-};
+        enum class TextureSourceBlend : s32
+        {
+            Alpha = 0,
+            One = 1,
+            Zero = 2
+        };
 
-enum class TextureDestinationBlend : s32
-{
-    InverseAlpha = 0,
-    One = 1,
-    Color = 2,
-    InverseColor = 3,
-    Zero = 4,
-    NegativeOne = 5
-};
+        enum class TextureDestinationBlend : s32
+        {
+            InverseAlpha = 0,
+            One = 1,
+            Color = 2,
+            InverseColor = 3,
+            Zero = 4,
+            NegativeOne = 5
+        };
 
-enum class CullMode : s32
-{
-    CCW = 0,
-    CW = 1,
-    None = 2
-};
+        enum class CullMode : s32
+        {
+            CCW = 0,
+            CW = 1,
+            None = 2
+        };
 
-enum class StencilPass : s32
-{
-    LessEqualDecrement = 0,
-    LessEqualIncrement = 1,
-    GreaterEqualIncrement = 2,
-    GreaterEqualDecrement = 3
-};
+        enum class StencilPass : s32
+        {
+            LessEqualDecrement = 0,
+            LessEqualIncrement = 1,
+            GreaterEqualIncrement = 2,
+            GreaterEqualDecrement = 3
+        };
 
-enum class StencilFunction : s32
-{
-    LessEqual = 0,
-    Always = 1
-};
+        enum class StencilFunction : s32
+        {
+            LessEqual = 0,
+            Always = 1
+        };
 
-enum class TextureClamp : s32
-{
-    Wrap = 0,
-    Clamp = 1
-};
+        enum class TextureClamp : s32
+        {
+            Wrap = 0,
+            Clamp = 1
+        };
+
+        enum class ClippingMode : s32
+        {
+            Disabled = 0,
+            Enabled = 31
+        };
+    }
+}

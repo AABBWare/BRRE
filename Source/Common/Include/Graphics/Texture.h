@@ -28,63 +28,69 @@ SOFTWARE.
 #define TEXTURE_OPTION_NONE 0
 #define TEXTURE_OPTION_IGNORE_ALPHA 4
 
-struct Texture
+namespace Renderer
 {
-    TextureFormat Format;
-
-    s32 Width;
-    s32 Height;
-
-    u32 Options;
-
-    s32 MipLevelCount;
-
-    union
+    namespace Graphics
     {
-        /// <summary>
-        /// An array with texture color indexes for individual pixels.
-        /// </summary>
-        u8* Indexes;
+        struct Texture
+        {
+            TextureFormat Format;
 
-        /// <summary>
-        /// An array with ARGB colors.
-        /// </summary>
-        u32* ARGB;
-    };
+            u32 Width;
+            u32 Height;
 
-    /// <summary>
-    /// Alpha values for some texture formats.
-    /// </summary>
-    u8* Alphas;
+            u32 Options;
 
-    /// <summary>
-    /// An array with texture colors, consists of two sections:
-    ///     1. First section -- 768 bytes contain RGB colors, 24 bits per color (8-bit per R, G, and B respectively).
-    ///     2. Second section -- 256 bytes either unused, or contain alpha values for 32-bit textures.
-    /// </summary>
-    u8* Colors;
+            u32 MipLevelCount;
 
-    char* Name[64];
+            union
+            {
+                /// <summary>
+                /// An array with texture color indexes for individual pixels.
+                /// </summary>
+                u8* Indexes;
 
-    /// <summary>
-    /// Game's internal texture index.
-    /// </summary>
-    u32 CacheIndex;
+                /// <summary>
+                /// An array with ARGB colors.
+                /// </summary>
+                u32* ARGB;
+            };
 
-    /// <summary>
-    /// Renderer's internal texture index.
-    /// </summary>
-    u32 RendererIndex;
+            /// <summary>
+            /// Alpha values for some texture formats.
+            /// </summary>
+            u8* Alphas;
 
-    u32 Unk2;
+            /// <summary>
+            /// An array with texture colors, consists of two sections:
+            ///     1. First section -- 768 bytes contain RGB colors, 24 bits per color (8-bit per R, G, and B respectively).
+            ///     2. Second section -- 256 bytes either unused, or contain alpha values for 32-bit textures.
+            /// </summary>
+            u8* Colors;
 
-    /// <summary>
-    /// Game's frame index on which the texture was uploaded to the renderer.
-    /// </summary>
-    u32 FrameIndex;
+            char Name[64];
 
-    /// <summary>
-    /// Selected index used in texture selection.
-    /// </summary>
-    u32 SelectedIndex;
-};
+            /// <summary>
+            /// Game's internal texture index.
+            /// </summary>
+            u32 CacheIndex;
+
+            /// <summary>
+            /// Renderer's internal texture index.
+            /// </summary>
+            u32 RendererIndex;
+
+            u32 Unk2;
+
+            /// <summary>
+            /// Game's frame index on which the texture was uploaded to the renderer.
+            /// </summary>
+            u32 FrameIndex;
+
+            /// <summary>
+            /// Selected index used in texture selection.
+            /// </summary>
+            u32 SelectedIndex;
+        };
+    }
+}

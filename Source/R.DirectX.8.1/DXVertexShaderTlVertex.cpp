@@ -22,4 +22,19 @@ SOFTWARE.
 
 #include "DXVertexShaderConstants.h"
 
-const char DX_VERTEX_SHADER_NAME_TLVERTEX[] = "Tlvertex";
+namespace Renderer
+{
+    namespace External
+    {
+        namespace DX
+        {
+            namespace Shader
+            {
+                namespace Vertex
+                {
+                    const char NAME_TLVERTEX[] = "Tlvertex";
+                }
+            }
+        }
+    }
+}

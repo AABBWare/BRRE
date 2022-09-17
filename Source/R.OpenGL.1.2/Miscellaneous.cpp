@@ -24,89 +24,97 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-extern "C" u32 __cdecl CreateGraphicsCardList(s32* count, char** apis, char** names, u32*, u32*)
+using namespace Renderer::Graphics;
+
+namespace Renderer
 {
-    *count = (s32)1;
-    *apis = const_cast<char*>("OpenGL 1.2");
-    *names = const_cast<char*>("OpenGL Compatible Graphics Card");
+    namespace External
+    {
+        extern "C" BOOL __cdecl CreateGraphicsCardList(s32 * count, char** apis, char** names, u32*, u32*)
+        {
+            *count = (s32)1;
+            *apis = const_cast<char*>("OpenGL 1.2");
+            *names = const_cast<char*>("OpenGL Compatible Graphics Card");
 
-    return TRUE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl DrawPixels(void)
-{
-    return FALSE;
-}
+        extern "C" BOOL __cdecl DrawPixels(void)
+        {
+            return FALSE;
+        }
 
-extern "C" u32 __cdecl SelectGraphicsCard(const s32)
-{
-    return TRUE;
-}
+        extern "C" BOOL __cdecl SelectGraphicsCard(const u32)
+        {
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl SetFog(const f32 r, const f32 g, const f32 b, const f32 start, const f32 end)
-{
-    f32 color[] = { r, g, b, 0.0f };
+        extern "C" BOOL __cdecl SetFog(const f32 r, const f32 g, const f32 b, const f32 start, const f32 end)
+        {
+            f32 color[] = { r, g, b, 0.0f };
 
-    glFogi(GL_FOG_MODE, GL_LINEAR);
-    glFogfv(GL_FOG_COLOR, color);
-    glFogf(GL_FOG_START, start);
-    glFogf(GL_FOG_END, end);
+            glFogi(GL_FOG_MODE, GL_LINEAR);
+            glFogfv(GL_FOG_COLOR, color);
+            glFogf(GL_FOG_START, start);
+            glFogf(GL_FOG_END, end);
 
-    return TRUE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl EnableClipping(const u32)
-{
-    return TRUE;
-}
+        extern "C" BOOL __cdecl EnableClipping(const ClippingMode)
+        {
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl EnableCulling(const CullMode mode)
-{
-    State.GL.Mode.Cull = mode;
+        extern "C" BOOL __cdecl EnableCulling(const CullMode mode)
+        {
+            State.GL.Mode.Cull = mode;
 
-    return TRUE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl Clear(const u32, const u32 color)
-{
-    GLSetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED);
+        extern "C" BOOL __cdecl Clear(const u32, const u32 color)
+        {
+            GL::SetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED);
 
-    auto r = 0.003921569f * (color >> 16 & 0xff);
-    auto g = 0.003921569f * (color >> 8 & 0xff);
-    auto b = 0.003921569f * (color & 0xff);
+            auto r = 0.003921569f * (color >> 16 & 0xff);
+            auto g = 0.003921569f * (color >> 8 & 0xff);
+            auto b = 0.003921569f * (color & 0xff);
 
-    glClearColor(r, g, b, 1.0f);
-    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(r, g, b, 1.0f);
 
-    return TRUE;
-}
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-extern "C" u32 __cdecl Toggle(void)
-{
-    SwapBuffers(State.Window.DeviceContext);
+            return TRUE;
+        }
 
-    return TRUE;
-}
+        extern "C" BOOL __cdecl Toggle(void)
+        {
+            SwapBuffers(State.Window.DeviceContext);
 
-extern "C" u32 __cdecl SetAlpha(const u32 color)
-{
-    glAlphaFunc(GL_GREATER, color * 0.003921569f);
+            return TRUE;
+        }
 
-    return TRUE;
-}
+        extern "C" BOOL __cdecl SetAlpha(const u32 color)
+        {
+            glAlphaFunc(GL_GREATER, color * 0.003921569f);
 
-extern "C" u32 __cdecl SetGloss(const f32)
-{
-    return FALSE;
-}
+            return TRUE;
+        }
 
-extern "C" u32 __cdecl SetColorTable(const u8*, u16*)
-{
-    return FALSE;
-}
+        extern "C" BOOL __cdecl SetGloss(const f32)
+        {
+            return FALSE;
+        }
 
-extern "C" u32 __cdecl HasShaderSupport(void)
-{
-    return FALSE;
+        extern "C" BOOL __cdecl SetColorTable(const u8*, u16*)
+        {
+            return FALSE;
+        }
+
+        extern "C" BOOL __cdecl HasShaderSupport(void)
+        {
+            return FALSE;
+        }
+    }
 }

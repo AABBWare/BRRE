@@ -1,18 +1,15 @@
 LIBRARY
 EXPORTS
     APIDLLallocateTexture = AllocateTexture
-    APIDLLallocOptimizedMesh = AllocateOptimizedMesh
     APIDLLallocVertexBuffer = AllocateVertexBuffer
     APIDLLbeginCubeMapRender = BeginCubeMapRender
     APIDLLbeginRenderToTexture = BeginRenderToTexture
     APIDLLbeginScene = BeginScene
     APIDLLbuildCardList = CreateGraphicsCardList
     APIDLLclear = Clear
-    APIDLLclearZBuffer = ClearZBuffer
     APIDLLcopyBackBufferToRenderTexture = CopyBackBufferToRenderTexture
     APIDLLcreateWindow = CreateGameWindow
     APIDLLdestroyWindow = DestroyGameWindow
-    APIDLLdotListD3DL = DotListD3DL
     APIDLLdotListD3DTL = DotListD3DTL
     APIDLLdrawPixels = DrawPixels
     APIDLLenableClipping = EnableClipping
@@ -21,25 +18,20 @@ EXPORTS
     APIDLLendCubeMapRender = EndCubeMapRender
     APIDLLendRenderToTexture = EndRenderToTexture
     APIDLLendScene = EndScene
-    APIDLLfreeOptimizedMesh = FreeOptimizedMesh
     APIDLLfreeTexture = FreeTexture
     APIDLLfreeVertexBuffer = FreeVertexBuffer
     APIDLLgetTextureInfo = GetTextureInfo
     APIDLLhasShaderSupport = HasShaderSupport
     APIDLLinit = Init
-    APIDLLisInWindowMode = IsGameWindowMode
     APIDLLkill = Kill
-    APIDLLlineListD3DL = LineListD3DL
     APIDLLlineListD3DTL = LineListD3DTL
     APIDLLlockFrame = LockFrame
-    APIDLLlockFrameForScreenshot = LockFrameForScreenshot
     APIDLLpolyList = PolyList
     APIDLLpolyListBasis = PolyListBasis
     APIDLLpolyListBone = PolyListBone
     APIDLLpolyListD3DL = PolyListD3DL
     APIDLLpolyListD3DTL = PolyListD3DTL
     APIDLLpolyListTL = PolyListTL
-    APIDLLrenderOptimizedMesh = RenderOptimizedMesh
     APIDLLrenderVertexBuffer = RenderVertexBuffer
     APIDLLrenderVertexBufferBasis = RenderVertexBufferBasis
     APIDLLrenderVertexBufferBone = RenderVertexBufferBone
@@ -56,7 +48,6 @@ EXPORTS
     APIDLLsetAmbientLightColor = SetAmbientLightColor
     APIDLLsetColorTable16 = SetColorTable
     APIDLLsetDestBlend = SetDestinationBlend
-    APIDLLsetDirtyRect = SetDirtyRect
     APIDLLsetFog = SetFog
     APIDLLsetGloss = SetGloss
     APIDLLsetLightColor = SetLightColor

@@ -25,10 +25,16 @@ SOFTWARE.
 #include "GLState.h"
 #include "WindowState.h"
 
-struct State
+namespace Renderer
 {
-    struct GLState GL;
-    struct WindowState Window;
-};
+    namespace External
+    {
+        struct State
+        {
+            struct GL::GLState GL;
+            struct WindowState Window;
+        };
 
-extern struct State State;
+        extern struct State State;
+    }
+}

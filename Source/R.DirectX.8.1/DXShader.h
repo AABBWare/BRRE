@@ -25,68 +25,80 @@ SOFTWARE.
 #include "Basic.h"
 #include "Win.h"
 
-struct DXVertexShader
+namespace Renderer
 {
-    const DWORD* Declaration;
-    const DWORD* Function;
-    const char* Name;
-    const DWORD FVF;
-    DWORD Handle;
-};
+    namespace External
+    {
+        namespace DX
+        {
+            namespace Shader
+            {
+                struct DXVertexShader
+                {
+                    const DWORD* Declaration;
+                    const DWORD* Function;
+                    const char* Name;
+                    const DWORD FVF;
+                    DWORD Handle;
+                };
 
-struct DXPixelShader
-{
-    const DWORD* Function;
-    const char* Name;
-    DWORD Handle;
-};
+                struct DXPixelShader
+                {
+                    const DWORD* Function;
+                    const char* Name;
+                    DWORD Handle;
+                };
 
-enum class PixelShaderName : s32
-{
-    Decal = 0,
-    Decalkil = 1,
-    Bump = 2,
-    Bumpspec = 3,
-    Pbmpsplm = 4,
-    Pbmpcube = 5,
-    Pgloss = 6,
-    Plmap = 7,
-    Plmbs = 8
-};
+                enum class DXPixelShaderName : s32
+                {
+                    Decal = 0,
+                    Decalkil = 1,
+                    Bump = 2,
+                    Bumpspec = 3,
+                    Pbmpsplm = 4,
+                    Pbmpcube = 5,
+                    Pgloss = 6,
+                    Plmap = 7,
+                    Plmbs = 8
+                };
 
-enum class VertexShaderName : s32
-{
-    Dirlight1 = 0,
-    Texgen = 1,
-    Cubic = 2,
-    Prelit1 = 3,
-    Prelit2 = 4,
-    Pretex = 5,
-    Vbump = 6,
-    Vbmpspec = 7,
-    Vbmpcube = 8,
-    Vbumpgen = 9,
-    Vbmpspgn = 10,
-    Vbmpsppl = 11,
-    Vbmpspom = 12,
-    Vgloss = 13,
-    Vlmap1 = 14,
-    Vlmap2 = 15,
-    Vskel = 16,
-    Vskeltex = 17,
-    Vomni1 = 18,
-    Vomni2 = 19,
-    Vomnin = 20,
-    Vomnibmp = 21,
-    Tlvertex = 22,
-    Shdwbkfc1 = 23,
-    Vspecmap = 24,
-    Vskelspc = 25,
-    Vskelsp2 = 26,
-    Vskelsp3 = 27,
-    Vskelbmp = 28,
-    Vomni3 = 29,
-    Dirlight2 = 30,
-    Shdwbkfc2 = 31,
-    Vlmbs = 32
-};
+                enum class DXVertexShaderName : s32
+                {
+                    Dirlight1 = 0,
+                    Texgen = 1,
+                    Cubic = 2,
+                    Prelit1 = 3,
+                    Prelit2 = 4,
+                    Pretex = 5,
+                    Vbump = 6,
+                    Vbmpspec = 7,
+                    Vbmpcube = 8,
+                    Vbumpgen = 9,
+                    Vbmpspgn = 10,
+                    Vbmpsppl = 11,
+                    Vbmpspom = 12,
+                    Vgloss = 13,
+                    Vlmap1 = 14,
+                    Vlmap2 = 15,
+                    Vskel = 16,
+                    Vskeltex = 17,
+                    Vomni1 = 18,
+                    Vomni2 = 19,
+                    Vomnin = 20,
+                    Vomnibmp = 21,
+                    Tlvertex = 22,
+                    Shdwbkfc1 = 23,
+                    Vspecmap = 24,
+                    Vskelspc = 25,
+                    Vskelsp2 = 26,
+                    Vskelsp3 = 27,
+                    Vskelbmp = 28,
+                    Vomni3 = 29,
+                    Dirlight2 = 30,
+                    Shdwbkfc2 = 31,
+                    Vlmbs = 32
+                };
+            }
+        }
+    }
+}

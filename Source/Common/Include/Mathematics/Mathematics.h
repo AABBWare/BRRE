@@ -24,9 +24,8 @@ SOFTWARE.
 
 #include "Basic.h"
 
-struct WindowState
+namespace Mathematics
 {
-    HWND HWND;
-
-    BOOL IsWindowMode;
-};
+    f32 Clamp(const f32, const f32, const f32);
+    s32 Clamp(const s32, const s32, const s32);
+}

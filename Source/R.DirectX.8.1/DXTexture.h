@@ -25,18 +25,27 @@ SOFTWARE.
 #include "Graphics/Texture.h"
 #include "DX.h"
 
-struct DXTexture
+namespace Renderer
 {
-	TextureFormat Format;
+    namespace External
+    {
+        namespace DX
+        {
+            struct DXTexture
+            {
+                Renderer::Graphics::TextureFormat Format;
 
-	s32 Width;
-	s32 Height;
-	u32 Options;
-	s32 MipLevelCount;
+                u32 Width;
+                u32 Height;
+                u32 Options;
+                s32 MipLevelCount;
 
-	s16 ActualWidth;
-	s16 ActualHeight;
-	s32 ActualMipLevelCount;
+                u16 ActualWidth;
+                u16 ActualHeight;
+                s32 ActualMipLevelCount;
 
-	IDirect3DTexture8* Texture;
-};
+                IDirect3DTexture8* Texture;
+            };
+        }
+    }
+}

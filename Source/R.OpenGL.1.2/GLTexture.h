@@ -24,12 +24,21 @@ SOFTWARE.
 
 #include "GL.h"
 
-struct GLTexture
+namespace Renderer
 {
-    u32 ID;
-    HPBUFFERARB Buffer;
-    HDC DeviceContext;
-    HGLRC RenderContext;
-    s32 Width;
-    s32 Height;
-};
+    namespace External
+    {
+        namespace GL
+        {
+            struct GLTexture
+            {
+                u32 ID;
+                HPBUFFERARB Buffer;
+                HDC DeviceContext;
+                HGLRC RenderContext;
+                u32 Width;
+                u32 Height;
+            };
+        }
+    }
+}
