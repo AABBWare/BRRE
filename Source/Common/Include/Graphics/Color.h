@@ -30,6 +30,11 @@ namespace Renderer
 {
     namespace Graphics
     {
+        struct RGB
+        {
+            f32 R, G, B;
+        };
+
         struct BGRA
         {
             f32 B, G, R, A;

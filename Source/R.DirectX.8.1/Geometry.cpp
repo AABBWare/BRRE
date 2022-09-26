@@ -95,20 +95,20 @@ namespace Renderer
                 return FALSE;
             }
 
-            if (State.Settings.UseFixedFunctionPipe == 0)
+            if (!State.Settings.IsFixedPipelineActive)
             {
                 if (65000 < State.DX.BasisVertexCount2 + vertexCount)
                 {
                     State.DX.BasisVertexCount2 = 0;
                 }
 
-                auto flags = State.DX.BasisVertexCount2 == 0
+                auto options = State.DX.BasisVertexCount2 == 0
                     ? D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK
                     : D3DLOCK_NOOVERWRITE | D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK;
 
                 struct SVertexBasis* buffer;
                 DX::DXC(State.DX.Buffers.SVertexBasisBuffer->Lock(State.DX.BasisVertexCount2 * sizeof(struct SVertexBasis),
-                    vertexCount * sizeof(struct SVertexBasis), (BYTE**)&buffer, flags), "Unable to lock vertex buffer.");
+                    vertexCount * sizeof(struct SVertexBasis), (BYTE**)&buffer, options), "Unable to lock vertex buffer.");
 
                 // todo: is this correct?
                 CopyMemory(buffer, vertexes, vertexCount * sizeof(struct SVertexBasis));
@@ -137,15 +137,15 @@ namespace Renderer
                     State.DX.BasisVertexCount = 0;
                 }
 
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_LIGHTING, State.DX.Light.IsEnabled);
+                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_LIGHTING, State.DX.Light.IsActive);
 
-                auto flags = State.DX.BasisVertexCount == 0
+                auto options = State.DX.BasisVertexCount == 0
                     ? D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK
                     : D3DLOCK_NOOVERWRITE | D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK;
 
                 struct SVertex2Basis* buffer;
                 DX::DXC(State.DX.Buffers.SVertexBuffer->Lock(State.DX.BasisVertexCount * sizeof(struct SVertex2Basis),
-                    vertexCount * sizeof(struct SVertex2Basis), (BYTE**)&buffer, flags), "Unable to lock vertex buffer.");
+                    vertexCount * sizeof(struct SVertex2Basis), (BYTE**)&buffer, options), "Unable to lock vertex buffer.");
 
                 for (auto x = 0; x < vertexCount; x++)
                 {
@@ -217,13 +217,13 @@ namespace Renderer
                 State.DX.D3DLVertexCount = 0;
             }
 
-            auto flags = State.DX.D3DLVertexCount == 0
+            auto options = State.DX.D3DLVertexCount == 0
                 ? D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK
                 : D3DLOCK_NOOVERWRITE | D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK;
 
             struct D3DLVertex* buffer;
             DX::DXC(State.DX.Buffers.D3DLVertexBuffer->Lock(State.DX.D3DLVertexCount * sizeof(struct D3DLVertex),
-                vertexCount * sizeof(struct D3DLVertex), (BYTE**)&buffer, flags), "Unable to lock vertex buffer.");
+                vertexCount * sizeof(struct D3DLVertex), (BYTE**)&buffer, options), "Unable to lock vertex buffer.");
 
             for (auto x = 0; x < vertexCount; x++)
             {
@@ -284,13 +284,13 @@ namespace Renderer
                 State.DX.VertexCount = 0;
             }
 
-            auto flags = State.DX.VertexCount == 0
+            auto options = State.DX.VertexCount == 0
                 ? D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK
                 : D3DLOCK_NOOVERWRITE | D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK;
 
             struct D3DTLVertex* buffer;
             DX::DXC(State.DX.Buffers.D3DTLVertexBuffer->Lock(State.DX.VertexCount * sizeof(struct D3DTLVertex),
-                vertexCount * sizeof(struct D3DTLVertex), (BYTE**)&buffer, flags), "Unable to lock vertex buffer.");
+                vertexCount * sizeof(struct D3DTLVertex), (BYTE**)&buffer, options), "Unable to lock vertex buffer.");
 
             CopyMemory(buffer, vertexes, vertexCount * sizeof(struct D3DTLVertex));
 
@@ -322,9 +322,9 @@ namespace Renderer
 
             DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_CULLMODE, State.DX.Mode.Cull);
 
-            if (State.Settings.UseFixedFunctionPipe != 0)
+            if (State.Settings.IsFixedPipelineActive)
             {
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_LIGHTING, State.DX.Light.IsEnabled);
+                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_LIGHTING, State.DX.Light.IsActive);
             }
 
             if (65000 < vertexCount)
@@ -344,15 +344,15 @@ namespace Renderer
                 State.DX.BasisVertexCount = 0;
             }
 
-            auto flags = State.DX.BasisVertexCount == 0
+            auto options = State.DX.BasisVertexCount == 0
                 ? D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK
                 : D3DLOCK_NOOVERWRITE | D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK;
 
-            if (State.Settings.UseFixedFunctionPipe == 0)
+            if (!State.Settings.IsFixedPipelineActive)
             {
                 struct SVertex* buffer;
                 DX::DXC(State.DX.Buffers.SVertexBuffer->Lock(State.DX.BasisVertexCount * sizeof(struct SVertex),
-                    vertexCount * sizeof(struct SVertex), (BYTE**)&buffer, flags), "Unable to lock vertex buffer.");
+                    vertexCount * sizeof(struct SVertex), (BYTE**)&buffer, options), "Unable to lock vertex buffer.");
 
                 CopyMemory(buffer, vertexes, vertexCount * sizeof(struct SVertex));
             }
@@ -360,7 +360,7 @@ namespace Renderer
             {
                 struct SVertex2Basis* buffer;
                 DX::DXC(State.DX.Buffers.SVertexBuffer->Lock(State.DX.BasisVertexCount * sizeof(struct SVertex2Basis),
-                    vertexCount * sizeof(struct SVertex2Basis), (BYTE**)&buffer, flags), "Unable to lock vertex buffer.");
+                    vertexCount * sizeof(struct SVertex2Basis), (BYTE**)&buffer, options), "Unable to lock vertex buffer.");
 
                 for (auto x = 0; x < vertexCount; x++)
                 {
@@ -386,7 +386,7 @@ namespace Renderer
             DX::SetIndexes(indexes, indexCount);
 
             DX::DXC(State.DX.DirectXDevice->SetStreamSource(0, State.DX.Buffers.SVertexBuffer,
-                State.Settings.UseFixedFunctionPipe == 0 ? sizeof(struct SVertex) : sizeof(struct SVertex2Basis)),
+                State.Settings.IsFixedPipelineActive ? sizeof(struct SVertex2Basis) : sizeof(struct SVertex)),
                 "Unable to set stream source.");
 
             DX::SetIndexSource(State.DX.BasisVertexCount, State.DX.Buffers.IndexBuffer);

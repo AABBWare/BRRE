@@ -30,9 +30,9 @@ namespace Renderer
 {
     namespace External
     {
-        extern "C" BOOL __cdecl CreateGraphicsCardList(s32 * count, char** apis, char** names, u32*, u32*)
+        extern "C" BOOL __cdecl CreateGraphicsCardList(u32 * count, char** apis, char** names, u32*, u32*)
         {
-            *count = (s32)1;
+            *count = 1;
             *apis = const_cast<char*>("OpenGL 1.2");
             *names = const_cast<char*>("OpenGL Compatible Graphics Card");
 
@@ -75,7 +75,7 @@ namespace Renderer
 
         extern "C" BOOL __cdecl Clear(const u32, const u32 color)
         {
-            GL::SetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED);
+            GL::SetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ACTIVE | GRAPHICS_MODE_IS_DEPTH_BUFFER_ACTIVE);
 
             auto r = 0.003921569f * (color >> 16 & 0xff);
             auto g = 0.003921569f * (color >> 8 & 0xff);

@@ -52,25 +52,25 @@ namespace Renderer
             auto clippingNear = State.GL.Mode.Clipping.Near;
             auto clippingFar = State.GL.Mode.Clipping.Far;
 
-            State.GL.Transform.Projection._11 = zNear;
-            State.GL.Transform.Projection._12 = 0.0f;
-            State.GL.Transform.Projection._13 = 0.0f;
-            State.GL.Transform.Projection._14 = 0.0f;
+            State.GL.Transform.Projection.m11 = zNear;
+            State.GL.Transform.Projection.m12 = 0.0f;
+            State.GL.Transform.Projection.m13 = 0.0f;
+            State.GL.Transform.Projection.m14 = 0.0f;
 
-            State.GL.Transform.Projection._21 = 0.0f;
-            State.GL.Transform.Projection._22 = State.GL.Textures.Render.Direction * zFar;
-            State.GL.Transform.Projection._23 = 0.0f;
-            State.GL.Transform.Projection._24 = 0.0f;
+            State.GL.Transform.Projection.m21 = 0.0f;
+            State.GL.Transform.Projection.m22 = State.GL.Textures.Render.Direction * zFar;
+            State.GL.Transform.Projection.m23 = 0.0f;
+            State.GL.Transform.Projection.m24 = 0.0f;
 
-            State.GL.Transform.Projection._31 = 0.0f;
-            State.GL.Transform.Projection._32 = 0.0f;
-            State.GL.Transform.Projection._33 = (clippingNear + clippingFar) / (clippingFar - clippingNear);
-            State.GL.Transform.Projection._34 = 1.0f;
+            State.GL.Transform.Projection.m31 = 0.0f;
+            State.GL.Transform.Projection.m32 = 0.0f;
+            State.GL.Transform.Projection.m33 = (clippingNear + clippingFar) / (clippingFar - clippingNear);
+            State.GL.Transform.Projection.m34 = 1.0f;
 
-            State.GL.Transform.Projection._41 = 0.0f;
-            State.GL.Transform.Projection._42 = 0.0f;
-            State.GL.Transform.Projection._43 = 2.0f * clippingNear * clippingFar / (clippingNear - clippingFar);
-            State.GL.Transform.Projection._44 = 0.0f;
+            State.GL.Transform.Projection.m41 = 0.0f;
+            State.GL.Transform.Projection.m42 = 0.0f;
+            State.GL.Transform.Projection.m43 = 2.0f * clippingNear * clippingFar / (clippingNear - clippingFar);
+            State.GL.Transform.Projection.m44 = 0.0f;
 
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();

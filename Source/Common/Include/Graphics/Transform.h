@@ -25,7 +25,7 @@ SOFTWARE.
 #include "Basic.h"
 #include "Graphics.h"
 #include "Mathematics/Matrix.h"
-#include "Vector.h"
+#include "Mathematics/Vector.h"
 #include "Vertex.h"
 
 namespace Renderer
@@ -35,10 +35,10 @@ namespace Renderer
         struct Transform
         {
             struct Mathematics::Matrix4x4 UnknownMatrix;//todo
-            struct Vector4 V1;//todo
             struct
             {
-                struct Vector4 XYZ[MAX_LIGHT_COUNT];
+                struct RGBA Color;
+                struct Mathematics::Vector4 XYZ[MAX_LIGHT_COUNT];
             } Light;
             struct Mathematics::Matrix4x4 ModelView;
         };

@@ -29,7 +29,7 @@ namespace Renderer
     {
         extern "C" BOOL __cdecl AllocateVertexBuffer(const void* vertexes, const u32 vertexCount, const u32 vertexSize, void** buffer)
         {
-            if (State.Settings.UseFixedFunctionPipe != 0) { return FALSE; }
+            if (State.Settings.IsFixedPipelineActive) { return FALSE; }
 
             auto bufferSize = vertexCount * vertexSize;
 

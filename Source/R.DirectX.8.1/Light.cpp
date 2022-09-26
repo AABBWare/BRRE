@@ -25,6 +25,7 @@ SOFTWARE.
 #include "State.h"
 
 using namespace Renderer::Graphics;
+using namespace Mathematics;
 
 namespace Renderer
 {
@@ -57,7 +58,7 @@ namespace Renderer
 
         extern "C" BOOL __cdecl EnableLighting(const BOOL mode)
         {
-            State.DX.Light.IsEnabled = mode;
+            State.DX.Light.IsActive = mode;
 
             return TRUE;
         }
@@ -86,7 +87,7 @@ namespace Renderer
             return TRUE;
         }
 
-        extern "C" BOOL __cdecl SetLightColor(const f32 r, const f32 g, const f32 b, const s32 indx)
+        extern "C" BOOL __cdecl SetLightColor(const f32 r, const f32 g, const f32 b, const u32 indx)
         {
             State.DX.Light.Colors.R[indx] = r;
             State.DX.Light.Colors.G[indx] = g;
@@ -130,7 +131,7 @@ namespace Renderer
                 .Power = power
             };
 
-            if (State.Settings.UseFixedFunctionPipe != 0)
+            if (State.Settings.IsFixedPipelineActive)
             {
                 DX::DXC(State.DX.DirectXDevice->SetMaterial(&material), "Unable to set material.");
             }
@@ -145,7 +146,7 @@ namespace Renderer
             return TRUE;
         }
 
-        extern "C" BOOL __cdecl SetLightVector(void)
+        extern "C" BOOL __cdecl SetLightVector(const Mathematics::Vector3*, const f32, const u32)
         {
             return TRUE;
         }

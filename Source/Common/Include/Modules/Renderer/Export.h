@@ -28,6 +28,7 @@ SOFTWARE.
 #include "Graphics/Texture.h"
 #include "Graphics/Transform.h"
 #include "Graphics/Vertex.h"
+#include "Mathematics/Vector.h"
 #include "Win.h"
 
 namespace Renderer
@@ -44,7 +45,7 @@ namespace Renderer
         extern "C" BOOL __cdecl ClearZBuffer(void);
         extern "C" BOOL __cdecl CopyBackBufferToRenderTexture(void);
         extern "C" u32 __cdecl CreateGameWindow(const u32, const u32, const u32, u32*, const HWND);
-        extern "C" BOOL __cdecl CreateGraphicsCardList(s32*, char**, char**, u32*, u32*);
+        extern "C" BOOL __cdecl CreateGraphicsCardList(u32*, char**, char**, u32*, u32*);
         extern "C" BOOL __cdecl DestroyGameWindow(const u32);
         extern "C" BOOL __cdecl DotListD3DL(const struct Renderer::Graphics::D3DLVertex*, const u32, const u32);
         extern "C" BOOL __cdecl DotListD3DTL(const struct Renderer::Graphics::D3DTLVertex*, const u32, const u32);
@@ -91,7 +92,7 @@ namespace Renderer
         extern "C" BOOL __cdecl RenderOptimizedMesh(void);
         extern "C" BOOL __cdecl RenderVertexBuffer(const void*, const u32, const u16*, const u32, const u32);
         extern "C" BOOL __cdecl RenderVertexBufferBasis(const void*, const u32, const u16*, const u32, const u32);
-        extern "C" BOOL __cdecl RenderVertexBufferBone(const void*, const u32, const u16*, const u32, const struct Renderer::Graphics::Vector4*, const u32, const u32);
+        extern "C" BOOL __cdecl RenderVertexBufferBone(const void*, const u32, const u16*, const u32, const struct Mathematics::Vector4*, const u32, const u32);
         extern "C" BOOL __cdecl RenderVertexBufferPrelit(const void*, const u32, const u16*, const u32, const u32);
         extern "C" BOOL __cdecl ResetTextureCache(void);
         extern "C" BOOL __cdecl RestoreVideoMode(void);
@@ -107,9 +108,9 @@ namespace Renderer
         extern "C" BOOL __cdecl SetDestinationBlend(const Renderer::Graphics::TextureDestinationBlend);
         extern "C" BOOL __cdecl SetFog(const f32, const f32, const f32, const f32, const f32);
         extern "C" BOOL __cdecl SetGloss(const f32);
-        extern "C" BOOL __cdecl SetLightColor(const f32, const f32, const f32, const s32);
+        extern "C" BOOL __cdecl SetLightColor(const f32, const f32, const f32, const u32);
         extern "C" BOOL __cdecl SetLightConstants(const f32, const f32, const f32, const f32);
-        extern "C" BOOL __cdecl SetLightVector(void);
+        extern "C" BOOL __cdecl SetLightVector(const Mathematics::Vector3*, const f32, const u32);
         extern "C" BOOL __cdecl SetMultiTextureBlend(const Renderer::Graphics::TextureBlendOperation);
         extern "C" BOOL __cdecl SetOmniLight(const f32*, const f32, const u32);
         extern "C" BOOL __cdecl SetSourceBlend(const Renderer::Graphics::TextureSourceBlend);

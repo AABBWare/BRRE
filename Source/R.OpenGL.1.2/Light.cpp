@@ -34,7 +34,7 @@ namespace Renderer
 
         extern "C" BOOL __cdecl EnableLighting(const BOOL mode)
         {
-            State.GL.Light.IsEnabled = mode;
+            State.GL.Light.IsActive = mode;
 
             return TRUE;
         }
@@ -49,11 +49,11 @@ namespace Renderer
             return TRUE;
         }
 
-        extern "C" BOOL __cdecl SetLightColor(const f32 r, const f32 g, const f32 b, const s32 index)
+        extern "C" BOOL __cdecl SetLightColor(const f32 r, const f32 g, const f32 b, const u32 indx)
         {
-            State.GL.Light.Colors.R[index] = r;
-            State.GL.Light.Colors.G[index] = g;
-            State.GL.Light.Colors.B[index] = b;
+            State.GL.Light.Colors.R[indx] = r;
+            State.GL.Light.Colors.G[indx] = g;
+            State.GL.Light.Colors.B[indx] = b;
 
             return TRUE;
         }
@@ -65,7 +65,7 @@ namespace Renderer
             return TRUE;
         }
 
-        extern "C" BOOL __cdecl SetLightVector(void)
+        extern "C" BOOL __cdecl SetLightVector(const Mathematics::Vector3*, const f32, const u32)
         {
             return TRUE;
         }

@@ -33,16 +33,17 @@ namespace Renderer
 {
     namespace External
     {
-        extern "C" BOOL __cdecl CreateGraphicsCardList(s32* count, char** apis, char** names, u32* ssids, u32* dids)
+        extern "C" BOOL __cdecl CreateGraphicsCardList(u32* count, char** apis, char** names, u32* ssids, u32* dids)
         {
             *count = State.DX.AvailableDevices.Count;
-            *apis = const_cast<char*>("DirectX 8.1");
 
             for (auto x = 0; x < State.DX.AvailableDevices.Count; x++)
             {
+                apis[x] = const_cast<char*>("DirectX 8.1");
+                names[x] = State.DX.AvailableDevices.Details[x].Description;
+
                 dids[x] = State.DX.AvailableDevices.Details[x].DeviceID;
                 ssids[x] = State.DX.AvailableDevices.Details[x].SubSystemID;
-                names[x] = State.DX.AvailableDevices.Details[x].Description;
             }
 
             return TRUE;
@@ -114,11 +115,11 @@ namespace Renderer
             return TRUE;
         }
 
-        extern "C" BOOL __cdecl Clear(const u32 flags, const u32 color)
+        extern "C" BOOL __cdecl Clear(const u32 options, const u32 color)
         {
-            auto value = flags & D3DCLEAR_TARGET;
+            auto value = options & D3DCLEAR_TARGET;
 
-            if (flags & D3DCLEAR_ZBUFFER)
+            if (options & D3DCLEAR_ZBUFFER)
             {
                 value = value | D3DCLEAR_ZBUFFER;
             }
@@ -173,29 +174,31 @@ namespace Renderer
 
         extern "C" BOOL __cdecl SetColorTable(const u8* rgb, u16* rgba)
         {
-            auto d1 = State.DX.Windows.Current->BitsPerPixel == BITS_PER_PIXEL_16 ? 8 : 1;
-            auto d2 = State.DX.Windows.Current->BitsPerPixel == BITS_PER_PIXEL_16 ? 8 : 1;
-            auto d3 = State.DX.Windows.Current->BitsPerPixel == BITS_PER_PIXEL_16 ? 4 : 1;
+            auto rs = State.DX.Windows.Current->BitsPerPixel == BITS_PER_PIXEL_16 ? 8 : 1;
+            auto gs = State.DX.Windows.Current->BitsPerPixel == BITS_PER_PIXEL_16 ? 8 : 1;
+            auto bs = State.DX.Windows.Current->BitsPerPixel == BITS_PER_PIXEL_16 ? 4 : 1;
 
             if (State.DX.Windows.Current->BitsPerPixel == BITS_PER_PIXEL_16)
             {
-                *State.InitializeArguments.ColorBits = 11;
-                *State.InitializeArguments.AlphaBits = 5;
+                *State.InitializeArguments.R.Display = 11;
+                *State.InitializeArguments.G.Display = 5;
             }
             else
             {
-                *State.InitializeArguments.ColorBits = 16;
-                *State.InitializeArguments.AlphaBits = 8;
+                *State.InitializeArguments.R.Display = 16;
+                *State.InitializeArguments.G.Display = 8;
             }
 
-            auto u1 = *State.InitializeArguments.ColorBits;
-            auto u2 = *State.InitializeArguments.AlphaBits;
+            auto rsh = *State.InitializeArguments.R.Display;
+            auto gsh = *State.InitializeArguments.G.Display;
 
             for (auto x = 0; x < 256; x++)
             {
-                rgba[x] = (u16)((rgb[x * 3 + 0] / d1 << (u1 & 0x1f))
-                    | (rgb[x * 3 + 2] / d2 << (0 & 0x1f))
-                    | (rgb[x * 3 + 1] / d3 << (u2 & 0x1f)));
+                auto r = rgb[x * 3 + 0] / rs << (rsh & 0x1f);
+                auto g = rgb[x * 3 + 1] / bs << (gsh & 0x1f);
+                auto b = rgb[x * 3 + 2] / gs << (0 & 0x1f);
+
+                rgba[x] = (u16)(r | g | b);
             }
 
             return TRUE;
@@ -203,7 +206,7 @@ namespace Renderer
 
         extern "C" BOOL __cdecl HasShaderSupport(void)
         {
-            return State.Settings.UseFixedFunctionPipe == 0;
+            return !State.Settings.IsFixedPipelineActive;
         }
     }
 }

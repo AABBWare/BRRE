@@ -207,15 +207,15 @@ namespace Renderer
 
             State.DX.Mode.Mode = 0;
 
-            Settings::ReadValue("Graphics", "useFixedFunctionPipe", (u32*)&State.Settings.UseFixedFunctionPipe);
+            Settings::ReadValue("Graphics", "useFixedFunctionPipe", (u32*)&State.Settings.IsFixedPipelineActive);
             Settings::ReadValue("Graphics", "syncRetrace", (u32*)&State.Settings.SyncRetrace);
             Settings::ReadValue("Graphics", "renderTextureCount", &State.Settings.RenderTextureCount);
             Settings::ReadValue("Graphics", "renderTextureSize", &State.Settings.RenderTextureSize);
             Settings::ReadValue("Graphics", "cubeMapCount", &State.Settings.CubeTextureCount);
             Settings::ReadValue("Graphics", "cubeMapSize", &State.Settings.CubeTextureSize);
-            Settings::ReadValue("Graphics", "useWBuffer", (u32*)&State.Settings.UseWBuffer);
+            Settings::ReadValue("Graphics", "useWBuffer", (u32*)&State.Settings.IsWBufferActive);
 
-            if (State.Settings.UseWBuffer != 0)
+            if (State.Settings.IsWBufferActive)
             {
                 State.DX.ZBufferType = D3DZBUFFERTYPE::D3DZB_USEW;
             }
@@ -242,7 +242,7 @@ namespace Renderer
 
             if (vertexShaderVersion < MIN_SUPPORTED_SHADER_VERSION || pixelShaderVersion < MIN_SUPPORTED_SHADER_VERSION)
             {
-                State.Settings.UseFixedFunctionPipe = 1;
+                State.Settings.IsFixedPipelineActive = TRUE;
 
                 State.DX.CurrentDevice.Capabilities.DisplayCapabilities.VertexShaderVersion = 0;
                 State.DX.CurrentDevice.Capabilities.DisplayCapabilities.PixelShaderVersion = 0;

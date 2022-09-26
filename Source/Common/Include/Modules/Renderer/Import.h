@@ -39,7 +39,7 @@ namespace Renderer
         typedef const BOOL(__cdecl* RENDERERBEGINCUBEMAPRENDER) (const u32, const u32);
         typedef const BOOL(__cdecl* RENDERERBEGINRENDERTOTEXTURE) (const u32);
         typedef const BOOL(__cdecl* RENDERERBEGINSCENE) (void);
-        typedef const BOOL(__cdecl* RENDERERCREATEGRAPHICSCARDLIST) (s32*, char**, char**, u32*, u32*);
+        typedef const BOOL(__cdecl* RENDERERCREATEGRAPHICSCARDLIST) (u32*, char**, char**, u32*, u32*);
         typedef const BOOL(__cdecl* RENDERERCLEAR) (const u32, const u32);
         typedef const BOOL(__cdecl* RENDERERCLEARZBUFFER) (void);
         typedef const BOOL(__cdecl* RENDERERCOPYBACKBUFFERTORENDERTEXTURE) (void);
@@ -74,7 +74,7 @@ namespace Renderer
         typedef const BOOL(__cdecl* RENDERERRENDEROPTIMIZEDMESH) (void);
         typedef const BOOL(__cdecl* RENDERERRENDERVERTEXBUFFER) (const void*, const u32, const u16*, const u32, const u32);
         typedef const BOOL(__cdecl* RENDERERRENDERVERTEXBUFFERBASIS) (const void*, const u32, const u16*, const u32, const u32);
-        typedef const BOOL(__cdecl* RENDERERRENDERVERTEXBUFFERBONE) (const void*, const u32, const u16*, const u32, const struct Renderer::Graphics::Vector4*, const u32, const u32);
+        typedef const BOOL(__cdecl* RENDERERRENDERVERTEXBUFFERBONE) (const void*, const u32, const u16*, const u32, const struct Mathematics::Vector4*, const u32, const u32);
         typedef const BOOL(__cdecl* RENDERERRENDERVERTEXBUFFERPRELIT) (const void*, const u32, const u16*, const u32, const u32);
         typedef const BOOL(__cdecl* RENDERERRESETTEXTURECACHE) (void);
         typedef const BOOL(__cdecl* RENDERERRESTOREVIDEOMODE) (void);
@@ -91,9 +91,9 @@ namespace Renderer
         typedef const BOOL(__cdecl* RENDERERSETDIRTYRECT) (const u32, const u32, const u32, const u32);
         typedef const BOOL(__cdecl* RENDERERSETFOG) (const f32, const f32, const f32, const f32, const f32);
         typedef const BOOL(__cdecl* RENDERERSETGLOSS) (const f32);
-        typedef const BOOL(__cdecl* RENDERERSETLIGHTCOLOR) (const f32, const f32, const f32, const s32);
+        typedef const BOOL(__cdecl* RENDERERSETLIGHTCOLOR) (const f32, const f32, const f32, const u32);
         typedef const BOOL(__cdecl* RENDERERSETLIGHTCONSTANTS) (const f32, const f32, const f32, const f32);
-        typedef const BOOL(__cdecl* RENDERERSETLIGHTVECTOR) (void);
+        typedef const BOOL(__cdecl* RENDERERSETLIGHTVECTOR) (const Mathematics::Vector3*, const f32, const u32);
         typedef const BOOL(__cdecl* RENDERERSETMULTITEXTUREBLEND) (const Renderer::Graphics::TextureBlendOperation);
         typedef const BOOL(__cdecl* RENDERERSETOMNILIGHT) (const f32*, const f32, const u32);
         typedef const BOOL(__cdecl* RENDERERSETSOURCEBLEND) (const Renderer::Graphics::TextureSourceBlend);

@@ -26,9 +26,9 @@ SOFTWARE.
 #include "GLTexture.h"
 #include "Graphics/Color.h"
 #include "Graphics/Graphics.h"
-#include "Mathematics/Matrix.h"
 #include "Graphics/Texture.h"
-#include "Graphics/Vector.h"
+#include "Mathematics/Matrix.h"
+#include "MAthematics/Vector.h"
 
 #define MAX_BIND_TEXTURE_COUUNT 2
 #define MAX_PALETTE_BUFFER_SIZE 256
@@ -46,7 +46,7 @@ namespace Renderer
         {
             struct GLLight
             {
-                struct Renderer::Graphics::Vector4 Position;
+                struct Mathematics::Vector4 Position;
                 struct Renderer::Graphics::RGBA Color;
             };
 
@@ -88,7 +88,7 @@ namespace Renderer
 
                     struct
                     {
-                        BOOL IsEnabled = FALSE;
+                        BOOL IsActive = FALSE;
                         u32 Index;
                         f32 Direction;
 
@@ -116,7 +116,7 @@ namespace Renderer
 
                 struct
                 {
-                    BOOL IsEnabled = FALSE;
+                    BOOL IsActive = FALSE;
 
                     struct
                     {

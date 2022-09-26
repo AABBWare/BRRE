@@ -40,7 +40,7 @@ namespace Renderer
                     u32 Height;
                     u32 BitsPerPixel;
 
-                    u32* Unknown4;
+                    u32* Unknown4; // todo
 
                     HWND HWND;
                     IDirect3DSurface8* DepthSurface;

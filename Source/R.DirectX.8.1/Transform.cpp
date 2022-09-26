@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "Mathematics/Matrix.h"
 #include "Module.h"
 #include "State.h"
 
@@ -49,22 +50,22 @@ namespace Renderer
                 0.0f, 0.0f,  0.0f, 0.0f
             };
 
-            if (State.Settings.UseFixedFunctionPipe == 0)
+            if (!State.Settings.IsFixedPipelineActive)
             {
-                matrix._33 = zFar / (zFar - zNear);
-                matrix._43 = -zNear * zFar / (zFar - zNear);
+                matrix.m33 = zFar / (zFar - zNear);
+                matrix.m43 = -zNear * zFar / (zFar - zNear);
             }
 
             struct Matrix4x4 result;
-            MatrixMultiply(&result, transform, &matrix);
+            Multiply(&result, transform, &matrix);
 
-            if (State.Settings.UseFixedFunctionPipe != 0)
+            if (State.Settings.IsFixedPipelineActive)
             {
                 struct Matrix4x4 inverted;
-                MatrixInvert(&inverted, &State.DX.Transform.Matrix1);
+                Invert(&inverted, &State.DX.Transform.Matrix1);
 
                 struct Matrix4x4 mt;
-                MatrixMultiply(&mt, &inverted, &result);
+                Multiply(&mt, &inverted, &result);
 
                 State.DX.DirectXDevice->SetTransform(D3DTRANSFORMSTATETYPE::D3DTS_TEXTURE0, (D3DMATRIX*)&mt);
 
@@ -80,7 +81,7 @@ namespace Renderer
 
         extern "C" BOOL __cdecl SetTransform(const struct Transform* transform, const f32 zNear, const f32 zFar)
         {
-            if (State.Settings.UseFixedFunctionPipe != 0)
+            if (State.Settings.IsFixedPipelineActive)
             {
                 State.DX.DirectXDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&transform->ModelView);
                 State.DX.DirectXDevice->SetTransform(D3DTRANSFORMSTATETYPE::D3DTS_VIEW, (D3DMATRIX*)&State.DX.Transform.Identity);
@@ -98,25 +99,25 @@ namespace Renderer
                     auto clippingNear = State.DX.Mode.Clipping.Near;
                     auto clippingFar = State.DX.Mode.Clipping.Far;
 
-                    State.DX.Transform.Projection._11 = zNear;
-                    State.DX.Transform.Projection._12 = 0.0f;
-                    State.DX.Transform.Projection._13 = 0.0f;
-                    State.DX.Transform.Projection._14 = 0.0f;
+                    State.DX.Transform.Projection.m11 = zNear;
+                    State.DX.Transform.Projection.m12 = 0.0f;
+                    State.DX.Transform.Projection.m13 = 0.0f;
+                    State.DX.Transform.Projection.m14 = 0.0f;
 
-                    State.DX.Transform.Projection._21 = 0.0f;
-                    State.DX.Transform.Projection._22 = zFar;
-                    State.DX.Transform.Projection._23 = 0.0f;
-                    State.DX.Transform.Projection._24 = 0.0f;
+                    State.DX.Transform.Projection.m21 = 0.0f;
+                    State.DX.Transform.Projection.m22 = zFar;
+                    State.DX.Transform.Projection.m23 = 0.0f;
+                    State.DX.Transform.Projection.m24 = 0.0f;
 
-                    State.DX.Transform.Projection._31 = 0.0f;
-                    State.DX.Transform.Projection._32 = 0.0f;
-                    State.DX.Transform.Projection._33 = clippingFar / (clippingFar - clippingNear);
-                    State.DX.Transform.Projection._34 = 1.0f;
+                    State.DX.Transform.Projection.m31 = 0.0f;
+                    State.DX.Transform.Projection.m32 = 0.0f;
+                    State.DX.Transform.Projection.m33 = clippingFar / (clippingFar - clippingNear);
+                    State.DX.Transform.Projection.m34 = 1.0f;
 
-                    State.DX.Transform.Projection._41 = 0.0f;
-                    State.DX.Transform.Projection._42 = 0.0f;
-                    State.DX.Transform.Projection._43 = -clippingNear * clippingFar / (clippingFar - clippingNear);
-                    State.DX.Transform.Projection._44 = 0.0f;
+                    State.DX.Transform.Projection.m41 = 0.0f;
+                    State.DX.Transform.Projection.m42 = 0.0f;
+                    State.DX.Transform.Projection.m43 = -clippingNear * clippingFar / (clippingFar - clippingNear);
+                    State.DX.Transform.Projection.m44 = 0.0f;
 
                     State.DX.DirectXDevice->SetTransform(D3DTRANSFORMSTATETYPE::D3DTS_PROJECTION, (D3DMATRIX*)&State.DX.Transform.Projection);
                 }
@@ -131,13 +132,13 @@ namespace Renderer
                 State.DX.Light.XYZ[x].Z = transform->Light.XYZ->Z;
             }
 
-            State.DX.Transform.UnknownFloats4[0] = transform->V1.X;
-            State.DX.Transform.UnknownFloats4[1] = transform->V1.Y;
-            State.DX.Transform.UnknownFloats4[2] = transform->V1.Z;
+            State.DX.Light.Color.R = transform->Light.Color.R;
+            State.DX.Light.Color.G = transform->Light.Color.G;
+            State.DX.Light.Color.B = transform->Light.Color.B;
 
             State.DX.Light.IsChanged = TRUE;
 
-            if (State.Settings.UseFixedFunctionPipe != 0)
+            if (State.Settings.IsFixedPipelineActive)
             {
                 for (auto x = 0; x < MAX_LIGHT_COUNT; x++)
                 {
@@ -154,9 +155,9 @@ namespace Renderer
                     auto py = item->Y / length;
                     auto pz = item->Z / length;
 
-                    light->Direction.x = px * transform->ModelView._11 + py * transform->ModelView._21 + pz * transform->ModelView._31;
-                    light->Direction.y = px * transform->ModelView._12 + py * transform->ModelView._22 + pz * transform->ModelView._32;
-                    light->Direction.z = px * transform->ModelView._13 + py * transform->ModelView._23 + pz * transform->ModelView._33;
+                    light->Direction.x = px * transform->ModelView.m11 + py * transform->ModelView.m21 + pz * transform->ModelView.m31;
+                    light->Direction.y = px * transform->ModelView.m12 + py * transform->ModelView.m22 + pz * transform->ModelView.m32;
+                    light->Direction.z = px * transform->ModelView.m13 + py * transform->ModelView.m23 + pz * transform->ModelView.m33;
 
                     light->Diffuse.r = length * State.DX.Light.Colors.R[x];
                     light->Diffuse.g = length * State.DX.Light.Colors.G[x];

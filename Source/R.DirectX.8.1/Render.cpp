@@ -20,10 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "Mathematics/Vector.h"
 #include "Module.h"
 #include "State.h"
 
 using namespace Renderer::Graphics;
+using namespace Mathematics;
 
 namespace Renderer
 {
@@ -158,7 +160,7 @@ namespace Renderer
             return TRUE;
         }
 
-        extern "C" BOOL __cdecl RenderVertexBufferPrelit(const void* buffer, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+        extern "C" BOOL __cdecl RenderVertexBufferPrelit(const void* buffer, const u32 vertexCount, const u16* indexes, const u32 indexCount, const u32 mode)
         {
             DX::SetMode(mode);
 

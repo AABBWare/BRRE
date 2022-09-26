@@ -126,7 +126,7 @@ namespace Renderer
         enum class ClippingMode : s32
         {
             Disabled = 0,
-            Enabled = 31
+            Active = 31
         };
     }
 }

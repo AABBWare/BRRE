@@ -28,14 +28,14 @@ SOFTWARE.
 #include "DXShader.h"
 #include "DXTexture.h"
 #include "DXVertexShaderConstants.h"
+#include "Graphics/Color.h"
 #include "Graphics/Graphics.h"
-#include "Mathematics/Matrix.h"
 #include "Graphics/Texture.h"
-#include "Graphics/Vector.h"
 #include "Graphics/Vertex.h"
+#include "Mathematics/Matrix.h"
+#include "Mathematics/Vector.h"
 
 #define MAX_CUBE_TEXTURE_COUNT 100
-#define MAX_DEVICE_COUNT 16
 #define MAX_PALETTE_BUFFER_SIZE 256
 #define MAX_PIXEL_BUFFER_SIZE (1024 * 1024 + 512 * 512 + 256 * 256 + 128 * 128 + 64 * 64 + 32 * 32 + 16 * 16 + 8 * 8 + 4 * 4 + 2 * 2 + 1 * 1)
 #define MAX_PIXEL_SHADER_COUNT 9
@@ -96,7 +96,7 @@ namespace Renderer
 
                 struct
                 {
-                    // todo: name, type (enum) + flags
+                    // todo: name, type (enum) + options
                     u32 Mode;
 
                     D3DCULL Cull = D3DCULL::D3DCULL_CCW;
@@ -122,7 +122,7 @@ namespace Renderer
 
                 struct
                 {
-                    BOOL IsEnabled = TRUE;
+                    BOOL IsActive = TRUE;
                     BOOL IsChanged = TRUE;
 
                     f32 Alpha;
@@ -135,7 +135,9 @@ namespace Renderer
                     } Colors;
 
                     D3DLIGHT8 Lights[MAX_LIGHT_COUNT];
-                    struct Renderer::Graphics::Vector3 XYZ[MAX_LIGHT_COUNT];
+
+                    struct Renderer::Graphics::RGB Color;
+                    struct Mathematics::Vector3 XYZ[MAX_LIGHT_COUNT];
                 } Light;
 
                 // todo: Fog structure
@@ -193,9 +195,6 @@ namespace Renderer
                     /// World to Line Segment matrix.
                     /// </summary>
                     struct Mathematics::Matrix4x4 W2L;
-
-                    // todo: proper types
-                    f32 UnknownFloats4[3];
 
                     /// <summary>
                     /// Identity matrix.
@@ -268,8 +267,8 @@ namespace Renderer
                 {
                     struct
                     {
-                        struct Renderer::Graphics::Vector4 Actual[25]; // todo: proper size
-                        struct Renderer::Graphics::Vector4 Staging[25]; // todo: proper size
+                        struct Mathematics::Vector4 Actual[25]; // todo: proper size
+                        struct Mathematics::Vector4 Staging[25]; // todo: proper size
                     } Constants;
 
                     struct DX::Shader::DXVertexShader VertexShaders[MAX_VERTEX_SHADER_COUNT]

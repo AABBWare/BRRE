@@ -173,7 +173,7 @@ namespace Renderer
                 glDisableClientState(GL_NORMAL_ARRAY);
             }
 
-            if (State.GL.Light.IsEnabled)
+            if (State.GL.Light.IsActive)
             {
                 glEnableClientState(GL_NORMAL_ARRAY);
                 glNormalPointer(GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].Normal);
@@ -219,7 +219,7 @@ namespace Renderer
             glTexCoordPointer(2, GL_FLOAT, sizeof(struct SVertex), &vertexes[0].UV);
             glNormalPointer(GL_FLOAT, sizeof(struct SVertex), &vertexes[0].Normal);
 
-            if (State.GL.Light.IsEnabled)
+            if (State.GL.Light.IsActive)
             {
                 glEnableClientState(GL_NORMAL_ARRAY);
             }

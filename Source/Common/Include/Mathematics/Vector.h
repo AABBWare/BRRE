@@ -24,23 +24,20 @@ SOFTWARE.
 
 #include "Basic.h"
 
-namespace Renderer
+namespace Mathematics
 {
-    namespace Graphics
+    struct Vector2
     {
-        struct Vector2
-        {
-            f32 X, Y;
-        };
+        f32 X, Y;
+    };
 
-        struct Vector3
-        {
-            f32 X, Y, Z;
-        };
+    struct Vector3
+    {
+        f32 X, Y, Z;
+    };
 
-        struct Vector4
-        {
-            f32 X, Y, Z, W;
-        };
-    }
+    struct Vector4
+    {
+        f32 X, Y, Z, W;
+    };
 }

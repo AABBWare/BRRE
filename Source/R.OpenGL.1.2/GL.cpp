@@ -189,7 +189,7 @@ namespace Renderer
                     glGenTextures(1, &texture->ID);
                 }
 
-                State.GL.Textures.Render.IsEnabled = FALSE;
+                State.GL.Textures.Render.IsActive = FALSE;
 
                 for (auto x = 0; x < MAX_SELECTED_TEXTURE_COUNT; x++)
                 {
@@ -250,7 +250,7 @@ namespace Renderer
                 {
                     glFrontFace(GL_CCW);
 
-                    if (State.GL.Textures.Render.IsEnabled)
+                    if (State.GL.Textures.Render.IsActive)
                     {
                         glCullFace(GL_BACK);
                     }
@@ -267,7 +267,7 @@ namespace Renderer
                 {
                     glFrontFace(GL_CW);
 
-                    if (State.GL.Textures.Render.IsEnabled)
+                    if (State.GL.Textures.Render.IsActive)
                     {
                         glCullFace(GL_FRONT);
                     }
@@ -293,7 +293,7 @@ namespace Renderer
                 GLF.glActiveTextureARB(GL_TEXTURE0_ARB);
                 glEnable(GL_TEXTURE_2D);
 
-                if (mode & GRAPHICS_MODE_IS_ALPHA_BLEND_ENABLED)
+                if (mode & GRAPHICS_MODE_IS_ALPHA_BLEND_ACTIVE)
                 {
                     glEnable(GL_BLEND);
                     glEnable(GL_ALPHA_TEST);
@@ -306,7 +306,7 @@ namespace Renderer
 
                 glBlendFunc(State.GL.Mode.SourceBlend, State.GL.Mode.DestinationBlend);
 
-                if (mode & GRAPHICS_MODE_IS_FOG_ENABLED)
+                if (mode & GRAPHICS_MODE_IS_FOG_ACTIVE)
                 {
                     glEnable(GL_FOG);
                 }
@@ -315,19 +315,19 @@ namespace Renderer
                     glDisable(GL_FOG);
                 }
 
-                if (mode & (GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED))
+                if (mode & (GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ACTIVE | GRAPHICS_MODE_IS_DEPTH_BUFFER_ACTIVE))
                 {
                     glEnable(GL_DEPTH_TEST);
                     glDepthMask(GL_TRUE);
                     glDepthFunc(GL_LESS);
                 }
-                else if (mode & GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED)
+                else if (mode & GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ACTIVE)
                 {
                     glEnable(GL_DEPTH_TEST);
                     glDepthMask(GL_FALSE);
                     glDepthFunc(GL_LEQUAL);
                 }
-                else if (mode & GRAPHICS_MODE_IS_ALPHA_BLEND_ENABLED)
+                else if (mode & GRAPHICS_MODE_IS_ALPHA_BLEND_ACTIVE)
                 {
                     glDisable(GL_DEPTH_TEST);
                     glDepthMask(GL_FALSE);
@@ -340,7 +340,7 @@ namespace Renderer
                     glDepthFunc(GL_ALWAYS);
                 }
 
-                if (State.GL.Light.IsEnabled)
+                if (State.GL.Light.IsActive)
                 {
                     glEnable(GL_LIGHTING);
                 }

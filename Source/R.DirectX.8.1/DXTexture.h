@@ -38,11 +38,11 @@ namespace Renderer
                 u32 Width;
                 u32 Height;
                 u32 Options;
-                s32 MipLevelCount;
+                u32 MipLevelCount;
 
                 u16 ActualWidth;
                 u16 ActualHeight;
-                s32 ActualMipLevelCount;
+                u32 ActualMipLevelCount;
 
                 IDirect3DTexture8* Texture;
             };

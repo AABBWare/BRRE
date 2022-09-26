@@ -239,7 +239,7 @@ namespace Renderer
                     }
                 }
 
-                if (State.Settings.UseFixedFunctionPipe == 0)
+                if (!State.Settings.IsFixedPipelineActive)
                 {
                     for (auto x = 0; x < MAX_VERTEX_SHADER_COUNT; x++)
                     {
@@ -311,10 +311,10 @@ namespace Renderer
                     "Unable to create 565 source buffer.");
 
                 // todo: magic numbers below + types
-                auto count = State.Settings.UseFixedFunctionPipe == 0 ? (65000 * 32) : (65000 * 40); // todo sizeof proper type
+                auto count = State.Settings.IsFixedPipelineActive ? (65000 * 40) : (65000 * 32); // todo sizeof proper type
 
                 DXC(State.DX.DirectXDevice->CreateVertexBuffer(count, D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
-                    State.Settings.UseFixedFunctionPipe == 0 ? D3DFVF_TEX0 : D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ,
+                    State.Settings.IsFixedPipelineActive ? (D3DFVF_TEX2 | D3DFVF_NORMAL | D3DFVF_XYZ) : D3DFVF_TEX0,
                     D3DPOOL::D3DPOOL_DEFAULT, &State.DX.Buffers.SVertexBuffer),
                     "Unable to create vertex buffer.");
 
@@ -434,14 +434,14 @@ namespace Renderer
             {
                 // todo
                 //SetRenderState(D3DRENDERSTATETYPE::D3DRS_SRCBLEND,
-                //    mode & GRAPHICS_MODE_IS_ALPHA_BLEND_ENABLED ? D3DBLEND::D3DBLEND_SRCALPHA : D3DBLEND::D3DBLEND_ONE);
+                //    mode & GRAPHICS_MODE_IS_ALPHA_BLEND_ACTIVE ? D3DBLEND::D3DBLEND_SRCALPHA : D3DBLEND::D3DBLEND_ONE);
                 SetRenderState(D3DRENDERSTATETYPE::D3DRS_SRCBLEND, State.DX.Mode.Blend.SourceBlend);
                 SetRenderState(D3DRENDERSTATETYPE::D3DRS_DESTBLEND, State.DX.Mode.Blend.DestinationBlend);
                 SetRenderState(D3DRENDERSTATETYPE::D3DRS_BLENDOP, State.DX.Mode.Blend.DestinationBlendOperation);
 
-                if ((State.DX.Mode.Mode ^ mode) & GRAPHICS_MODE_IS_TEXTURE_BLENDING_ENABLED)
+                if ((State.DX.Mode.Mode ^ mode) & GRAPHICS_MODE_IS_TEXTURE_BLENDING_ACTIVE)
                 {
-                    if (mode & GRAPHICS_MODE_IS_TEXTURE_BLENDING_ENABLED)
+                    if (mode & GRAPHICS_MODE_IS_TEXTURE_BLENDING_ACTIVE)
                     {
                         State.DX.Textures.UnknownArray[0] = NULL;
                     }
@@ -549,7 +549,7 @@ namespace Renderer
                                 State.DX.Textures.Selected.ClampV[indx] == TextureClamp::Wrap
                                 ? D3DTEXTUREADDRESS::D3DTADDRESS_WRAP : D3DTEXTUREADDRESS::D3DTADDRESS_CLAMP);
 
-                            if (State.Settings.UseFixedFunctionPipe == 0)
+                            if (!State.Settings.IsFixedPipelineActive)
                             {
                                 SetTextureStageValue(x, D3DTEXTURESTAGESTATETYPE::D3DTSS_TEXTURETRANSFORMFLAGS,
                                     (mode & GRAPHICS_MODE_UNKNOWN_400)
@@ -602,7 +602,7 @@ namespace Renderer
                         SetTextureStageValue(3, D3DTEXTURESTAGESTATETYPE::D3DTSS_ALPHAOP, D3DTEXTUREOP::D3DTOP_DISABLE);
                     }
 
-                    if (State.Settings.UseFixedFunctionPipe != 0)
+                    if (State.Settings.IsFixedPipelineActive)
                     {
                         if (mode & GRAPHICS_MODE_UNKNOWN_400)
                         {
@@ -628,9 +628,9 @@ namespace Renderer
 
                 State.DX.Textures.ClampOperation = State.DX.Textures.BlendOperation;
 
-                if ((State.DX.Mode.Mode ^ mode) & GRAPHICS_MODE_IS_ALPHA_BLEND_ENABLED)
+                if ((State.DX.Mode.Mode ^ mode) & GRAPHICS_MODE_IS_ALPHA_BLEND_ACTIVE)
                 {
-                    if (mode & GRAPHICS_MODE_IS_ALPHA_BLEND_ENABLED)
+                    if (mode & GRAPHICS_MODE_IS_ALPHA_BLEND_ACTIVE)
                     {
                         SetRenderState(D3DRENDERSTATETYPE::D3DRS_ALPHABLENDENABLE, TRUE);
                         SetRenderState(D3DRENDERSTATETYPE::D3DRS_ALPHATESTENABLE, FALSE);
@@ -642,13 +642,13 @@ namespace Renderer
                     }
                 }
 
-                if ((State.DX.Mode.Mode ^ mode) & GRAPHICS_MODE_IS_FOG_ENABLED)
+                if ((State.DX.Mode.Mode ^ mode) & GRAPHICS_MODE_IS_FOG_ACTIVE)
                 {
-                    if (mode & GRAPHICS_MODE_IS_FOG_ENABLED)
+                    if (mode & GRAPHICS_MODE_IS_FOG_ACTIVE)
                     {
                         SetRenderState(D3DRENDERSTATETYPE::D3DRS_FOGENABLE, TRUE);
 
-                        if (State.Settings.UseFixedFunctionPipe != 0)
+                        if (State.Settings.IsFixedPipelineActive)
                         {
                             SetRenderState(D3DRENDERSTATETYPE::D3DRS_FOGVERTEXMODE, D3DFOGMODE::D3DFOG_LINEAR);
                             SetRenderState(D3DRENDERSTATETYPE::D3DRS_FOGTABLEMODE, D3DFOGMODE::D3DFOG_NONE);
@@ -658,7 +658,7 @@ namespace Renderer
                     {
                         SetRenderState(D3DRENDERSTATETYPE::D3DRS_FOGENABLE, FALSE);
 
-                        if (State.Settings.UseFixedFunctionPipe != 0)
+                        if (State.Settings.IsFixedPipelineActive)
                         {
                             SetRenderState(D3DRENDERSTATETYPE::D3DRS_FOGVERTEXMODE, D3DFOGMODE::D3DFOG_NONE);
                             SetRenderState(D3DRENDERSTATETYPE::D3DRS_FOGTABLEMODE, D3DFOGMODE::D3DFOG_NONE);
@@ -672,22 +672,22 @@ namespace Renderer
                     return;
                 }
 
-                if (!((State.DX.Mode.Mode ^ mode) & (GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED)))
+                if (!((State.DX.Mode.Mode ^ mode) & (GRAPHICS_MODE_IS_DEPTH_BUFFER_ACTIVE | GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ACTIVE)))
                 {
                     State.DX.Mode.Mode = mode;
                     return;
                 }
 
-                if (mode & (GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED))
+                if (mode & (GRAPHICS_MODE_IS_DEPTH_BUFFER_ACTIVE | GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ACTIVE))
                 {
                     SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZENABLE, State.DX.ZBufferType);
 
-                    if ((mode & GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED) && (mode & GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED))
+                    if ((mode & GRAPHICS_MODE_IS_DEPTH_BUFFER_ACTIVE) && (mode & GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ACTIVE))
                     {
                         SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZWRITEENABLE, TRUE);
                         SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_LESSEQUAL);
                     }
-                    else if (mode & GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED)
+                    else if (mode & GRAPHICS_MODE_IS_DEPTH_BUFFER_ACTIVE)
                     {
                         SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZWRITEENABLE, FALSE);
                         SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_LESSEQUAL);
@@ -724,7 +724,7 @@ namespace Renderer
                 DXC(State.DX.DirectXDevice->SetVertexShader(vs->Handle == 0 ? vs->FVF : vs->Handle),
                     "Unable to set vertex shader.");
 
-                if (State.Settings.UseFixedFunctionPipe == 0)
+                if (!State.Settings.IsFixedPipelineActive)
                 {
                     DXC(State.DX.DirectXDevice->SetPixelShader(State.DX.Shaders.PixelShaders[(s32)psn].Handle),
                         "Unable to set pixel shader.");
@@ -748,13 +748,13 @@ namespace Renderer
                     State.DX.TriangleCount = 0;
                 }
 
-                auto flags = State.DX.TriangleCount == 0
+                auto options = State.DX.TriangleCount == 0
                     ? D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK
                     : D3DLOCK_NOOVERWRITE | D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK;
 
                 u16* buffer;
                 DXC(State.DX.Buffers.IndexBuffer->Lock(State.DX.TriangleCount * 3 * sizeof(u16),
-                    count * 3 * sizeof(u16), (BYTE**)&buffer, flags), "Unable to lock index buffer.");
+                    count * 3 * sizeof(u16), (BYTE**)&buffer, options), "Unable to lock index buffer.");
 
                 CopyMemory(buffer, indexes, count * 3 * sizeof(u16));
 
@@ -999,7 +999,7 @@ namespace Renderer
             // todo: rename parameter
             void SetVertexShaderValues(const u32 mode)
             {
-                if (State.Settings.UseFixedFunctionPipe != 0) { return; }
+                if (State.Settings.IsFixedPipelineActive) { return; }
 
                 if (State.DX.Textures.BlendOperation == TextureBlendOperation::Disable)
                 {
@@ -1029,27 +1029,27 @@ namespace Renderer
 
                 struct Matrix4x4 matrix;
 
-                MatrixMultiply(&matrix, &State.DX.Transform.Matrix1, &State.DX.Transform.Projection);
+                Multiply(&matrix, &State.DX.Transform.Matrix1, &State.DX.Transform.Projection);
 
-                State.DX.Shaders.Constants.Staging[0].X = matrix._11;
-                State.DX.Shaders.Constants.Staging[0].Y = matrix._21;
-                State.DX.Shaders.Constants.Staging[0].Z = matrix._31;
-                State.DX.Shaders.Constants.Staging[0].W = matrix._41;
+                State.DX.Shaders.Constants.Staging[0].X = matrix.m11;
+                State.DX.Shaders.Constants.Staging[0].Y = matrix.m21;
+                State.DX.Shaders.Constants.Staging[0].Z = matrix.m31;
+                State.DX.Shaders.Constants.Staging[0].W = matrix.m41;
 
-                State.DX.Shaders.Constants.Staging[1].X = matrix._12;
-                State.DX.Shaders.Constants.Staging[1].Y = matrix._22;
-                State.DX.Shaders.Constants.Staging[1].Z = matrix._32;
-                State.DX.Shaders.Constants.Staging[1].W = matrix._42;
+                State.DX.Shaders.Constants.Staging[1].X = matrix.m12;
+                State.DX.Shaders.Constants.Staging[1].Y = matrix.m22;
+                State.DX.Shaders.Constants.Staging[1].Z = matrix.m32;
+                State.DX.Shaders.Constants.Staging[1].W = matrix.m42;
 
-                State.DX.Shaders.Constants.Staging[2].X = matrix._13;
-                State.DX.Shaders.Constants.Staging[2].Y = matrix._23;
-                State.DX.Shaders.Constants.Staging[2].Z = matrix._33;
-                State.DX.Shaders.Constants.Staging[2].W = matrix._43;
+                State.DX.Shaders.Constants.Staging[2].X = matrix.m13;
+                State.DX.Shaders.Constants.Staging[2].Y = matrix.m23;
+                State.DX.Shaders.Constants.Staging[2].Z = matrix.m33;
+                State.DX.Shaders.Constants.Staging[2].W = matrix.m43;
 
-                State.DX.Shaders.Constants.Staging[3].X = matrix._14;
-                State.DX.Shaders.Constants.Staging[3].Y = matrix._24;
-                State.DX.Shaders.Constants.Staging[3].Z = matrix._34;
-                State.DX.Shaders.Constants.Staging[3].W = matrix._44;
+                State.DX.Shaders.Constants.Staging[3].X = matrix.m14;
+                State.DX.Shaders.Constants.Staging[3].Y = matrix.m24;
+                State.DX.Shaders.Constants.Staging[3].Z = matrix.m34;
+                State.DX.Shaders.Constants.Staging[3].W = matrix.m44;
 
                 State.DX.Shaders.Constants.Staging[7].X = 1.0f;
                 State.DX.Shaders.Constants.Staging[7].Y = 1.0f;
@@ -1061,7 +1061,7 @@ namespace Renderer
                 State.DX.Shaders.Constants.Staging[24].Z = 0.0f;
                 State.DX.Shaders.Constants.Staging[24].W = 0.0f;
 
-                if (State.DX.Light.IsEnabled)
+                if (State.DX.Light.IsActive)
                 {
                     State.DX.Shaders.Constants.Staging[4].X = -State.DX.Light.XYZ[0].X;
                     State.DX.Shaders.Constants.Staging[4].Y = -State.DX.Light.XYZ[0].Y;
@@ -1130,9 +1130,9 @@ namespace Renderer
                 State.DX.Shaders.Constants.Staging[6].X = State.DX.FogStart;
                 State.DX.Shaders.Constants.Staging[6].Y = 1.0f / (State.DX.FogEnd - State.DX.FogStart);
 
-                State.DX.Shaders.Constants.Staging[9].X = State.DX.Transform.UnknownFloats4[0];
-                State.DX.Shaders.Constants.Staging[9].Y = State.DX.Transform.UnknownFloats4[1];
-                State.DX.Shaders.Constants.Staging[9].Z = State.DX.Transform.UnknownFloats4[2];
+                State.DX.Shaders.Constants.Staging[9].X = State.DX.Light.Color.R;
+                State.DX.Shaders.Constants.Staging[9].Y = State.DX.Light.Color.G;
+                State.DX.Shaders.Constants.Staging[9].Z = State.DX.Light.Color.B;
                 State.DX.Shaders.Constants.Staging[9].W = 0.0f;
 
                 State.DX.Shaders.Constants.Staging[10].X = State.DX.FogR;
@@ -1140,20 +1140,20 @@ namespace Renderer
                 State.DX.Shaders.Constants.Staging[10].Z = State.DX.FogB;
                 State.DX.Shaders.Constants.Staging[10].W = 0.0f;
 
-                State.DX.Shaders.Constants.Staging[12].X = State.DX.Transform.O2W._11;
-                State.DX.Shaders.Constants.Staging[12].Y = State.DX.Transform.O2W._21;
-                State.DX.Shaders.Constants.Staging[12].Z = State.DX.Transform.O2W._31;
-                State.DX.Shaders.Constants.Staging[12].W = State.DX.Transform.O2W._41;
+                State.DX.Shaders.Constants.Staging[12].X = State.DX.Transform.O2W.m11;
+                State.DX.Shaders.Constants.Staging[12].Y = State.DX.Transform.O2W.m21;
+                State.DX.Shaders.Constants.Staging[12].Z = State.DX.Transform.O2W.m31;
+                State.DX.Shaders.Constants.Staging[12].W = State.DX.Transform.O2W.m41;
 
-                State.DX.Shaders.Constants.Staging[13].X = State.DX.Transform.O2W._12;
-                State.DX.Shaders.Constants.Staging[13].Y = State.DX.Transform.O2W._22;
-                State.DX.Shaders.Constants.Staging[13].Z = State.DX.Transform.O2W._32;
-                State.DX.Shaders.Constants.Staging[13].W = State.DX.Transform.O2W._42;
+                State.DX.Shaders.Constants.Staging[13].X = State.DX.Transform.O2W.m12;
+                State.DX.Shaders.Constants.Staging[13].Y = State.DX.Transform.O2W.m22;
+                State.DX.Shaders.Constants.Staging[13].Z = State.DX.Transform.O2W.m32;
+                State.DX.Shaders.Constants.Staging[13].W = State.DX.Transform.O2W.m42;
 
-                State.DX.Shaders.Constants.Staging[14].X = State.DX.Transform.O2W._13;
-                State.DX.Shaders.Constants.Staging[14].Y = State.DX.Transform.O2W._23;
-                State.DX.Shaders.Constants.Staging[14].Z = State.DX.Transform.O2W._33;
-                State.DX.Shaders.Constants.Staging[14].W = State.DX.Transform.O2W._43;
+                State.DX.Shaders.Constants.Staging[14].X = State.DX.Transform.O2W.m13;
+                State.DX.Shaders.Constants.Staging[14].Y = State.DX.Transform.O2W.m23;
+                State.DX.Shaders.Constants.Staging[14].Z = State.DX.Transform.O2W.m33;
+                State.DX.Shaders.Constants.Staging[14].W = State.DX.Transform.O2W.m43;
 
                 State.DX.Shaders.Constants.Staging[20].W = 0.0f;
 
@@ -1161,25 +1161,25 @@ namespace Renderer
 
                 if (State.DX.Mode.Mode & GRAPHICS_MODE_UNKNOWN_400)
                 {
-                    State.DX.Shaders.Constants.Staging[15].X = State.DX.Transform.W2L._11;
-                    State.DX.Shaders.Constants.Staging[15].Y = State.DX.Transform.W2L._21;
-                    State.DX.Shaders.Constants.Staging[15].Z = State.DX.Transform.W2L._31;
-                    State.DX.Shaders.Constants.Staging[15].W = State.DX.Transform.W2L._41;
+                    State.DX.Shaders.Constants.Staging[15].X = State.DX.Transform.W2L.m11;
+                    State.DX.Shaders.Constants.Staging[15].Y = State.DX.Transform.W2L.m21;
+                    State.DX.Shaders.Constants.Staging[15].Z = State.DX.Transform.W2L.m31;
+                    State.DX.Shaders.Constants.Staging[15].W = State.DX.Transform.W2L.m41;
 
-                    State.DX.Shaders.Constants.Staging[16].X = State.DX.Transform.W2L._12;
-                    State.DX.Shaders.Constants.Staging[16].Y = State.DX.Transform.W2L._22;
-                    State.DX.Shaders.Constants.Staging[16].Z = State.DX.Transform.W2L._32;
-                    State.DX.Shaders.Constants.Staging[16].W = State.DX.Transform.W2L._42;
+                    State.DX.Shaders.Constants.Staging[16].X = State.DX.Transform.W2L.m12;
+                    State.DX.Shaders.Constants.Staging[16].Y = State.DX.Transform.W2L.m22;
+                    State.DX.Shaders.Constants.Staging[16].Z = State.DX.Transform.W2L.m32;
+                    State.DX.Shaders.Constants.Staging[16].W = State.DX.Transform.W2L.m42;
 
-                    State.DX.Shaders.Constants.Staging[17].X = State.DX.Transform.W2L._13;
-                    State.DX.Shaders.Constants.Staging[17].Y = State.DX.Transform.W2L._23;
-                    State.DX.Shaders.Constants.Staging[17].Z = State.DX.Transform.W2L._33;
-                    State.DX.Shaders.Constants.Staging[17].W = State.DX.Transform.W2L._43;
+                    State.DX.Shaders.Constants.Staging[17].X = State.DX.Transform.W2L.m13;
+                    State.DX.Shaders.Constants.Staging[17].Y = State.DX.Transform.W2L.m23;
+                    State.DX.Shaders.Constants.Staging[17].Z = State.DX.Transform.W2L.m33;
+                    State.DX.Shaders.Constants.Staging[17].W = State.DX.Transform.W2L.m43;
 
-                    State.DX.Shaders.Constants.Staging[18].X = State.DX.Transform.W2L._14;
-                    State.DX.Shaders.Constants.Staging[18].Y = State.DX.Transform.W2L._24;
-                    State.DX.Shaders.Constants.Staging[18].Z = State.DX.Transform.W2L._34;
-                    State.DX.Shaders.Constants.Staging[18].W = State.DX.Transform.W2L._44;
+                    State.DX.Shaders.Constants.Staging[18].X = State.DX.Transform.W2L.m14;
+                    State.DX.Shaders.Constants.Staging[18].Y = State.DX.Transform.W2L.m24;
+                    State.DX.Shaders.Constants.Staging[18].Z = State.DX.Transform.W2L.m34;
+                    State.DX.Shaders.Constants.Staging[18].W = State.DX.Transform.W2L.m44;
                 }
 
                 for (auto x = 0; x < 25; x++) // todo: why ( x is register)
@@ -1236,7 +1236,7 @@ namespace Renderer
             {
                 State.DX.Light.IsChanged = TRUE;
 
-                if (State.Settings.UseFixedFunctionPipe == 0) { return TRUE; }
+                if (!State.Settings.IsFixedPipelineActive) { return TRUE; }
 
                 State.DX.Light.Lights[0].Type = D3DLIGHTTYPE::D3DLIGHT_DIRECTIONAL;
                 State.DX.Light.Lights[0].Diffuse.a = 1.0f;

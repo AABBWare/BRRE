@@ -30,7 +30,7 @@ namespace Renderer
     {
         extern "C" BOOL __cdecl ClearZBuffer(void)
         {
-            GL::SetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ENABLED | GRAPHICS_MODE_IS_DEPTH_BUFFER_ENABLED);
+            GL::SetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ACTIVE | GRAPHICS_MODE_IS_DEPTH_BUFFER_ACTIVE);
 
             glClear(GL_DEPTH_BUFFER_BIT);
 

@@ -24,6 +24,7 @@ SOFTWARE.
 #include "State.h"
 
 using namespace Renderer::Graphics;
+using namespace Mathematics;
 
 namespace Renderer
 {
@@ -80,7 +81,7 @@ namespace Renderer
                 State.GL.Textures.Render.Textures[indx].RenderContext);
 
             State.GL.Textures.Render.Index = indx;
-            State.GL.Textures.Render.IsEnabled = TRUE;
+            State.GL.Textures.Render.IsActive = TRUE;
             State.GL.Textures.Render.Direction = -1.0f;
 
             glDrawBuffer(GL_FRONT);
@@ -95,7 +96,7 @@ namespace Renderer
             wglMakeCurrent(State.Window.DeviceContext, State.Window.RenderContext);
             GL::GLF.wglBindTexImageARB(State.GL.Textures.Render.Textures[State.GL.Textures.Render.Index].Buffer, WGL_FRONT_LEFT_ARB);
 
-            State.GL.Textures.Render.IsEnabled = FALSE;
+            State.GL.Textures.Render.IsActive = FALSE;
             State.GL.Textures.Render.Direction = 1.0f;
 
             return TRUE;

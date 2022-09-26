@@ -36,7 +36,7 @@ namespace Renderer
         {
             struct SettingsState
             {
-                BOOL UseFixedFunctionPipe;
+                BOOL IsFixedPipelineActive;
                 BOOL SyncRetrace = TRUE;
 
                 u32 RenderTextureCount;
@@ -45,7 +45,7 @@ namespace Renderer
                 u32 CubeTextureCount;
                 u32 CubeTextureSize = DEFAULT_CUBE_TEXTURE_SIZE;
 
-                BOOL UseWBuffer;
+                BOOL IsWBufferActive;
             };
 
             void ReadValue(const char*, const char*, u32*);

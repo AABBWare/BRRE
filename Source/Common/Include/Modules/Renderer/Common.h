@@ -28,19 +28,21 @@ namespace Renderer
 {
     namespace External
     {
+        struct InitializeModuleColorOptions
+        {
+            u32* Display;
+            u32* Font;
+            u32* BitsPerPixel;
+        };
+
         struct InitializeModuleArguments
         {
-            u32* ColorBits;
-            s32* Unk1;
-            s32* Unk2;
-            u32* AlphaBits;
-            s32* Unk3;
-            u32* BPP1;
-            u32* Width;
-            u32* Height;
-            u32* BPP2;
-            s32* Unk4;
-            s32* Unk5;
+            struct InitializeModuleColorOptions R;
+            struct InitializeModuleColorOptions G;
+            struct InitializeModuleColorOptions B;
+
+            u32* AGPMode;
+            void* Unknown; // Legacy, for compatibility.
         };
     }
 }

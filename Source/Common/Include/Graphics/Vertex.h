@@ -24,7 +24,7 @@ SOFTWARE.
 
 #include "Basic.h"
 #include "Color.h"
-#include "Vector.h"
+#include "Mathematics/Vector.h"
 
 namespace Renderer
 {
@@ -32,7 +32,7 @@ namespace Renderer
     {
         struct D3DTLVertex
         {
-            struct Vector4 XYZW;
+            struct Mathematics::Vector4 XYZW;
             union
             {
                 u32 RGBA;
@@ -45,53 +45,53 @@ namespace Renderer
                 };
             } Diffuse;
             u32 Specular;
-            struct Vector2 UV;
+            struct Mathematics::Vector2 UV;
         };
 
         struct D3DLVertex
         {
-            struct Vector3 XYZ;
+            struct Mathematics::Vector3 XYZ;
             u32 Diffuse;
-            struct Vector2 UV;
+            struct Mathematics::Vector2 UV;
         };
 
         struct SVertex
         {
-            struct Vector3 XYZ;
-            struct Vector3 Normal;
-            struct Vector2 UV;
+            struct Mathematics::Vector3 XYZ;
+            struct Mathematics::Vector3 Normal;
+            struct Mathematics::Vector2 UV;
         };
 
         struct SVertex2Basis
         {
-            struct Vector3 XYZ;
-            struct Vector3 Normal;
-            struct Vector2 UV;
-            struct Vector2 UV1;
+            struct Mathematics::Vector3 XYZ;
+            struct Mathematics::Vector3 Normal;
+            struct Mathematics::Vector2 UV;
+            struct Mathematics::Vector2 UV1;
         };
 
         struct SVertexBasis
         {
-            struct Vector3 XYZ;
-            struct Vector3 Normal;
-            struct Vector2 UV;
-            struct Vector3 BlendWeight;
-            struct Vector3 BlendIndexes;
-            struct Vector2 UV1;
-            struct Vector3 PointSize;
+            struct Mathematics::Vector3 XYZ;
+            struct Mathematics::Vector3 Normal;
+            struct Mathematics::Vector2 UV;
+            struct Mathematics::Vector3 BlendWeight;
+            struct Mathematics::Vector3 BlendIndexes;
+            struct Mathematics::Vector2 UV1;
+            struct Mathematics::Vector3 PointSize;
         };
 
         struct TLVertex
         {
-            struct Vector3 XYZ;
+            struct Mathematics::Vector3 XYZ;
             struct
             {
                 f32 Z;
-                u32 UnkFlags;
+                u32 UnkOptions;
                 f32 X;
                 f32 Y;
             } Coordinates;
-            struct Vector2 UV;
+            struct Mathematics::Vector2 UV;
             struct RGBA RGBA;
             f32 Unk1[3];
         };
@@ -99,16 +99,16 @@ namespace Renderer
         struct BoneVertex
         {
             u32 Unk;
-            struct Vector3 XYZ;
-            struct Vector3 BlendWeight;
-            struct Vector3 BlendIndexes;
-            struct Vector3 Normal;
-            struct Vector4 PointSize;
-            struct Vector3 Diffuse;
-            struct Vector4 Specular;
-            struct Vector2 UV;
-            struct Vector3 UV1;
-            struct Vector3 UV2;
+            struct Mathematics::Vector3 XYZ;
+            struct Mathematics::Vector3 BlendWeight;
+            struct Mathematics::Vector3 BlendIndexes;
+            struct Mathematics::Vector3 Normal;
+            struct Mathematics::Vector4 PointSize;
+            struct Mathematics::Vector3 Diffuse;
+            struct Mathematics::Vector4 Specular;
+            struct Mathematics::Vector2 UV;
+            struct Mathematics::Vector3 UV1;
+            struct Mathematics::Vector3 UV2;
         };
     }
 }
