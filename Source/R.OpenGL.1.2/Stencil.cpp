@@ -22,25 +22,22 @@ SOFTWARE.
 
 #include "Module.h"
 
-using namespace Renderer::Graphics;
+using namespace Renderer::Enums;
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl SetStencilEnable(const BOOL)
     {
-        extern "C" BOOL __cdecl SetStencilEnable(const BOOL)
-        {
-            return FALSE;
-        }
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl SetStencilFunc(const StencilFunction)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl SetStencilFunc(const StencilFunction)
+    {
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl SetStencilPass(const StencilPass)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl SetStencilPass(const StencilPass)
+    {
+        return FALSE;
     }
 }

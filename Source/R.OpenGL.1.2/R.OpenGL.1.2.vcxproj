@@ -221,11 +221,11 @@
   <ItemGroup>
     <ClInclude Include="Exit.h" />
     <ClInclude Include="GL.h" />
-    <ClInclude Include="GLState.h" />
-    <ClInclude Include="GLTexture.h" />
+    <ClInclude Include="GL.State.h" />
+    <ClInclude Include="GL.Texture.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="State.h" />
-    <ClInclude Include="WindowState.h" />
+    <ClInclude Include="Window.State.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Module.def" />

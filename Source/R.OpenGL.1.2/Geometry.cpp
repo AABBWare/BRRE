@@ -21,324 +21,319 @@ SOFTWARE.
 */
 
 #include "GL.h"
-#include "Graphics/Color.h"
-#include "Mathematics/Matrix.h"
-#include "Graphics/Vertex.h"
 #include "Module.h"
 #include "State.h"
 
+using namespace Graphics;
 using namespace Mathematics;
-using namespace Renderer::Graphics;
+using namespace Renderer::Enums;
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl PolyListBone(const void*, const u32, const u16*, const u32, const u32, const u32)
     {
-        extern "C" BOOL __cdecl PolyListBone(const void*, const u32, const u16*, const u32, const u32, const u32)
+        return FALSE;
+    }
+
+    extern "C" BOOL __cdecl PolyListD3DL(const struct D3DTLVertex* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+    {
+        if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
+
+        GL::SetMode(mode);
+
+        glDisable(GL_LIGHTING);
+
+        GL::GLF.glClientActiveTextureARB(GL_TEXTURE0_ARB);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+
+        glDisableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        glVertexPointer(3, GL_FLOAT, sizeof(struct D3DTLVertex), &vertexes[0].XYZW);
+        glColorPointer(4, GL_FLOAT, sizeof(struct BGRA), &State.GL.Vertexes.Colors);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(struct D3DTLVertex), &vertexes[0].UV);
+
+        for (auto x = 0; x < vertexCount; x++)
         {
-            return FALSE;
+            auto vertex = &vertexes[x];
+            auto color = &State.GL.Vertexes.Colors[x];
+
+            color->R = 0.003921569f * vertex->Diffuse.R;
+            color->G = 0.003921569f * vertex->Diffuse.G;
+            color->B = 0.003921569f * vertex->Diffuse.B;
+            color->A = 0.003921569f * vertex->Diffuse.A;
         }
 
-        extern "C" BOOL __cdecl PolyListD3DL(const struct D3DTLVertex* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+        glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl PolyListD3DTL(const struct D3DTLVertex* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+    {
+        if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
+
+        GL::SetMode(mode & 0xffffff37);
+
+        glDisable(GL_LIGHTING);
+
+        GL::GLF.glClientActiveTextureARB(GL_TEXTURE1_ARB);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        GL::GLF.glClientActiveTextureARB(GL_TEXTURE0_ARB);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+
+        glDisableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        glVertexPointer(3, GL_FLOAT, sizeof(struct D3DTLVertex), &vertexes[0].XYZW);
+        glColorPointer(4, GL_FLOAT, sizeof(struct BGRA), &State.GL.Vertexes.Colors);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(struct D3DTLVertex), &vertexes[0].UV);
+
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+
+        auto height = State.Window.Height;
+        auto width = State.Window.Width;
+        auto clippingNear = State.GL.Mode.Clipping.Near;
+        auto clippingFar = State.GL.Mode.Clipping.Far;
+
+        struct Matrix4x4 matrix =
         {
-            if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
+             2.0f / width, 0.0f,           0.0f,                                                            0.0f,
+             0.0f,         -2.0f / height, 0.0f,                                                            0.0f,
+             0.0f,         0.0f,           2.0f / (clippingFar - clippingNear),                             0.0f,
+             -1.0f,        1.0f,           -(clippingFar + clippingNear) / (clippingFar - clippingNear),    1.0f
+        };
 
-            GL::SetMode(mode);
+        glLoadMatrixf((float*)&matrix);
 
-            glDisable(GL_LIGHTING);
+        for (auto x = 0; x < vertexCount; x++)
+        {
+            auto vertex = &vertexes[x];
+            auto color = &State.GL.Vertexes.Colors[x];
 
-            GL::GLF.glClientActiveTextureARB(GL_TEXTURE0_ARB);
-            glEnableClientState(GL_VERTEX_ARRAY);
-            glEnableClientState(GL_COLOR_ARRAY);
-
-            glDisableClientState(GL_NORMAL_ARRAY);
-            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-            glVertexPointer(3, GL_FLOAT, sizeof(struct D3DTLVertex), &vertexes[0].XYZW);
-            glColorPointer(4, GL_FLOAT, sizeof(struct BGRA), &State.GL.Vertexes.Colors);
-            glTexCoordPointer(2, GL_FLOAT, sizeof(struct D3DTLVertex), &vertexes[0].UV);
-
-            for (auto x = 0; x < vertexCount; x++)
-            {
-                auto vertex = &vertexes[x];
-                auto color = &State.GL.Vertexes.Colors[x];
-
-                color->R = 0.003921569f * vertex->Diffuse.R;
-                color->G = 0.003921569f * vertex->Diffuse.G;
-                color->B = 0.003921569f * vertex->Diffuse.B;
-                color->A = 0.003921569f * vertex->Diffuse.A;
-            }
-
-            glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
-
-            return TRUE;
+            color->R = 0.003921569f * vertex->Diffuse.R;
+            color->B = 0.003921569f * vertex->Diffuse.B;
+            color->G = 0.003921569f * vertex->Diffuse.G;
+            color->A = 0.003921569f * vertex->Diffuse.A;
         }
 
-        extern "C" BOOL __cdecl PolyListD3DTL(const struct D3DTLVertex* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+        glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
+
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl PolyListBasis(const struct SVertexBasis* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+    {
+        if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
+
+        GL::SetMode(mode);
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        glVertexPointer(3, GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].XYZ);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].UV);
+
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        if (State.GL.Textures.MultiBlendOperation == BlendOperation::None)
         {
-            if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
-
-            GL::SetMode(mode & 0xffffff37);
-
-            glDisable(GL_LIGHTING);
-
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glNormalPointer(GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].Normal);
+        }
+        else
+        {
             GL::GLF.glClientActiveTextureARB(GL_TEXTURE1_ARB);
-            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-            GL::GLF.glClientActiveTextureARB(GL_TEXTURE0_ARB);
-            glEnableClientState(GL_VERTEX_ARRAY);
-            glEnableClientState(GL_COLOR_ARRAY);
-
-            glDisableClientState(GL_NORMAL_ARRAY);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glTexCoordPointer(2, GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].UV1);
 
-            glVertexPointer(3, GL_FLOAT, sizeof(struct D3DTLVertex), &vertexes[0].XYZW);
-            glColorPointer(4, GL_FLOAT, sizeof(struct BGRA), &State.GL.Vertexes.Colors);
-            glTexCoordPointer(2, GL_FLOAT, sizeof(struct D3DTLVertex), &vertexes[0].UV);
-
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            glLoadIdentity();
-            glMatrixMode(GL_PROJECTION);
-            glPushMatrix();
-
-            auto height = State.Window.Height;
-            auto width = State.Window.Width;
-            auto clippingNear = State.GL.Mode.Clipping.Near;
-            auto clippingFar = State.GL.Mode.Clipping.Far;
-
-            struct Matrix4x4 matrix =
-            {
-                 2.0f / width, 0.0f,           0.0f,                                                            0.0f,
-                 0.0f,         -2.0f / height, 0.0f,                                                            0.0f,
-                 0.0f,         0.0f,           2.0f / (clippingFar - clippingNear),                             0.0f,
-                 -1.0f,        1.0f,           -(clippingFar + clippingNear) / (clippingFar - clippingNear),    1.0f
-            };
-
-            glLoadMatrixf((float*)&matrix);
-
-            for (auto x = 0; x < vertexCount; x++)
-            {
-                auto vertex = &vertexes[x];
-                auto color = &State.GL.Vertexes.Colors[x];
-
-                color->R = 0.003921569f * vertex->Diffuse.R;
-                color->B = 0.003921569f * vertex->Diffuse.B;
-                color->G = 0.003921569f * vertex->Diffuse.G;
-                color->A = 0.003921569f * vertex->Diffuse.A;
-            }
-
-            glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
-
-            glMatrixMode(GL_PROJECTION);
-            glPopMatrix();
-
-            glMatrixMode(GL_MODELVIEW);
-            glPopMatrix();
-
-            return TRUE;
-        }
-
-        extern "C" BOOL __cdecl PolyListBasis(const struct SVertexBasis* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
-        {
-            if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
-
-            GL::SetMode(mode);
-
-            glEnableClientState(GL_VERTEX_ARRAY);
-            glDisableClientState(GL_COLOR_ARRAY);
-            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-            glVertexPointer(3, GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].XYZ);
-            glTexCoordPointer(2, GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].UV);
-
+            GL::GLF.glActiveTextureARB(GL_TEXTURE1_ARB);
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-            if (State.GL.Textures.MultiBlendOperation == TextureBlendOperation::None)
-            {
-                glEnableClientState(GL_NORMAL_ARRAY);
-                glNormalPointer(GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].Normal);
-            }
-            else
-            {
-                GL::GLF.glClientActiveTextureARB(GL_TEXTURE1_ARB);
-                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-                glTexCoordPointer(2, GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].UV1);
-
-                GL::GLF.glActiveTextureARB(GL_TEXTURE1_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-                GL::GLF.glActiveTextureARB(GL_TEXTURE0_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-                glDisableClientState(GL_NORMAL_ARRAY);
-            }
-
-            if (State.GL.Light.IsActive)
-            {
-                glEnableClientState(GL_NORMAL_ARRAY);
-                glNormalPointer(GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].Normal);
-                glEnable(GL_LIGHTING);
-            }
-            else
-            {
-                glDisableClientState(GL_NORMAL_ARRAY);
-                glDisable(GL_LIGHTING);
-            }
-
-            glColor3f(1.0f, 1.0f, 1.0f);
-
-            glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
-
-            if (State.GL.Textures.MultiBlendOperation != TextureBlendOperation::None)
-            {
-                GL::GLF.glClientActiveTextureARB(GL_TEXTURE1_ARB);
-                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-                GL::GLF.glClientActiveTextureARB(GL_TEXTURE0_ARB);
-                GL::GLF.glActiveTextureARB(GL_TEXTURE0_ARB);
-                return TRUE;
-            }
-
+            GL::GLF.glActiveTextureARB(GL_TEXTURE0_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
             glDisableClientState(GL_NORMAL_ARRAY);
-
-            return TRUE;
         }
 
-        extern "C" BOOL __cdecl PolyList(const struct SVertex* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+        if (State.GL.Light.IsActive)
         {
-            if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
-
-            GL::SetMode(mode);
-
-            GL::GLF.glClientActiveTextureARB(GL_TEXTURE0_ARB);
-            glEnableClientState(GL_VERTEX_ARRAY);
-            glEnableClientState(GL_COLOR_ARRAY);
-            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-            glVertexPointer(3, GL_FLOAT, sizeof(struct SVertex), &vertexes[0].XYZ);
-            glColorPointer(4, GL_FLOAT, sizeof(struct BGRA), &State.GL.Vertexes.Colors);
-            glTexCoordPointer(2, GL_FLOAT, sizeof(struct SVertex), &vertexes[0].UV);
-            glNormalPointer(GL_FLOAT, sizeof(struct SVertex), &vertexes[0].Normal);
-
-            if (State.GL.Light.IsActive)
-            {
-                glEnableClientState(GL_NORMAL_ARRAY);
-            }
-
-            if (State.GL.Textures.MultiBlendOperation == TextureBlendOperation::None
-                || State.GL.Textures.MultiBlendOperation == TextureBlendOperation::AddSigned
-                || State.GL.Textures.MultiBlendOperation == TextureBlendOperation::Subtract
-                || State.GL.Textures.MultiBlendOperation == TextureBlendOperation::AddSmooth)
-            {
-                GL::GLF.glActiveTextureARB(GL_TEXTURE1_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-                glDisable(GL_TEXTURE_2D);
-                GL::GLF.glActiveTextureARB(GL_TEXTURE0_ARB);
-                glEnable(GL_FOG);
-                glEnable(GL_LIGHTING);
-            }
-            else
-            {
-                GL::GLF.glClientActiveTextureARB(GL_TEXTURE1_ARB);
-                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-                glTexCoordPointer(2, GL_FLOAT, sizeof(struct SVertex), &vertexes[0].UV);
-                GL::GLF.glActiveTextureARB(GL_TEXTURE1_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-                glEnable(GL_TEXTURE_2D);
-                GL::GLF.glActiveTextureARB(GL_TEXTURE0_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-            }
-
-            f32 material[] = { 1.0f, 1.0f, 1.0f, State.GL.Light.Colors.Alpha };
-
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, (f32*)&material);
-
-            for (auto x = 0; x < vertexCount; x++)
-            {
-                auto color = &State.GL.Vertexes.Colors[x];
-
-                color->R = 1.0f;
-                color->G = 1.0f;
-                color->B = 1.0f;
-                color->A = 1.0f;
-            }
-
-            glColor3f(1.0f, 1.0f, 1.0f);
-
-            glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
-
-            return TRUE;
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glNormalPointer(GL_FLOAT, sizeof(struct SVertexBasis), &vertexes[0].Normal);
+            glEnable(GL_LIGHTING);
         }
-
-        extern "C" BOOL __cdecl PolyListTL(const struct TLVertex* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+        else
         {
-            if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
-
-            GL::SetMode(mode);
-
+            glDisableClientState(GL_NORMAL_ARRAY);
             glDisable(GL_LIGHTING);
+        }
 
-            glEnableClientState(GL_VERTEX_ARRAY);
-            glEnableClientState(GL_COLOR_ARRAY);
-            glDisableClientState(GL_NORMAL_ARRAY);
-            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glColor3f(1.0f, 1.0f, 1.0f);
 
-            glVertexPointer(3, GL_FLOAT, sizeof(struct TLVertex), &vertexes[0].XYZ);
-            glColorPointer(4, GL_FLOAT, sizeof(struct BGRA), &State.GL.Vertexes.Colors);
-            glTexCoordPointer(2, GL_FLOAT, sizeof(struct TLVertex), &vertexes[0].UV);
+        glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
 
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            glLoadIdentity();
-            glMatrixMode(GL_PROJECTION);
-            glPushMatrix();
-
-            auto clippingNear = State.GL.Mode.Clipping.Near;
-            auto clippingFar = State.GL.Mode.Clipping.Far;
-
-            struct Matrix4x4 matrix =
-            {
-                1.0f, 0.0f, 0.0f,                                                       0.0f,
-                0.0f, 1.0f, 0.0f,                                                       0.0f,
-                0.0f, 0.0f, clippingFar / (clippingFar - clippingNear),                 1.0f,
-                0.0f, 0.0f, -clippingNear * clippingFar / (clippingFar - clippingNear), 0.0f
-            };
-
-            glLoadMatrixf((float*)&matrix);
-
-            for (auto x = 0; x < vertexCount; x++)
-            {
-                auto vertex = &vertexes[x];
-                // Note: it looks like there is no need for this adjustment.
-                //vertex->XYZ.X = vertex->XYZ.X - vertex->XYZ.Z / State.Window.Width;
-                //vertex->XYZ.Y = vertex->XYZ.Y - vertex->XYZ.Z / State.Window.Height;
-
-                auto color = &State.GL.Vertexes.Colors[x];
-
-                color->R = vertex->RGBA.R;
-                color->G = vertex->RGBA.G;
-                color->B = vertex->RGBA.B;
-                color->A = vertex->RGBA.A;
-            }
-
-            glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
-
-            glMatrixMode(GL_PROJECTION);
-            glPopMatrix();
-
-            glMatrixMode(GL_MODELVIEW);
-            glPopMatrix();
-
+        if (State.GL.Textures.MultiBlendOperation != BlendOperation::None)
+        {
+            GL::GLF.glClientActiveTextureARB(GL_TEXTURE1_ARB);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            GL::GLF.glClientActiveTextureARB(GL_TEXTURE0_ARB);
+            GL::GLF.glActiveTextureARB(GL_TEXTURE0_ARB);
             return TRUE;
         }
 
-        extern "C" BOOL __cdecl LineListD3DTL(const struct D3DTLVertex*, const u32, const u32)
+        glDisableClientState(GL_NORMAL_ARRAY);
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl PolyList(const struct SVertex* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+    {
+        if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
+
+        GL::SetMode(mode);
+
+        GL::GLF.glClientActiveTextureARB(GL_TEXTURE0_ARB);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        glVertexPointer(3, GL_FLOAT, sizeof(struct SVertex), &vertexes[0].XYZ);
+        glColorPointer(4, GL_FLOAT, sizeof(struct BGRA), &State.GL.Vertexes.Colors);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(struct SVertex), &vertexes[0].UV);
+        glNormalPointer(GL_FLOAT, sizeof(struct SVertex), &vertexes[0].Normal);
+
+        if (State.GL.Light.IsActive)
         {
-            return FALSE;
+            glEnableClientState(GL_NORMAL_ARRAY);
         }
 
-        extern "C" BOOL __cdecl DotListD3DTL(const struct D3DTLVertex*, const u32, const u32)
+        if (State.GL.Textures.MultiBlendOperation == BlendOperation::None
+            || State.GL.Textures.MultiBlendOperation == BlendOperation::AddSigned
+            || State.GL.Textures.MultiBlendOperation == BlendOperation::Subtract
+            || State.GL.Textures.MultiBlendOperation == BlendOperation::AddSmooth)
         {
-            return FALSE;
+            GL::GLF.glActiveTextureARB(GL_TEXTURE1_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            glDisable(GL_TEXTURE_2D);
+            GL::GLF.glActiveTextureARB(GL_TEXTURE0_ARB);
+            glEnable(GL_FOG);
+            glEnable(GL_LIGHTING);
         }
+        else
+        {
+            GL::GLF.glClientActiveTextureARB(GL_TEXTURE1_ARB);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glTexCoordPointer(2, GL_FLOAT, sizeof(struct SVertex), &vertexes[0].UV);
+            GL::GLF.glActiveTextureARB(GL_TEXTURE1_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            glEnable(GL_TEXTURE_2D);
+            GL::GLF.glActiveTextureARB(GL_TEXTURE0_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        }
+
+        f32 material[] = { 1.0f, 1.0f, 1.0f, State.GL.Light.Colors.Alpha };
+
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, (f32*)&material);
+
+        for (auto x = 0; x < vertexCount; x++)
+        {
+            auto color = &State.GL.Vertexes.Colors[x];
+
+            color->R = 1.0f;
+            color->G = 1.0f;
+            color->B = 1.0f;
+            color->A = 1.0f;
+        }
+
+        glColor3f(1.0f, 1.0f, 1.0f);
+
+        glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl PolyListTL(const struct TLVertex* vertexes, const u32 vertexCount, const u16 * indexes, const u32 indexCount, const u32 mode)
+    {
+        if (MAX_VERTEX_COUNT < vertexCount) { return FALSE; }
+
+        GL::SetMode(mode);
+
+        glDisable(GL_LIGHTING);
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        glVertexPointer(3, GL_FLOAT, sizeof(struct TLVertex), &vertexes[0].XYZ);
+        glColorPointer(4, GL_FLOAT, sizeof(struct BGRA), &State.GL.Vertexes.Colors);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(struct TLVertex), &vertexes[0].UV);
+
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+
+        auto clippingNear = State.GL.Mode.Clipping.Near;
+        auto clippingFar = State.GL.Mode.Clipping.Far;
+
+        struct Matrix4x4 matrix =
+        {
+            1.0f, 0.0f, 0.0f,                                                       0.0f,
+            0.0f, 1.0f, 0.0f,                                                       0.0f,
+            0.0f, 0.0f, clippingFar / (clippingFar - clippingNear),                 1.0f,
+            0.0f, 0.0f, -clippingNear * clippingFar / (clippingFar - clippingNear), 0.0f
+        };
+
+        glLoadMatrixf((float*)&matrix);
+
+        for (auto x = 0; x < vertexCount; x++)
+        {
+            auto vertex = &vertexes[x];
+            // Note: it looks like there is no need for this adjustment.
+            //vertex->XYZ.X = vertex->XYZ.X - vertex->XYZ.Z / State.Window.Width;
+            //vertex->XYZ.Y = vertex->XYZ.Y - vertex->XYZ.Z / State.Window.Height;
+
+            auto color = &State.GL.Vertexes.Colors[x];
+
+            color->R = vertex->RGBA.R;
+            color->G = vertex->RGBA.G;
+            color->B = vertex->RGBA.B;
+            color->A = vertex->RGBA.A;
+        }
+
+        glDrawElements(GL_TRIANGLES, indexCount * 3, GL_UNSIGNED_SHORT, indexes);
+
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl LineListD3DTL(const struct D3DTLVertex*, const u32, const u32)
+    {
+        return FALSE;
+    }
+
+    extern "C" BOOL __cdecl DotListD3DTL(const struct D3DTLVertex*, const u32, const u32)
+    {
+        return FALSE;
     }
 }

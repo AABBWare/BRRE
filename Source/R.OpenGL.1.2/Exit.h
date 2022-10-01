@@ -22,10 +22,7 @@ SOFTWARE.
 
 #pragma once
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
-    {
-        void Exit(const char*, ...);
-    }
+    void Exit(const char*, ...);
 }

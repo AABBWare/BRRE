@@ -23,28 +23,25 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl BeginScene(void)
     {
-        extern "C" BOOL __cdecl BeginScene(void)
-        {
-            if (State.DX.IsSceneActive) { return FALSE; }
+        if (State.DX.IsSceneActive) { return FALSE; }
 
-            if (State.DX.DirectXDevice->BeginScene()) { return FALSE; }
+        if (State.DX.DirectXDevice->BeginScene()) { return FALSE; }
 
-            State.DX.IsSceneActive = TRUE;
+        State.DX.IsSceneActive = TRUE;
 
-            return TRUE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl EndScene(void)
-        {
-            if (!State.DX.IsSceneActive) { return FALSE; }
+    extern "C" BOOL __cdecl EndScene(void)
+    {
+        if (!State.DX.IsSceneActive) { return FALSE; }
 
-            State.DX.IsSceneActive = FALSE;
+        State.DX.IsSceneActive = FALSE;
 
-            return State.DX.DirectXDevice->EndScene() == 0;
-        }
+        return State.DX.DirectXDevice->EndScene() == 0;
     }
 }

@@ -23,90 +23,86 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-using namespace Renderer::Graphics;
 using namespace Mathematics;
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl SetViewPort(const f32 x, const f32 y, const f32 width, const f32 height, const f32 zNear, const f32 zFar)
     {
-        extern "C" BOOL __cdecl SetViewPort(const f32 x, const f32 y, const f32 width, const f32 height, const f32 zNear, const f32 zFar)
-        {
-            glViewport((s32)x, (s32)y, (s32)(width - x), (s32)(height - y));
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
-            glMatrixMode(GL_MODELVIEW);
+        glViewport((s32)x, (s32)y, (s32)(width - x), (s32)(height - y));
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
 
-            State.GL.Mode.Clipping.Near = zNear;
-            State.GL.Mode.Clipping.Far = zFar;
+        State.GL.Mode.Clipping.Near = zNear;
+        State.GL.Mode.Clipping.Far = zFar;
 
-            return TRUE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl BeginCubeMapRender(const u32, const u32)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl BeginCubeMapRender(const u32, const u32)
+    {
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl RenderVertexBuffer(const void*, const u32, const u16*, const u32, const u32)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl RenderVertexBuffer(const void*, const u32, const u16*, const u32, const u32)
+    {
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl RenderVertexBufferBasis(const void*, const u32, const u16*, const u32, const u32)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl RenderVertexBufferBasis(const void*, const u32, const u16*, const u32, const u32)
+    {
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl RenderVertexBufferBone(const void*, const u32, const u16*, const u32, const struct Vector4*, const u32, const u32)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl RenderVertexBufferBone(const void*, const u32, const u16*, const u32, const struct Vector4*, const u32, const u32)
+    {
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl RenderVertexBufferPrelit(const void*, const u32, const u16*, const u32, const u32)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl RenderVertexBufferPrelit(const void*, const u32, const u16*, const u32, const u32)
+    {
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl EndCubeMapRender(void)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl EndCubeMapRender(void)
+    {
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl BeginRenderToTexture(const u32 indx)
-        {
-            glBindTexture(GL_TEXTURE_2D, State.GL.Textures.Render.Textures[indx].ID);
-            GL::GLF.wglReleaseTexImageARB(State.GL.Textures.Render.Textures[indx].Buffer, WGL_FRONT_LEFT_ARB);
-            wglMakeCurrent(State.GL.Textures.Render.Textures[indx].DeviceContext,
-                State.GL.Textures.Render.Textures[indx].RenderContext);
+    extern "C" BOOL __cdecl BeginRenderToTexture(const u32 indx)
+    {
+        glBindTexture(GL_TEXTURE_2D, State.GL.Textures.Render.Textures[indx].ID);
+        GL::GLF.wglReleaseTexImageARB(State.GL.Textures.Render.Textures[indx].Buffer, WGL_FRONT_LEFT_ARB);
+        wglMakeCurrent(State.GL.Textures.Render.Textures[indx].DeviceContext,
+            State.GL.Textures.Render.Textures[indx].RenderContext);
 
-            State.GL.Textures.Render.Index = indx;
-            State.GL.Textures.Render.IsActive = TRUE;
-            State.GL.Textures.Render.Direction = -1.0f;
+        State.GL.Textures.Render.Index = indx;
+        State.GL.Textures.Render.IsActive = TRUE;
+        State.GL.Textures.Render.Direction = -1.0f;
 
-            glDrawBuffer(GL_FRONT);
-            glReadBuffer(GL_FRONT);
+        glDrawBuffer(GL_FRONT);
+        glReadBuffer(GL_FRONT);
 
-            return TRUE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl EndRenderToTexture(void)
-        {
-            glBindTexture(GL_TEXTURE_2D, State.GL.Textures.Render.Textures[State.GL.Textures.Render.Index].ID);
-            wglMakeCurrent(State.Window.DeviceContext, State.Window.RenderContext);
-            GL::GLF.wglBindTexImageARB(State.GL.Textures.Render.Textures[State.GL.Textures.Render.Index].Buffer, WGL_FRONT_LEFT_ARB);
+    extern "C" BOOL __cdecl EndRenderToTexture(void)
+    {
+        glBindTexture(GL_TEXTURE_2D, State.GL.Textures.Render.Textures[State.GL.Textures.Render.Index].ID);
+        wglMakeCurrent(State.Window.DeviceContext, State.Window.RenderContext);
+        GL::GLF.wglBindTexImageARB(State.GL.Textures.Render.Textures[State.GL.Textures.Render.Index].Buffer, WGL_FRONT_LEFT_ARB);
 
-            State.GL.Textures.Render.IsActive = FALSE;
-            State.GL.Textures.Render.Direction = 1.0f;
+        State.GL.Textures.Render.IsActive = FALSE;
+        State.GL.Textures.Render.Direction = 1.0f;
 
-            return TRUE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl SelectRenderTexture(const u32 indx)
-        {
-            State.GL.Textures.Selected.Textures[0] = State.GL.Textures.Render.Textures[indx].ID;
+    extern "C" BOOL __cdecl SelectRenderTexture(const u32 indx)
+    {
+        State.GL.Textures.Selected.Textures[0] = State.GL.Textures.Render.Textures[indx].ID;
 
-            return TRUE;
-        }
+        return TRUE;
     }
 }

@@ -22,18 +22,15 @@ SOFTWARE.
 
 #include "Module.h"
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl BeginScene(void)
     {
-        extern "C" BOOL __cdecl BeginScene(void)
-        {
-            return TRUE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl EndScene(void)
-        {
-            return TRUE;
-        }
+    extern "C" BOOL __cdecl EndScene(void)
+    {
+        return TRUE;
     }
 }

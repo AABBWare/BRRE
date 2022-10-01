@@ -23,51 +23,48 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl SetOmniLight(const f32*, const f32, const u32)
     {
-        extern "C" BOOL __cdecl SetOmniLight(const f32*, const f32, const u32)
-        {
-            return FALSE;
-        }
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl EnableLighting(const BOOL mode)
-        {
-            State.GL.Light.IsActive = mode;
+    extern "C" BOOL __cdecl EnableLighting(const BOOL mode)
+    {
+        State.GL.Light.IsActive = mode;
 
-            return TRUE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl SetAmbientLight(const f32)
-        {
-            return TRUE;
-        }
+    extern "C" BOOL __cdecl SetAmbientLight(const f32)
+    {
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl SetAmbientLightColor(const f32, const f32, const f32)
-        {
-            return TRUE;
-        }
+    extern "C" BOOL __cdecl SetAmbientLightColor(const f32, const f32, const f32)
+    {
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl SetLightColor(const f32 r, const f32 g, const f32 b, const u32 indx)
-        {
-            State.GL.Light.Colors.R[indx] = r;
-            State.GL.Light.Colors.G[indx] = g;
-            State.GL.Light.Colors.B[indx] = b;
+    extern "C" BOOL __cdecl SetLightColor(const f32 r, const f32 g, const f32 b, const u32 indx)
+    {
+        State.GL.Light.Colors.R[indx] = r;
+        State.GL.Light.Colors.G[indx] = g;
+        State.GL.Light.Colors.B[indx] = b;
 
-            return TRUE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl SetLightConstants(const f32, const f32, const f32, const f32 alpha)
-        {
-            State.GL.Light.Colors.Alpha = alpha;
+    extern "C" BOOL __cdecl SetLightConstants(const f32, const f32, const f32, const f32 alpha)
+    {
+        State.GL.Light.Colors.Alpha = alpha;
 
-            return TRUE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl SetLightVector(const Mathematics::Vector3*, const f32, const u32)
-        {
-            return TRUE;
-        }
+    extern "C" BOOL __cdecl SetLightVector(const Mathematics::Vector3*, const f32, const u32)
+    {
+        return TRUE;
     }
 }

@@ -22,10 +22,7 @@ SOFTWARE.
 
 #include "State.h"
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
-    {
-        struct State State;
-    }
+    struct State State;
 }

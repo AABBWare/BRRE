@@ -22,19 +22,16 @@ SOFTWARE.
 
 #pragma once
 
-#include "GLState.h"
-#include "WindowState.h"
+#include "GL.State.h"
+#include "Window.State.h"
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    struct State
     {
-        struct State
-        {
-            struct GL::GLState GL;
-            struct WindowState Window;
-        };
+        struct GL::GLState GL;
+        struct WindowState Window;
+    };
 
-        extern struct State State;
-    }
+    extern struct State State;
 }

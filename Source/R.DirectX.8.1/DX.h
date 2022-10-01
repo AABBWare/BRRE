@@ -23,40 +23,34 @@ SOFTWARE.
 #pragma once
 
 #include "Basic.h"
-#include "DXShader.h"
-#include "DXWindow.h"
-#include "Mathematics/Matrix.h"
+#include "DX.Shader.h"
+#include "DX.Window.h"
+#include "Mathematics.Matrix.h"
 #include "Win.h"
 
 #include <d3dx8.h>
 
-namespace Renderer
+namespace DX
 {
-    namespace External
-    {
-        namespace DX
-        {
-            void DXC(const HRESULT, const char*);
+    void DXC(const HRESULT, const char*);
 
-            BOOL InitializeState(void);
-            BOOL ResetDevice(const u32, const u32, const u32, u32*, struct DX::Window::DXWindow*);
-            BOOL SetLight(void);
-            u32 Alpha(const f32);
-            u32 Color(const f32, const f32, const f32, const f32);
-            void Create(void);
-            void Destroy(void);
-            void SetBlendShaders(const u32);
-            void SetIndexes(const u16*, const u32);
-            void SetIndexSource(const u32, IDirect3DIndexBuffer8*);
-            void SetLightShaders(const u32);
-            void SetMode(const u32);
-            void SetRenderState(const D3DRENDERSTATETYPE, const s32);
-            void SetShaders(const DX::Shader::DXVertexShaderName, const DX::Shader::DXPixelShaderName);
-            void SetShadersMode(const u32);
-            void SetSkeletonShaders(const u32);
-            void SetTextureStageValue(const u32, const D3DTEXTURESTAGESTATETYPE, const u32);
-            void SetTLShaders(const u32);
-            void SetVertexShaderValues(const u32);
-        }
-    }
+    BOOL InitializeState(void);
+    BOOL ResetDevice(const u32, const u32, const u32, u32*, struct DX::DXWindow*);
+    BOOL SetLight(void);
+    u32 Alpha(const f32);
+    u32 Color(const f32, const f32, const f32, const f32);
+    void Create(void);
+    void Destroy(void);
+    void SetBlendShaders(const u32);
+    void SetIndexes(const u16*, const u32);
+    void SetIndexSource(const u32, IDirect3DIndexBuffer8*);
+    void SetLightShaders(const u32);
+    void SetMode(const u32);
+    void SetRenderState(const D3DRENDERSTATETYPE, const s32);
+    void SetShaders(const DX::Shaders::DXVertexShaderName, const DX::Shaders::DXPixelShaderName);
+    void SetShadersMode(const u32);
+    void SetSkeletonShaders(const u32);
+    void SetTextureStageValue(const u32, const D3DTEXTURESTAGESTATETYPE, const u32);
+    void SetTLShaders(const u32);
+    void SetVertexShaderValues(const u32);
 }

@@ -26,111 +26,108 @@ SOFTWARE.
 
 #define UNKNOWN_DEVICE_NAME "Unknown Device"
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl Init(const HWND hwnd, const struct InitializeModuleArguments* args)
     {
-        extern "C" BOOL __cdecl Init(const HWND hwnd, const struct InitializeModuleArguments* args)
+        Kill();
+
+        State.Window.HWND = hwnd;
+
+        for (auto x = 0; x < MAX_WINDOW_COUNT; x++)
         {
-            Kill();
+            State.DX.Windows.Windows[x] = NULL;
+        }
 
-            State.Window.HWND = hwnd;
+        auto dxw = new DX::DXWindow();
 
-            for (auto x = 0; x < MAX_WINDOW_COUNT; x++)
+        if (dxw == NULL)
+        {
+            Exit("Unable to allocate memory for DirectX window.");
+            return FALSE;
+        }
+
+        DX::Initialize(dxw);
+
+        State.DX.Windows.Windows[0] = dxw;
+        State.DX.Windows.Current = dxw;
+
+        auto dx = Direct3DCreate8(D3D_SDK_VERSION);
+
+        if (dx == NULL)
+        {
+            Exit("Unable to initialize DirectX.");
+            return FALSE;
+        }
+
+        State.DX.DirectX = dx;
+        State.DX.AvailableDevices.Count = State.DX.DirectX->GetAdapterCount();
+
+        for (auto x = 0; x < State.DX.AvailableDevices.Count; x++)
+        {
+            D3DADAPTER_IDENTIFIER8 identifier;
+            auto result = State.DX.DirectX->GetAdapterIdentifier(x, D3DENUM_NO_WHQL_LEVEL, &identifier);
+
+            State.DX.AvailableDevices.Details[x].Index = x;
+
+            ZeroMemory(State.DX.AvailableDevices.Details[x].Driver, MAX_DEVICE_IDENTIFIER_STRING);
+            ZeroMemory(State.DX.AvailableDevices.Details[x].Description, MAX_DEVICE_IDENTIFIER_STRING);
+
+            if (result == 0)
             {
+                State.DX.AvailableDevices.Details[x].DeviceID = identifier.DeviceId;
+                State.DX.AvailableDevices.Details[x].SubSystemID = identifier.SubSysId;
+                CopyMemory(State.DX.AvailableDevices.Details[x].Driver, identifier.Driver, MAX_DEVICE_IDENTIFIER_STRING);
+                CopyMemory(State.DX.AvailableDevices.Details[x].Description, identifier.Description, MAX_DEVICE_IDENTIFIER_STRING);
+            }
+            else
+            {
+                State.DX.AvailableDevices.Details[x].DeviceID = 0;
+                State.DX.AvailableDevices.Details[x].SubSystemID = 0;
+                CopyMemory(State.DX.AvailableDevices.Details[x].Driver, UNKNOWN_DEVICE_NAME, strlen(UNKNOWN_DEVICE_NAME));
+                CopyMemory(State.DX.AvailableDevices.Details[x].Description, UNKNOWN_DEVICE_NAME, strlen(UNKNOWN_DEVICE_NAME));
+            }
+        }
+
+        State.Window.HWND = hwnd;
+        State.DX.Windows.Current->HWND = hwnd;
+
+        CopyMemory(&State.InitializeArguments, args, sizeof(struct InitializeModuleArguments));
+
+        State.DX.DirectX->Release();
+        State.DX.DirectX = NULL;
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl Kill(void)
+    {
+        DX::Destroy();
+
+        for (auto x = 0; x < MAX_WINDOW_COUNT; x++)
+        {
+            if (State.DX.Windows.Windows[x] != NULL)
+            {
+                delete State.DX.Windows.Windows[x];
+
                 State.DX.Windows.Windows[x] = NULL;
             }
+        }
 
-            auto dxw = new DX::Window::DXWindow();
+        State.DX.Windows.Current = NULL;
 
-            if (dxw == NULL)
-            {
-                Exit("Unable to allocate memory for DirectX window.");
-                return FALSE;
-            }
+        if (State.DX.DirectXDevice != NULL)
+        {
+            State.DX.DirectXDevice->Release();
+            State.DX.DirectXDevice = NULL;
+        }
 
-            DX::Window::Initialize(dxw);
-
-            State.DX.Windows.Windows[0] = dxw;
-            State.DX.Windows.Current = dxw;
-
-            auto dx = Direct3DCreate8(D3D_SDK_VERSION);
-
-            if (dx == NULL)
-            {
-                Exit("Unable to initialize DirectX.");
-                return FALSE;
-            }
-
-            State.DX.DirectX = dx;
-            State.DX.AvailableDevices.Count = State.DX.DirectX->GetAdapterCount();
-
-            for (auto x = 0; x < State.DX.AvailableDevices.Count; x++)
-            {
-                D3DADAPTER_IDENTIFIER8 identifier;
-                auto result = State.DX.DirectX->GetAdapterIdentifier(x, D3DENUM_NO_WHQL_LEVEL, &identifier);
-
-                State.DX.AvailableDevices.Details[x].Index = x;
-
-                ZeroMemory(State.DX.AvailableDevices.Details[x].Driver, MAX_DEVICE_IDENTIFIER_STRING);
-                ZeroMemory(State.DX.AvailableDevices.Details[x].Description, MAX_DEVICE_IDENTIFIER_STRING);
-
-                if (result == 0)
-                {
-                    State.DX.AvailableDevices.Details[x].DeviceID = identifier.DeviceId;
-                    State.DX.AvailableDevices.Details[x].SubSystemID = identifier.SubSysId;
-                    CopyMemory(State.DX.AvailableDevices.Details[x].Driver, identifier.Driver, MAX_DEVICE_IDENTIFIER_STRING);
-                    CopyMemory(State.DX.AvailableDevices.Details[x].Description, identifier.Description, MAX_DEVICE_IDENTIFIER_STRING);
-                }
-                else
-                {
-                    State.DX.AvailableDevices.Details[x].DeviceID = 0;
-                    State.DX.AvailableDevices.Details[x].SubSystemID = 0;
-                    CopyMemory(State.DX.AvailableDevices.Details[x].Driver, UNKNOWN_DEVICE_NAME, strlen(UNKNOWN_DEVICE_NAME));
-                    CopyMemory(State.DX.AvailableDevices.Details[x].Description, UNKNOWN_DEVICE_NAME, strlen(UNKNOWN_DEVICE_NAME));
-                }
-            }
-
-            State.Window.HWND = hwnd;
-            State.DX.Windows.Current->HWND = hwnd;
-
-            CopyMemory(&State.InitializeArguments, args, sizeof(struct Renderer::External::InitializeModuleArguments));
-
+        if (State.DX.DirectX != NULL)
+        {
             State.DX.DirectX->Release();
             State.DX.DirectX = NULL;
-
-            return TRUE;
         }
 
-        extern "C" BOOL __cdecl Kill(void)
-        {
-            DX::Destroy();
-
-            for (auto x = 0; x < MAX_WINDOW_COUNT; x++)
-            {
-                if (State.DX.Windows.Windows[x] != NULL)
-                {
-                    delete State.DX.Windows.Windows[x];
-
-                    State.DX.Windows.Windows[x] = NULL;
-                }
-            }
-
-            State.DX.Windows.Current = NULL;
-
-            if (State.DX.DirectXDevice != NULL)
-            {
-                State.DX.DirectXDevice->Release();
-                State.DX.DirectXDevice = NULL;
-            }
-
-            if (State.DX.DirectX != NULL)
-            {
-                State.DX.DirectX->Release();
-                State.DX.DirectX = NULL;
-            }
-
-            return TRUE;
-        }
+        return TRUE;
     }
 }

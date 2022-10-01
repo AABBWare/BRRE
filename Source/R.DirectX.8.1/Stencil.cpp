@@ -23,74 +23,71 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-using namespace Renderer::Graphics;
+using namespace Renderer::Enums;
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl SetStencilEnable(const BOOL mode)
     {
-        extern "C" BOOL __cdecl SetStencilEnable(const BOOL mode)
+        State.DX.IsStencilSet = mode;
+
+        DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILENABLE, mode);
+        DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZENABLE, D3DZBUFFERTYPE::D3DZB_TRUE);
+
+        if (mode == 0)
         {
-            State.DX.IsStencilSet = mode;
-
-            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILENABLE, mode);
-            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZENABLE, D3DZBUFFERTYPE::D3DZB_TRUE);
-
-            if (mode == 0)
-            {
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZWRITEENABLE, TRUE);
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_LESSEQUAL);
-            }
-            else
-            {
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZWRITEENABLE, FALSE);
-            }
-
-            return TRUE;
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZWRITEENABLE, TRUE);
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_LESSEQUAL);
+        }
+        else
+        {
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZWRITEENABLE, FALSE);
         }
 
-        extern "C" BOOL __cdecl SetStencilFunc(const StencilFunction function)
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl SetStencilFunc(const StencilFunction function)
+    {
+        auto value = function == StencilFunction::LessEqual
+            ? D3DCMPFUNC::D3DCMP_LESSEQUAL
+            : D3DCMPFUNC::D3DCMP_ALWAYS;
+
+        DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILFUNC, value);
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl SetStencilPass(const StencilPass pass)
+    {
+        switch (pass)
         {
-            auto value = function == StencilFunction::LessEqual
-                ? D3DCMPFUNC::D3DCMP_LESSEQUAL
-                : D3DCMPFUNC::D3DCMP_ALWAYS;
-
-            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILFUNC, value);
-
-            return TRUE;
+        case StencilPass::LessEqualDecrement:
+        {
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILPASS, D3DSTENCILOP::D3DSTENCILOP_DECR);
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_LESSEQUAL);
+            break;
+        }
+        case StencilPass::LessEqualIncrement:
+        {
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILPASS, D3DSTENCILOP::D3DSTENCILOP_INCR);
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_LESSEQUAL);
+            break;
+        }
+        case StencilPass::GreaterEqualIncrement:
+        {
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILPASS, D3DSTENCILOP::D3DSTENCILOP_INCR);
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_GREATEREQUAL);
+            break;
+        }
+        case StencilPass::GreaterEqualDecrement:
+        {
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILPASS, D3DSTENCILOP::D3DSTENCILOP_DECR);
+            DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_GREATEREQUAL);
+            break;
+        }
         }
 
-        extern "C" BOOL __cdecl SetStencilPass(const StencilPass pass)
-        {
-            switch (pass)
-            {
-            case StencilPass::LessEqualDecrement:
-            {
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILPASS, D3DSTENCILOP::D3DSTENCILOP_DECR);
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_LESSEQUAL);
-                break;
-            }
-            case StencilPass::LessEqualIncrement:
-            {
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILPASS, D3DSTENCILOP::D3DSTENCILOP_INCR);
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_LESSEQUAL);
-                break;
-            }
-            case StencilPass::GreaterEqualIncrement:
-            {
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILPASS, D3DSTENCILOP::D3DSTENCILOP_INCR);
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_GREATEREQUAL);
-                break;
-            }
-            case StencilPass::GreaterEqualDecrement:
-            {
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_STENCILPASS, D3DSTENCILOP::D3DSTENCILOP_DECR);
-                DX::SetRenderState(D3DRENDERSTATETYPE::D3DRS_ZFUNC, D3DCMPFUNC::D3DCMP_GREATEREQUAL);
-                break;
-            }
-            }
-
-            return TRUE;
-        }
+        return TRUE;
     }
 }

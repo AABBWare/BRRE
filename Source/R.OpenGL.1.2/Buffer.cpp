@@ -21,30 +21,26 @@ SOFTWARE.
 */
 
 #include "GL.h"
-#include "Graphics/Graphics.h"
 #include "Module.h"
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl ClearZBuffer(void)
     {
-        extern "C" BOOL __cdecl ClearZBuffer(void)
-        {
-            GL::SetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ACTIVE | GRAPHICS_MODE_IS_DEPTH_BUFFER_ACTIVE);
+        GL::SetMode(GRAPHICS_MODE_IS_DEPTH_BUFFER_WRITES_ACTIVE | GRAPHICS_MODE_IS_DEPTH_BUFFER_ACTIVE);
 
-            glClear(GL_DEPTH_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
-            return TRUE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl AllocateVertexBuffer(const void*, const u32, const u32, void**)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl AllocateVertexBuffer(const void*, const u32, const u32, void**)
+    {
+        return FALSE;
+    }
 
-        extern "C" BOOL __cdecl FreeVertexBuffer(const void*)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl FreeVertexBuffer(const void*)
+    {
+        return FALSE;
     }
 }

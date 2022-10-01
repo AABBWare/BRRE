@@ -28,27 +28,21 @@ SOFTWARE.
 #define DEFAULT_REGULAR_TEXTURE_SIZE 128
 #define DEFAULT_CUBE_TEXTURE_SIZE 256
 
-namespace Renderer
+namespace Settings
 {
-    namespace External
+    struct SettingsState
     {
-        namespace Settings
-        {
-            struct SettingsState
-            {
-                BOOL IsFixedPipelineActive;
-                BOOL SyncRetrace = TRUE;
+        BOOL IsFixedPipelineActive;
+        BOOL SyncRetrace = TRUE;
 
-                u32 RenderTextureCount;
-                u32 RenderTextureSize = DEFAULT_REGULAR_TEXTURE_SIZE;
+        u32 RenderTextureCount;
+        u32 RenderTextureSize = DEFAULT_REGULAR_TEXTURE_SIZE;
 
-                u32 CubeTextureCount;
-                u32 CubeTextureSize = DEFAULT_CUBE_TEXTURE_SIZE;
+        u32 CubeTextureCount;
+        u32 CubeTextureSize = DEFAULT_CUBE_TEXTURE_SIZE;
 
-                BOOL IsWBufferActive;
-            };
+        BOOL IsWBufferActive;
+    };
 
-            void ReadValue(const char*, const char*, u32*);
-        }
-    }
+    void ReadValue(const char*, const char*, u32*);
 }

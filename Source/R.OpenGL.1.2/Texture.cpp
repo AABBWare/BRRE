@@ -24,206 +24,204 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-using namespace Renderer::Graphics;
+using namespace Renderer::Enums;
+using namespace Renderer::Textures;
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" u32 __cdecl AllocateTexture(const struct Texture* texture)
     {
-        extern "C" u32 __cdecl AllocateTexture(const struct Texture* texture)
+        if (MAX_TEXTURE_COUNT <= State.GL.Textures.TextureCount) { return 0; }
+
+        u32 id = 0;
+
+        glGenTextures(1, &id);
+
+        State.GL.Textures.Textures[State.GL.Textures.TextureCount] = id;
+        State.GL.Textures.TextureCount++;
+
+        return id;
+    }
+
+    extern "C" BOOL __cdecl GetTextureInfo(const u32)
+    {
+        return FALSE;
+    }
+
+    extern "C" BOOL __cdecl SelectCubeTexture(const u32, const u32)
+    {
+        return FALSE;
+    }
+
+    extern "C" BOOL __cdecl FreeTexture(const u32 id)
+    {
+        if (id != 0)
         {
-            if (MAX_TEXTURE_COUNT <= State.GL.Textures.TextureCount) { return 0; }
-
-            u32 id = 0;
-
-            glGenTextures(1, &id);
-
-            State.GL.Textures.Textures[State.GL.Textures.TextureCount] = id;
-            State.GL.Textures.TextureCount++;
-
-            return id;
+            glDeleteTextures(1, &id);
         }
 
-        extern "C" BOOL __cdecl GetTextureInfo(const u32)
-        {
-            return FALSE;
-        }
+        return TRUE;
+    }
 
-        extern "C" BOOL __cdecl SelectCubeTexture(const u32, const u32)
-        {
-            return FALSE;
-        }
+    extern "C" BOOL __cdecl ResetTextureCache(void)
+    {
+        State.GL.Textures.TextureCount = 0;
 
-        extern "C" BOOL __cdecl FreeTexture(const u32 id)
+        for (auto x = 0; x < MAX_TEXTURE_COUNT; x++)
         {
+            auto id = State.GL.Textures.Textures[x];
+
             if (id != 0)
             {
                 glDeleteTextures(1, &id);
             }
-
-            return TRUE;
         }
 
-        extern "C" BOOL __cdecl ResetTextureCache(void)
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl SelectTexture(const u32 id, const u32 indx)
+    {
+        if (MAX_SELECTED_TEXTURE_COUNT <= indx) { return FALSE; }
+
+        State.GL.Textures.Selected.Textures[indx] = id;
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl SetTextureClamp(const ClampMode s, const ClampMode t, const u32)
+    {
+        State.GL.Textures.Clamp.S = s;
+        State.GL.Textures.Clamp.T = t;
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s == ClampMode::Wrap ? GL_REPEAT : GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t == ClampMode::Wrap ? GL_REPEAT : GL_CLAMP);
+
+        return TRUE;
+    }
+
+    void* TexturePixels(const struct Texture* texture, const s32 width)
+    {
+        auto txw = texture->Width;
+
+        if (txw == width) { return &State.GL.Textures.Buffers.Pixels; }
+
+        auto offset = 0;
+
+        do
         {
-            State.GL.Textures.TextureCount = 0;
+            offset += txw * txw * sizeof(u32);
+            txw /= 2;
 
-            for (auto x = 0; x < MAX_TEXTURE_COUNT; x++)
+            if (txw == 0)
             {
-                auto id = State.GL.Textures.Textures[x];
-
-                if (id != 0)
-                {
-                    glDeleteTextures(1, &id);
-                }
+                Exit("Unable to get texture source size: %d x %d.", width, width);
             }
+        } while (txw != width);
 
-            return TRUE;
-        }
+        return &State.GL.Textures.Buffers.Pixels[offset];
+    }
 
-        extern "C" BOOL __cdecl SelectTexture(const u32 id, const u32 indx)
+    void TextureConvert(const struct Texture* texture)
+    {
+        if (texture->Colors != NULL)
         {
-            if (MAX_SELECTED_TEXTURE_COUNT <= indx) { return FALSE; }
-
-            State.GL.Textures.Selected.Textures[indx] = id;
-
-            return TRUE;
-        }
-
-        extern "C" BOOL __cdecl SetTextureClamp(const TextureClamp s, const TextureClamp t, const u32)
-        {
-            State.GL.Textures.Clamp.S = s;
-            State.GL.Textures.Clamp.T = t;
-
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s == TextureClamp::Wrap ? GL_REPEAT : GL_CLAMP);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t == TextureClamp::Wrap ? GL_REPEAT : GL_CLAMP);
-
-            return TRUE;
-        }
-
-        void* TexturePixels(const struct Texture* texture, const s32 width)
-        {
-            auto txw = texture->Width;
-
-            if (txw == width) { return &State.GL.Textures.Buffers.Pixels; }
-
-            auto offset = 0;
-
-            do
+            for (auto x = 0; x < MAX_PALETTE_BUFFER_SIZE; x++)
             {
-                offset += txw * txw * sizeof(u32);
-                txw /= 2;
+                auto r = (u32)texture->Colors[x * 3 + 0];
+                auto g = (u32)texture->Colors[x * 3 + 1];
+                auto b = (u32)texture->Colors[x * 3 + 2];
 
-                if (txw == 0)
-                {
-                    Exit("Unable to get texture source size: %d x %d.", width, width);
-                }
-            } while (txw != width);
-
-            return &State.GL.Textures.Buffers.Pixels[offset];
-        }
-
-        void TextureConvert(const struct Texture* texture)
-        {
-            if (texture->Colors != NULL)
-            {
-                for (auto x = 0; x < MAX_PALETTE_BUFFER_SIZE; x++)
-                {
-                    auto r = (u32)texture->Colors[x * 3 + 0];
-                    auto g = (u32)texture->Colors[x * 3 + 1];
-                    auto b = (u32)texture->Colors[x * 3 + 2];
-
-                    State.GL.Textures.Buffers.Colors[x] = (r << 16) | (g << 8) | b;
-                }
-            }
-
-            auto levels = texture->MipLevelCount + 1;
-            auto width = texture->Width;
-            auto offset = 0;
-
-            for (auto x = 0; x < levels; x++)
-            {
-                auto size = width * width;
-                auto pixels = &State.GL.Textures.Buffers.Pixels[offset];
-
-                switch (texture->Format)
-                {
-                case TextureFormat::Palette24Bit:
-                case TextureFormat::Palette32Bit:
-                {
-                    for (auto x = 0; x < size; x++)
-                    {
-                        auto indx = texture->Indexes[x];
-                        auto value = State.GL.Textures.Buffers.Colors[indx];
-
-                        pixels[x] = value | 0xff000000;
-                    }
-
-                    break;
-                }
-                case TextureFormat::OpacityMap8Bit:
-                {
-                    for (auto x = 0; x < size; x++)
-                    {
-                        auto indx = texture->Indexes[x];
-                        auto alpha = texture->Alphas[x];
-                        auto value = State.GL.Textures.Buffers.Colors[indx];
-
-                        pixels[x] = value | (alpha << 24);
-                    }
-
-                    break;
-                }
-                case TextureFormat::Color32Bit:
-                {
-                    for (auto x = 0; x < size; x++)
-                    {
-                        pixels[x] = texture->ARGB[x];
-                    }
-
-                    break;
-                }
-                }
-
-                offset += size;
-                width /= 2;
+                State.GL.Textures.Buffers.Colors[x] = (r << 16) | (g << 8) | b;
             }
         }
 
-        extern "C" BOOL __cdecl UploadTexture(const u32 id, const struct Texture* texture)
+        auto levels = texture->MipLevelCount + 1;
+        auto width = texture->Width;
+        auto offset = 0;
+
+        for (auto x = 0; x < levels; x++)
         {
-            TextureConvert(texture);
+            auto size = width * width;
+            auto pixels = &State.GL.Textures.Buffers.Pixels[offset];
 
-            glBindTexture(GL_TEXTURE_2D, id);
-
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-            auto width = texture->Width;
-            auto levels = texture->MipLevelCount + 1;
-
-            for (auto x = 0; x < levels; x++)
+            switch (texture->Format)
             {
-                auto pixels = TexturePixels(texture, width);
-                glTexImage2D(GL_TEXTURE_2D, x, GL_RGBA8, width, width, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, pixels);
-                width /= 2;
+            case TextureFormat::Palette24Bit:
+            case TextureFormat::Palette32Bit:
+            {
+                for (auto x = 0; x < size; x++)
+                {
+                    auto indx = texture->Indexes[x];
+                    auto value = State.GL.Textures.Buffers.Colors[indx];
+
+                    pixels[x] = value | 0xff000000;
+                }
+
+                break;
+            }
+            case TextureFormat::OpacityMap8Bit:
+            {
+                for (auto x = 0; x < size; x++)
+                {
+                    auto indx = texture->Indexes[x];
+                    auto alpha = texture->Alphas[x];
+                    auto value = State.GL.Textures.Buffers.Colors[indx];
+
+                    pixels[x] = value | (alpha << 24);
+                }
+
+                break;
+            }
+            case TextureFormat::Color32Bit:
+            {
+                for (auto x = 0; x < size; x++)
+                {
+                    pixels[x] = texture->ARGB[x];
+                }
+
+                break;
+            }
             }
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, levels);
-
-            return TRUE;
+            offset += size;
+            width /= 2;
         }
+    }
 
-        extern "C" BOOL __cdecl CopyBackBufferToRenderTexture(void)
+    extern "C" BOOL __cdecl UploadTexture(const u32 id, const struct Texture* texture)
+    {
+        TextureConvert(texture);
+
+        glBindTexture(GL_TEXTURE_2D, id);
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+        auto width = texture->Width;
+        auto levels = texture->MipLevelCount + 1;
+
+        for (auto x = 0; x < levels; x++)
         {
-            return FALSE;
+            auto pixels = TexturePixels(texture, width);
+            glTexImage2D(GL_TEXTURE_2D, x, GL_RGBA8, width, width, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, pixels);
+            width /= 2;
         }
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, levels);
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl CopyBackBufferToRenderTexture(void)
+    {
+        return FALSE;
     }
 }

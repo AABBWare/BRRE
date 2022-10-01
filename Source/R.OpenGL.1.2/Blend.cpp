@@ -23,75 +23,72 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-using namespace Renderer::Graphics;
+using namespace Renderer::Enums;
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl SetDestinationBlend(const DestinationBlend mode)
     {
-        extern "C" BOOL __cdecl SetDestinationBlend(const TextureDestinationBlend mode)
+        switch (mode)
         {
-            switch (mode)
-            {
-            case TextureDestinationBlend::InverseAlpha:
-            {
-                State.GL.Mode.DestinationBlend = GL_ONE_MINUS_SRC_ALPHA;
-                break;
-            }
-            case TextureDestinationBlend::One:
-            {
-                State.GL.Mode.DestinationBlend = GL_ONE;
-                break;
-            }
-            case TextureDestinationBlend::Color:
-            {
-                State.GL.Mode.DestinationBlend = GL_SRC_COLOR;
-                break;
-            }
-            case TextureDestinationBlend::InverseColor:
-            {
-                State.GL.Mode.DestinationBlend = GL_ONE_MINUS_SRC_COLOR;
-                break;
-            }
-            case TextureDestinationBlend::Zero:
-            {
-                State.GL.Mode.DestinationBlend = GL_ZERO;
-                break;
-            }
-            }
-
-            return TRUE;
+        case DestinationBlend::InverseAlpha:
+        {
+            State.GL.Mode.DestinationBlend = GL_ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        case DestinationBlend::One:
+        {
+            State.GL.Mode.DestinationBlend = GL_ONE;
+            break;
+        }
+        case DestinationBlend::Color:
+        {
+            State.GL.Mode.DestinationBlend = GL_SRC_COLOR;
+            break;
+        }
+        case DestinationBlend::InverseColor:
+        {
+            State.GL.Mode.DestinationBlend = GL_ONE_MINUS_SRC_COLOR;
+            break;
+        }
+        case DestinationBlend::Zero:
+        {
+            State.GL.Mode.DestinationBlend = GL_ZERO;
+            break;
+        }
         }
 
-        extern "C" BOOL __cdecl SetMultiTextureBlend(const TextureBlendOperation operation)
-        {
-            State.GL.Textures.MultiBlendOperation = operation;
+        return TRUE;
+    }
 
-            return TRUE;
+    extern "C" BOOL __cdecl SetMultiTextureBlend(const BlendOperation operation)
+    {
+        State.GL.Textures.MultiBlendOperation = operation;
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl SetSourceBlend(const SourceBlend mode)
+    {
+        switch (mode)
+        {
+        case SourceBlend::Alpha:
+        {
+            State.GL.Mode.SourceBlend = GL_SRC_ALPHA;
+            break;
+        }
+        case SourceBlend::One:
+        {
+            State.GL.Mode.SourceBlend = GL_ONE;
+            break;
+        }
+        case SourceBlend::Zero:
+        {
+            State.GL.Mode.SourceBlend = GL_ZERO;
+            break;
+        }
         }
 
-        extern "C" BOOL __cdecl SetSourceBlend(const TextureSourceBlend mode)
-        {
-            switch (mode)
-            {
-            case TextureSourceBlend::Alpha:
-            {
-                State.GL.Mode.SourceBlend = GL_SRC_ALPHA;
-                break;
-            }
-            case TextureSourceBlend::One:
-            {
-                State.GL.Mode.SourceBlend = GL_ONE;
-                break;
-            }
-            case TextureSourceBlend::Zero:
-            {
-                State.GL.Mode.SourceBlend = GL_ZERO;
-                break;
-            }
-            }
-
-            return TRUE;
-        }
+        return TRUE;
     }
 }

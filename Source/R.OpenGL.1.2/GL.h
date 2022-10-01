@@ -48,53 +48,47 @@ SOFTWARE.
 #define WGL_TEXTURE_RGB_ARB                 0x2075
 #define WGL_TEXTURE_TARGET_ARB              0x2073
 
-namespace Renderer
+namespace GL
 {
-    namespace External
+    void BindTexture(const u32, const u32);
+    void Initialize(void);
+    void Release(void);
+    void SetMode(const u32);
+
+    DECLARE_HANDLE(HPBUFFERARB);
+
+    typedef const char* (WINAPI* PFNWGLGETEXTENSIONSSTRINGARBPROC) (const HDC);
+    typedef const char* (WINAPI* PFNWGLGETEXTENSIONSSTRINGEXTPROC) (void);
+    typedef HDC(WINAPI* PFNWGLGETPBUFFERDCARBPROC) (const HPBUFFERARB);
+    typedef HPBUFFERARB(WINAPI* PFNWGLCREATEPBUFFERARBPROC) (const HDC, const s32, const s32, const s32, const s32*);
+    typedef s32(WINAPI* PFNWGLBINDTEXIMAGEARBPROC) (const HPBUFFERARB, const s32);
+    typedef s32(WINAPI* PFNWGLCHOOSEPIXELFORMATARBPROC) (const HDC, const s32*, const f32*, const u32, s32*, u32*);
+    typedef s32(WINAPI* PFNWGLDESTROYPBUFFERARBPROC) (const HPBUFFERARB);
+    typedef s32(WINAPI* PFNWGLQUERYPBUFFERARBPROC) (const HPBUFFERARB, const s32, u32*);
+    typedef s32(WINAPI* PFNWGLRELEASEPBUFFERDCARBPROC) (const HPBUFFERARB, const HDC);
+    typedef s32(WINAPI* PFNWGLRELEASETEXIMAGEARBPROC) (const HPBUFFERARB, const s32);
+    typedef s32(WINAPI* PFNWGLSETPBUFFERATTRIBARBPROC) (const HPBUFFERARB, const s32*);
+    typedef void (WINAPI* PFNGLACTIVETEXTUREARBPROC) (const u32);
+    typedef void (WINAPI* PFNGLCLIENTACTIVETEXTUREARBPROC) (const u32);
+    typedef void (WINAPI* PFNGLMULTITEXCOORD2FARBPROC)(const u32, const f32, const f32);
+
+    struct GLF
     {
-        namespace GL
-        {
-            void BindTexture(const u32, const u32);
-            void Initialize(void);
-            void Release(void);
-            void SetMode(const u32);
+        PFNWGLGETEXTENSIONSSTRINGEXTPROC wglGetExtensionsStringEXT;
+        PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
+        PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
+        PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
+        PFNGLCLIENTACTIVETEXTUREARBPROC glClientActiveTextureARB;
+        PFNWGLBINDTEXIMAGEARBPROC wglBindTexImageARB;
+        PFNWGLRELEASETEXIMAGEARBPROC wglReleaseTexImageARB;
+        PFNWGLSETPBUFFERATTRIBARBPROC wglSetPbufferAttribARB;
+        PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
+        PFNWGLCREATEPBUFFERARBPROC wglCreatePbufferARB;
+        PFNWGLGETPBUFFERDCARBPROC wglGetPbufferDCARB;
+        PFNWGLQUERYPBUFFERARBPROC wglQueryPbufferARB;
+        PFNWGLRELEASEPBUFFERDCARBPROC wglReleasePbufferDCARB;
+        PFNWGLDESTROYPBUFFERARBPROC wglDestroyPbufferARB;
+    };
 
-            DECLARE_HANDLE(HPBUFFERARB);
-
-            typedef const char* (WINAPI* PFNWGLGETEXTENSIONSSTRINGARBPROC) (const HDC);
-            typedef const char* (WINAPI* PFNWGLGETEXTENSIONSSTRINGEXTPROC) (void);
-            typedef HDC(WINAPI* PFNWGLGETPBUFFERDCARBPROC) (const HPBUFFERARB);
-            typedef HPBUFFERARB(WINAPI* PFNWGLCREATEPBUFFERARBPROC) (const HDC, const s32, const s32, const s32, const s32*);
-            typedef s32(WINAPI* PFNWGLBINDTEXIMAGEARBPROC) (const HPBUFFERARB, const s32);
-            typedef s32(WINAPI* PFNWGLCHOOSEPIXELFORMATARBPROC) (const HDC, const s32*, const f32*, const u32, s32*, u32*);
-            typedef s32(WINAPI* PFNWGLDESTROYPBUFFERARBPROC) (const HPBUFFERARB);
-            typedef s32(WINAPI* PFNWGLQUERYPBUFFERARBPROC) (const HPBUFFERARB, const s32, u32*);
-            typedef s32(WINAPI* PFNWGLRELEASEPBUFFERDCARBPROC) (const HPBUFFERARB, const HDC);
-            typedef s32(WINAPI* PFNWGLRELEASETEXIMAGEARBPROC) (const HPBUFFERARB, const s32);
-            typedef s32(WINAPI* PFNWGLSETPBUFFERATTRIBARBPROC) (const HPBUFFERARB, const s32*);
-            typedef void (WINAPI* PFNGLACTIVETEXTUREARBPROC) (const u32);
-            typedef void (WINAPI* PFNGLCLIENTACTIVETEXTUREARBPROC) (const u32);
-            typedef void (WINAPI* PFNGLMULTITEXCOORD2FARBPROC)(const u32, const f32, const f32);
-
-            struct GLF
-            {
-                PFNWGLGETEXTENSIONSSTRINGEXTPROC wglGetExtensionsStringEXT;
-                PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
-                PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
-                PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
-                PFNGLCLIENTACTIVETEXTUREARBPROC glClientActiveTextureARB;
-                PFNWGLBINDTEXIMAGEARBPROC wglBindTexImageARB;
-                PFNWGLRELEASETEXIMAGEARBPROC wglReleaseTexImageARB;
-                PFNWGLSETPBUFFERATTRIBARBPROC wglSetPbufferAttribARB;
-                PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
-                PFNWGLCREATEPBUFFERARBPROC wglCreatePbufferARB;
-                PFNWGLGETPBUFFERDCARBPROC wglGetPbufferDCARB;
-                PFNWGLQUERYPBUFFERARBPROC wglQueryPbufferARB;
-                PFNWGLRELEASEPBUFFERDCARBPROC wglReleasePbufferDCARB;
-                PFNWGLDESTROYPBUFFERARBPROC wglDestroyPbufferARB;
-            };
-
-            extern struct GLF GLF;
-        }
-    }
+    extern struct GLF GLF;
 }

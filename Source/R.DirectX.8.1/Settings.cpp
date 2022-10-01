@@ -23,16 +23,10 @@ SOFTWARE.
 #include "Settings.h"
 #include "Win.h"
 
-namespace Renderer
+namespace Settings
 {
-    namespace External
+    void ReadValue(const char* section, const char* parameter, u32* value)
     {
-        namespace Settings
-        {
-            void ReadValue(const char* section, const char* parameter, u32* value)
-            {
-                *value = GetPrivateProfileIntA(section, parameter, *value, ".\\system\\render.ini");
-            }
-        }
+        *value = GetPrivateProfileIntA(section, parameter, *value, ".\\system\\render.ini");
     }
 }

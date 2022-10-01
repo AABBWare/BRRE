@@ -23,49 +23,46 @@ SOFTWARE.
 #include "Module.h"
 #include "State.h"
 
-namespace Renderer
+namespace Renderer::Module
 {
-    namespace External
+    extern "C" BOOL __cdecl LockFrame(void)
     {
-        extern "C" BOOL __cdecl LockFrame(void)
+        if (State.DX.IsSceneActive)
         {
-            if (State.DX.IsSceneActive)
-            {
-                EndScene();
-            }
-
-            if (!State.DX.IsFrameLocked)
-            {
-                State.DX.DirectXDevice->GetRenderTarget(&State.DX.Surfaces.DrawSurface);
-
-                D3DLOCKED_RECT lr;
-                if (State.DX.Surfaces.DrawSurface->LockRect(&lr, NULL, D3DLOCK_NOSYSLOCK) == 0)
-                {
-                    // todo unknown 4
-
-                    State.DX.IsFrameLocked = TRUE;
-                    return TRUE;
-                }
-
-                return FALSE;
-            }
-
-            return TRUE;
+            EndScene();
         }
 
-        extern "C" BOOL __cdecl UnlockFrame(void)
+        if (!State.DX.IsFrameLocked)
         {
-            if (!State.DX.IsFrameLocked) { return FALSE; }
+            State.DX.DirectXDevice->GetRenderTarget(&State.DX.Surfaces.DrawSurface);
 
-            State.DX.IsFrameLocked = FALSE;
+            D3DLOCKED_RECT lr;
+            if (State.DX.Surfaces.DrawSurface->LockRect(&lr, NULL, D3DLOCK_NOSYSLOCK) == 0)
+            {
+                // todo unknown 4
 
-            // todo: unk4
+                State.DX.IsFrameLocked = TRUE;
+                return TRUE;
+            }
 
-            DX::DXC(State.DX.Surfaces.DrawSurface->UnlockRect(), "Unable to unlock back buffer.");
-
-            State.DX.Surfaces.DrawSurface->Release();
-
-            return TRUE;
+            return FALSE;
         }
+
+        return TRUE;
+    }
+
+    extern "C" BOOL __cdecl UnlockFrame(void)
+    {
+        if (!State.DX.IsFrameLocked) { return FALSE; }
+
+        State.DX.IsFrameLocked = FALSE;
+
+        // todo: unk4
+
+        DX::DXC(State.DX.Surfaces.DrawSurface->UnlockRect(), "Unable to unlock back buffer.");
+
+        State.DX.Surfaces.DrawSurface->Release();
+
+        return TRUE;
     }
 }

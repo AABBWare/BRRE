@@ -28,26 +28,25 @@ SOFTWARE.
 #include <stdarg.h>
 #include <stdio.h>
 
-namespace Renderer
+#define MAX_BUFFER_SIZE 256
+
+namespace Renderer::Module
 {
-    namespace External
+    void Exit(const char* format, ...)
     {
-        void Exit(const char* format, ...)
-        {
-            if (format == NULL) { return; }
+        if (format == NULL) { return; }
 
-            char buffer[256];
+        char buffer[MAX_BUFFER_SIZE];
 
-            va_list args;
-            va_start(args, format);
-            vsprintf_s(buffer, ARRAYSIZE(buffer), format, args);
-            va_end(args);
+        va_list args;
+        va_start(args, format);
+        vsprintf_s(buffer, MAX_BUFFER_SIZE, format, args);
+        va_end(args);
 
-            MessageBoxA(State.Window.HWND, buffer, "DirectX", MB_ICONERROR | MB_OK);
+        MessageBoxA(State.Window.HWND, buffer, "DirectX", MB_ICONERROR | MB_OK);
 
-            Renderer::External::Kill();
+        Kill();
 
-            ExitProcess(1);
-        }
+        ExitProcess(1);
     }
 }
